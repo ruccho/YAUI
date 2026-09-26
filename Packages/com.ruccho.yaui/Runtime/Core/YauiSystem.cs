@@ -35,6 +35,7 @@ namespace Yaui.Core
         private static bool initialized;
         private static readonly List<PanelState> Panels = new();
         private static readonly List<PanelState> LayoutPanels = new();
+        private static readonly List<YauiCustomDraw> CustomDraws = new();
         private static NativeList<RootLayout> layoutRoots;
         private static NativeList<IntPtr> layoutBoundaries;
         private static NativeList<IntPtr> parallelBoundaries;
@@ -128,6 +129,19 @@ namespace Yaui.Core
             var state = new PanelState(panel);
             Panels.Add(state);
             return state;
+        }
+
+        /// <summary>Main thread: a custom draw records its draws at every collection while enabled.</summary>
+        public static void AddCustomDraw(YauiCustomDraw draw)
+        {
+            if (!CustomDraws.Contains(draw)) CustomDraws.Add(draw);
+
+            RequestUpdate();
+        }
+
+        public static void RemoveCustomDraw(YauiCustomDraw draw)
+        {
+            CustomDraws.Remove(draw);
         }
 
         /// <summary>Main thread: runs the pipeline now, so that changes are laid out and uploaded immediately.</summary>
@@ -323,6 +337,10 @@ namespace Yaui.Core
 
                 panel.UpdateTransforms();
             }
+
+            // After the transforms: custom draws place their meshes on the nodes as rendered.
+            // By index: user code may enable or disable custom draws.
+            for (var i = 0; i < CustomDraws.Count; i++) CustomDraws[i].Collect();
 
             Primitives.Upload();
             Exts.Upload();

@@ -55,6 +55,7 @@ namespace Yaui
         [NonSerialized] private int extSlot;
         [NonSerialized] private int clipSlot;
         [NonSerialized] private YauiMask mask;
+        [NonSerialized] private YauiCustomDraw customDraw;
         [NonSerialized] private bool boxDrawn;
         [NonSerialized] private LayoutStyle appliedLayout;
         [NonSerialized] private float appliedBorderWidth;
@@ -376,6 +377,35 @@ namespace Yaui
 
             WriteBoxRect();
             SyncNode();
+            panel.OrderDirty = true;
+            YauiSystem.RequestUpdate();
+        }
+
+        /// <summary>The custom draw on this element, if enabled.</summary>
+        internal YauiCustomDraw CustomDraw => customDraw;
+
+        internal void SetCustomDraw(YauiCustomDraw value)
+        {
+            if (customDraw != null && customDraw != value)
+                Debug.LogWarning("[YAUI] An element draws one YauiCustomDraw; the last enabled one is used.", this);
+
+            customDraw = value;
+            OnCustomDrawChanged();
+        }
+
+        internal void ClearCustomDraw(YauiCustomDraw value)
+        {
+            if (customDraw != value) return;
+
+            customDraw = null;
+            OnCustomDrawChanged();
+        }
+
+        /// <summary>The custom draw was added, removed or moved: the draw order changes.</summary>
+        internal void OnCustomDrawChanged()
+        {
+            if (NodeSlot <= 0) return;
+
             panel.OrderDirty = true;
             YauiSystem.RequestUpdate();
         }

@@ -1,0 +1,77 @@
+---
+title: Particles and Meshes
+sidebar_position: 9.5
+---
+
+# Particles and Meshes
+
+Elements draw quads. To draw a ParticleSystem or any other mesh in the draw order of the UI, add a component derived from `YauiCustomDraw` to an element. Each mesh is a draw call of its own, and the draws of primitives split around it.
+
+## YauiParticle
+
+`YauiParticle` draws the ParticleSystems on its GameObject and on the GameObjects below it, up to other elements. It bakes the particles into meshes every frame, like ParticleEffectForUGUI does for uGUI. While it is enabled, the renderers of the particle systems are disabled, so they are not drawn in the scene.
+
+- The particle systems are centered on the element's box. One unit of a system is **Scale** canvas units, with Y up.
+- Use **Local** simulation space. YAUI ignores Transforms, so **World** simulation space does not follow the element.
+- Give the particles a material with the **Yaui/Particle** shader. It follows the element's opacity, tint, [clips and masks](./clipping-and-masks.mdx). Set **Additive** to 1 for additive blending.
+- Trails are drawn after their particles, with the renderer's trail material.
+
+The **Particles** sample shows particles in a rounded clip, in a mask and under a child element.
+
+## Position
+
+**Position** sets where the meshes are drawn:
+
+| Position | Drawn |
+|---|---|
+| **After Self** | Right after the element's own box and content, under its children. Hidden when the element's `YauiMask` hides its graphic. |
+| **After Children** | After the element's children, on top of them. Inside the element's mask. |
+
+## Materials
+
+The shader of a mesh decides what follows the element:
+
+| Shader | Transform | Opacity and tint | Clips and masks |
+|---|---|---|---|
+| YAUI shader (like **Yaui/Particle**) | Yes | Yes | Yes |
+| Other shaders | Yes | No | No |
+
+With other shaders, the mesh is drawn with the first pass that URP draws in the forward path, and a model matrix computed on the CPU. On world space panels, that matrix is one frame late.
+
+The Z of meshes is flattened onto the panel.
+
+## Writing a custom draw
+
+Derive from `YauiCustomDraw` and record the meshes in `OnCollectDraws`. It is called once a frame right before rendering, after the layout, so `Element.LayoutRect` is current. A mesh is read when it renders, so you can update it there.
+
+```csharp
+using UnityEngine;
+using Yaui;
+
+public sealed class MeshDraw : YauiCustomDraw
+{
+    [SerializeField] private Mesh mesh;
+    [SerializeField] private Material material;
+
+    protected override void OnCollectDraws(YauiDrawList draws)
+    {
+        // Maps the mesh to the local space of the element's box: canvas units, origin at the top-left, Y down.
+        var size = Element.LayoutRect.size;
+        var matrix = Matrix4x4.Translate(new Vector3(size.x * 0.5f, size.y * 0.5f, 0f)) *
+                     Matrix4x4.Scale(new Vector3(100f, -100f, 1f));
+        draws.DrawMesh(mesh, material, matrix);
+    }
+}
+```
+
+An element has one custom draw.
+
+## Writing a shader for meshes
+
+A shader for meshes is like a [custom shader](./custom-shaders.mdx), with its own vertex functions on mesh attributes:
+
+1. Include `Yaui.hlsl` and declare the `Overlay` and `World` passes, the stencil properties and the `Stencil` block.
+2. In the vertex function, call `YauiMeshVertex(positionOS, world)`. It returns the clip space position, a color to multiply (the tint and the inherited opacity), and the canvas position and clip of the node.
+3. In the fragment function, multiply the alpha by `YauiClipCoverage(canvas, clipRect, clipRounded, clipRadii)`, and return premultiplied alpha.
+
+`Runtime/Shaders/Particle.shader` in the package is a complete example.

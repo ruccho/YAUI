@@ -15,3 +15,4 @@ YAUI chooses constraints to be fast. Some of them differ from uGUI:
 - **`ClipChildren` applies only the nearest rounded clip.** Use `YauiMask` for deeper nesting or other shapes. Mask edges are not anti-aliased.
 - **Text uses internal APIs.** The Advanced Text Generator is called through its internal API, checked at startup. If it does not match the Unity version, texts use the public `TextGenerator` on the main thread (slower).
 - **Scroll views do not virtualize** their content.
+- **Particles and meshes cost a draw call each.** Materials that are not YAUI shaders are not clipped or masked. See [Particles and Meshes](./particles-and-meshes.mdx).

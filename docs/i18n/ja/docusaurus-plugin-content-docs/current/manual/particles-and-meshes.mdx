@@ -1,0 +1,77 @@
+---
+title: パーティクルとメッシュ
+sidebar_position: 9.5
+---
+
+# パーティクルとメッシュ
+
+要素が描くのは Quad です。ParticleSystem やそれ以外のメッシュを UI の描画順の中に描くには、`YauiCustomDraw` の派生コンポーネントを要素に追加します。メッシュは 1 つずつ別のドローコールになり、その前後でプリミティブの描画が分割されます。
+
+## YauiParticle
+
+`YauiParticle` は、同じ GameObject と、その下の GameObject (ほかの要素の手前まで) にある ParticleSystem を描きます。ParticleEffectForUGUI が uGUI で行うのと同じように、パーティクルを毎フレームメッシュに焼き込みます。有効な間はパーティクルシステムのレンダラーを無効にするので、シーンには描かれません。
+
+- パーティクルシステムの中心は要素のボックスの中心です。システムの 1 単位は **Scale** キャンバス単位で、Y は上向きです。
+- シミュレーション空間は **Local** にしてください。YAUI は Transform を無視するので、**World** では要素に追従しません。
+- パーティクルのマテリアルには **Yaui/Particle** シェーダーを使ってください。要素の不透明度・Tint・[クリップとマスク](./clipping-and-masks.mdx)に従います。**Additive** を 1 にすると加算になります。
+- トレイルはパーティクルの後に、レンダラーのトレイル用マテリアルで描かれます。
+
+**Particles** サンプルでは、角丸のクリップの中、マスクの中、子要素の下にパーティクルを置いています。
+
+## 位置 {#position}
+
+**Position** でメッシュを描く位置を決めます。
+
+| Position | 描かれる位置 |
+|---|---|
+| **After Self** | 要素自身のボックスと内容の直後で、子の下。要素の `YauiMask` がグラフィックを隠すときは描かれません。 |
+| **After Children** | 要素の子の後で、子の上。要素のマスクの内側。 |
+
+## マテリアル {#materials}
+
+メッシュのシェーダーによって、要素のどの状態に従うかが決まります。
+
+| シェーダー | 変形 | 不透明度と Tint | クリップとマスク |
+|---|---|---|---|
+| YAUI のシェーダー (**Yaui/Particle** など) | 従う | 従う | 従う |
+| それ以外のシェーダー | 従う | 従わない | 従わない |
+
+それ以外のシェーダーでは、URP がフォワードで描く最初のパスと、CPU で計算したモデル行列で描きます。World Space のパネルでは、この行列が 1 フレーム遅れます。
+
+メッシュの Z はパネルの面に潰されます。
+
+## カスタム描画の書き方 {#writing-a-custom-draw}
+
+`YauiCustomDraw` を継承し、`OnCollectDraws` でメッシュを記録します。レイアウトの後、描画の直前に毎フレーム 1 回呼ばれるので、`Element.LayoutRect` は最新です。メッシュは描画時に読まれるので、ここで更新してかまいません。
+
+```csharp
+using UnityEngine;
+using Yaui;
+
+public sealed class MeshDraw : YauiCustomDraw
+{
+    [SerializeField] private Mesh mesh;
+    [SerializeField] private Material material;
+
+    protected override void OnCollectDraws(YauiDrawList draws)
+    {
+        // メッシュを要素のボックスのローカル空間 (キャンバス単位、左上が原点、Y は下向き) に置く
+        var size = Element.LayoutRect.size;
+        var matrix = Matrix4x4.Translate(new Vector3(size.x * 0.5f, size.y * 0.5f, 0f)) *
+                     Matrix4x4.Scale(new Vector3(100f, -100f, 1f));
+        draws.DrawMesh(mesh, material, matrix);
+    }
+}
+```
+
+1 つの要素に付けられるカスタム描画は 1 つです。
+
+## メッシュ用のシェーダーの書き方 {#writing-a-shader-for-meshes}
+
+メッシュ用のシェーダーは[カスタムシェーダー](./custom-shaders.mdx)と同じ形で、頂点関数だけをメッシュの属性で書きます。
+
+1. `Yaui.hlsl` をインクルードし、`Overlay` と `World` のパス、ステンシルのプロパティと `Stencil` ブロックを宣言します。
+2. 頂点関数で `YauiMeshVertex(positionOS, world)` を呼びます。クリップ空間の位置、掛ける色 (Tint と継承した不透明度)、ノードのキャンバス上の位置とクリップが返ります。
+3. フラグメント関数で、アルファに `YauiClipCoverage(canvas, clipRect, clipRounded, clipRadii)` を掛け、乗算済みアルファで返します。
+
+パッケージの `Runtime/Shaders/Particle.shader` が完全な例です。

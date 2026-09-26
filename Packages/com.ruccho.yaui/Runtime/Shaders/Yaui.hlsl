@@ -295,6 +295,22 @@ float Coverage(float distance, float pixelSize)
     return saturate(0.5 - distance / pixelSize);
 }
 
+// The coverage of a clip at a canvas position: the rect (min, max), and the rounded clip (center, half size; none if
+// zero) with its radii.
+float YauiClipCoverage(float2 canvas, float4 clipRect, float4 clipRounded, float4 clipRadii)
+{
+    float coverage = all(canvas >= clipRect.xy) && all(canvas < clipRect.zw) ? 1.0 : 0.0;
+    if (clipRounded.z > 0.0)
+    {
+        float2 cp = canvas - clipRounded.xy;
+        float r = min(CornerRadius(cp, clipRadii), min(clipRounded.z, clipRounded.w));
+        float canvasPixel = length(fwidth(canvas)) * 0.70710678;
+        coverage *= Coverage(RoundedBoxDistance(cp, clipRounded.zw, r), max(canvasPixel, 1e-4));
+    }
+
+    return coverage;
+}
+
 // Abramowitz and Stegun 7.1.27.
 float Erf(float x)
 {
@@ -375,15 +391,7 @@ half4 FragImpl(Varyings i, bool world)
     // Clips the vertex shader cannot apply (rotated quads, rounded clips), in canvas space.
     [branch] if (i.canvasMisc.w > 0.0)
     {
-        float2 c = i.canvasMisc.xy;
-        clipCoverage = all(c >= i.clipRect.xy) && all(c < i.clipRect.zw) ? 1.0 : 0.0;
-        if (i.clipRounded.z > 0.0)
-        {
-            float2 cp = c - i.clipRounded.xy;
-            float r = min(CornerRadius(cp, i.clipRadii), min(i.clipRounded.z, i.clipRounded.w));
-            float canvasPixel = length(fwidth(c)) * 0.70710678;
-            clipCoverage *= Coverage(RoundedBoxDistance(cp, i.clipRounded.zw, r), max(canvasPixel, 1e-4));
-        }
+        clipCoverage = YauiClipCoverage(i.canvasMisc.xy, i.clipRect, i.clipRounded, i.clipRadii);
 
         // Returns zero instead of discarding (premultiplied alpha): custom fragments can read the input afterwards.
         if (clipCoverage <= 0.0)
@@ -474,6 +482,47 @@ half4 FragMaskImpl(Varyings i, bool world)
     half4 coverage = FragImpl(i, world);
     clip(coverage.a - 0.5);
     return 0;
+}
+
+// Meshes of custom draws (YauiCustomDraw). Shaders for them declare the "Overlay" and "World" passes like Uber.shader
+// with their own vertex functions on mesh attributes, which call YauiMeshVertex; the fragment functions multiply by
+// YauiClipCoverage and premultiply.
+
+// The node of the element, and the mesh to the local space of its box (canvas units, Y down). Per draw.
+uint _YauiNode;
+float4x4 _YauiMeshMatrix;
+
+struct YauiMeshVertexData
+{
+    float4 positionCS;
+    // Multiplies the colors of the mesh (straight alpha): the tint and the inherited opacity of the node.
+    float4 color;
+    float2 canvas;
+    // The clip of the node, for YauiClipCoverage (pass them as nointerpolation varyings).
+    float4 clipRect;
+    float4 clipRounded;
+    float4 clipRadii;
+};
+
+// world: world space panel (a compile time constant). The Z of the mesh is flattened onto the panel.
+YauiMeshVertexData YauiMeshVertex(float3 positionOS, bool world)
+{
+    NodeData n = _YauiNodes[_YauiNode];
+    ClipData clip = _YauiClips[n.opacityClip >> 16];
+    float2 local = mul(_YauiMeshMatrix, float4(positionOS, 1.0)).xy;
+    float2 canvas = mul(float2x2(n.m.xy, n.m.zw), local) + n.translation;
+
+    YauiMeshVertexData o;
+    o.positionCS = world
+                       ? mul(UNITY_MATRIX_VP, mul(_YauiPanelMatrix, float4(canvas, 0.0, 1.0)))
+                       : mul(UNITY_MATRIX_VP, float4(canvas, 0.0, 1.0));
+    o.color = UnpackUnorm8x4(n.tint);
+    o.color.a *= f16tof32(n.opacityClip & 0xffffu);
+    o.canvas = canvas;
+    o.clipRect = clip.rect;
+    o.clipRounded = clip.rounded;
+    o.clipRadii = clip.roundedRadii;
+    return o;
 }
 
 Varyings VertOverlay(uint vertexId : SV_VertexID) { return VertImpl(vertexId, false); }

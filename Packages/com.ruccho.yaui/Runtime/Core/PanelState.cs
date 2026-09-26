@@ -18,7 +18,10 @@ namespace Yaui.Core
         MaskPush,
 
         /// <summary>A mask's shape decrementing the stencil from <see cref="DrawSegment.StencilDepth"/> back.</summary>
-        MaskPop
+        MaskPop,
+
+        /// <summary>The meshes of <see cref="DrawSegment.CustomDraw"/>; no primitives.</summary>
+        Custom
     }
 
     /// <summary>A run of the draw order drawn in one draw call.</summary>
@@ -31,6 +34,9 @@ namespace Yaui.Core
         public Material Material;
 
         public SegmentKind Kind;
+
+        /// <summary>The custom draw of a <see cref="SegmentKind.Custom"/> segment.</summary>
+        public YauiCustomDraw CustomDraw;
 
         /// <summary>Number of masks around the primitives; 0 without masks (no stencil test).</summary>
         public int StencilDepth;
@@ -139,6 +145,9 @@ namespace Yaui.Core
 
         public int DrawCount => order.Length;
 
+        /// <summary>Whether anything is drawn: primitives, or the meshes of custom draws.</summary>
+        public bool HasDraws => Segments.Count > 0;
+
         public void MarkStructureDirty()
         {
             StructureDirty = true;
@@ -209,7 +218,8 @@ namespace Yaui.Core
         /// <summary>Whether the draw order contains masks (the overlay then needs a stencil buffer).</summary>
         public bool HasMasks { get; private set; }
 
-        private readonly List<int> maskStack = new();
+        // Draws at the end of a subtree, innermost last: a mask's removal, or a custom draw after the children.
+        private readonly List<(int Index, bool Mask)> closeStack = new();
         private Material segmentMaterial;
         private int segmentStart;
         private int stencilDepth;
@@ -226,20 +236,21 @@ namespace Yaui.Core
             Segments.Clear();
             SegmentTextures.Clear();
             textureStart = 0;
-            maskStack.Clear();
+            closeStack.Clear();
             HasMasks = false;
             segmentMaterial = null;
             segmentStart = 0;
             stencilDepth = 0;
             for (var i = 0; i < Elements.Count; i++)
             {
-                // Masks whose subtree ended.
-                while (maskStack.Count > 0 && i >= subtreeEnd[maskStack[^1]]) PopMask();
+                // Subtrees that ended.
+                while (closeStack.Count > 0 && i >= subtreeEnd[closeStack[^1].Index]) Close();
 
                 var element = Elements[i];
                 if (!element.IsRegisteredTo(this)) continue;
 
                 var mask = element.Mask;
+                var custom = element.CustomDraw;
                 if (mask == null || mask.ShowMaskGraphic)
                 {
                     var material = element.Material;
@@ -252,19 +263,24 @@ namespace Yaui.Core
                     var before = order.Length;
                     element.AppendDrawOrder(order);
                     SplitByTextures(before);
+                    if (custom != null && custom.Position == YauiCustomDrawPosition.AfterSelf) AddCustom(custom);
                 }
 
                 if (mask != null && stencilDepth < 255)
                 {
                     FlushDraw();
-                    maskStack.Add(i);
+                    closeStack.Add((i, true));
                     stencilDepth++;
                     AddShape(element, SegmentKind.MaskPush);
                     HasMasks = true;
                 }
+
+                // Above the mask's removal: drawn inside the mask.
+                if (custom != null && custom.Position == YauiCustomDrawPosition.AfterChildren)
+                    closeStack.Add((i, false));
             }
 
-            while (maskStack.Count > 0) PopMask();
+            while (closeStack.Count > 0) Close();
 
             FlushDraw();
             while (SegmentProperties.Count < Segments.Count) SegmentProperties.Add(new MaterialPropertyBlock());
@@ -272,13 +288,30 @@ namespace Yaui.Core
             UploadOrder();
         }
 
-        private void PopMask()
+        private void Close()
         {
+            var (index, isMask) = closeStack[^1];
+            closeStack.RemoveAt(closeStack.Count - 1);
+            var element = Elements[index];
+            if (!isMask)
+            {
+                AddCustom(element.CustomDraw);
+                return;
+            }
+
             FlushDraw();
-            var element = Elements[maskStack[^1]];
-            maskStack.RemoveAt(maskStack.Count - 1);
             AddShape(element, SegmentKind.MaskPop);
             stencilDepth--;
+        }
+
+        private void AddCustom(YauiCustomDraw draw)
+        {
+            FlushDraw();
+            Segments.Add(new DrawSegment
+            {
+                Start = order.Length, Kind = SegmentKind.Custom, CustomDraw = draw, StencilDepth = stencilDepth,
+                TextureStart = textureStart
+            });
         }
 
         private void AddShape(YauiElement element, SegmentKind kind)

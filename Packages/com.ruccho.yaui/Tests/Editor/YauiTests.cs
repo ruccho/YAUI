@@ -307,6 +307,85 @@ namespace Yaui.Tests
             Assert.AreSame(after, HitTest(panel, 25f, 225f));
         }
 
+        private sealed class TestDraw : YauiCustomDraw
+        {
+            public int Collected;
+
+            protected override void OnCollectDraws(YauiDrawList draws)
+            {
+                Collected++;
+            }
+        }
+
+        private static List<Core.SegmentKind> SegmentKinds(YauiPanel panel)
+        {
+            var kinds = new List<Core.SegmentKind>();
+            foreach (var segment in panel.CurrentState.Segments) kinds.Add(segment.Kind);
+
+            return kinds;
+        }
+
+        [Test]
+        public void CustomDrawsSplitTheDrawOrder()
+        {
+            var panel = CreatePanel();
+            var root = panel.GetComponent<YauiElement>();
+            var a = Box(root, 100f, 100f);
+            var draw = a.gameObject.AddComponent<TestDraw>();
+            Box(a, 50f, 50f, Color.red);
+            Box(root, 100f, 100f, Color.blue);
+            YauiPanel.ForceUpdate();
+
+            // Root and a, a's meshes, a's child and b.
+            var segments = panel.CurrentState.Segments;
+            CollectionAssert.AreEqual(
+                new[] { Core.SegmentKind.Draw, Core.SegmentKind.Custom, Core.SegmentKind.Draw }, SegmentKinds(panel));
+            Assert.AreSame(draw, segments[1].CustomDraw);
+            Assert.AreEqual(2, segments[2].Count);
+            Assert.Greater(draw.Collected, 0, "Custom draws record their draws at the collection.");
+
+            // Root, a and a's child, a's meshes, b.
+            draw.Position = YauiCustomDrawPosition.AfterChildren;
+            YauiPanel.ForceUpdate();
+            CollectionAssert.AreEqual(
+                new[] { Core.SegmentKind.Draw, Core.SegmentKind.Custom, Core.SegmentKind.Draw }, SegmentKinds(panel));
+            Assert.AreEqual(1, segments[2].Count);
+
+            draw.enabled = false;
+            YauiPanel.ForceUpdate();
+            CollectionAssert.AreEqual(new[] { Core.SegmentKind.Draw }, SegmentKinds(panel));
+        }
+
+        [Test]
+        public void CustomDrawsFollowTheMaskOfTheirElement()
+        {
+            var panel = CreatePanel();
+            var root = panel.GetComponent<YauiElement>();
+            var outer = Box(root, 200f, 200f);
+            var mask = outer.gameObject.AddComponent<YauiMask>();
+            Box(outer, 50f, 50f, Color.red);
+            var draw = outer.gameObject.AddComponent<TestDraw>();
+            draw.Position = YauiCustomDrawPosition.AfterChildren;
+            YauiPanel.ForceUpdate();
+
+            // After the children: inside the mask.
+            var depths = new List<int>();
+            foreach (var segment in panel.CurrentState.Segments) depths.Add(segment.StencilDepth);
+
+            CollectionAssert.AreEqual(new[]
+            {
+                Core.SegmentKind.Draw, Core.SegmentKind.MaskPush, Core.SegmentKind.Draw, Core.SegmentKind.Custom,
+                Core.SegmentKind.MaskPop
+            }, SegmentKinds(panel));
+            CollectionAssert.AreEqual(new[] { 0, 1, 1, 1, 1 }, depths);
+
+            // After the element itself: hidden with the mask graphic.
+            draw.Position = YauiCustomDrawPosition.AfterSelf;
+            mask.ShowMaskGraphic = false;
+            YauiPanel.ForceUpdate();
+            CollectionAssert.DoesNotContain(SegmentKinds(panel), Core.SegmentKind.Custom);
+        }
+
         private static Sprite MakeSprite(int size, bool readable)
         {
             var texture = new Texture2D(size, size, TextureFormat.RGBA32, false);

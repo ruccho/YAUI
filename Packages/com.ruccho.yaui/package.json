@@ -31,6 +31,11 @@
             "displayName": "Controls",
             "description": "Buttons, toggles, a slider, input fields and a scroll view, handled through the EventSystem.",
             "path": "Samples~/Controls"
+        },
+        {
+            "displayName": "Particles",
+            "description": "ParticleSystems in the draw order of the UI with YauiParticle, clipped and masked.",
+            "path": "Samples~/Particles"
         }
     ]
 }
