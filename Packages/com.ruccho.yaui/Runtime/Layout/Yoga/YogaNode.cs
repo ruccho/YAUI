@@ -150,11 +150,11 @@ namespace Yaui.Layout.Yoga
         /// <summary>Callbacks of roots for dirtied layout boundaries, by id.</summary>
         internal static readonly Dictionary<int, Action<YogaNode>> BoundaryCallbacks = new();
 
-        private static int nextCallbackId;
+        private static int _nextCallbackId;
 
         internal static int AddBoundaryCallback(Action<YogaNode> callback)
         {
-            var id = ++nextCallbackId;
+            var id = ++_nextCallbackId;
             BoundaryCallbacks[id] = callback;
             return id;
         }
@@ -171,21 +171,21 @@ namespace Yaui.Layout.Yoga
 
         private static readonly Dictionary<int, YogaMeasureFunc> Functions = new();
         private static readonly object Lock = new();
-        private static Callback callback;
-        private static int nextId;
+        private static Callback _callback;
+        private static int _nextId;
 
         public static int Add(YogaMeasureFunc function)
         {
-            if (callback == null)
+            if (_callback == null)
             {
-                callback = Invoke;
+                _callback = Invoke;
                 YogaMeasurePointer.Pointer.Data =
-                    new FunctionPointer<Callback>(Marshal.GetFunctionPointerForDelegate(callback));
+                    new FunctionPointer<Callback>(Marshal.GetFunctionPointerForDelegate(_callback));
             }
 
             lock (Lock)
             {
-                var id = ++nextId;
+                var id = ++_nextId;
                 Functions[id] = function;
                 return id;
             }
@@ -921,7 +921,7 @@ namespace Yaui.Layout.Yoga
         internal FlexLayoutDirection ResolveDirection(FlexLayoutDirection ownerDirection)
         {
             if (Data->Style.Direction == FlexLayoutDirection.Inherit)
-                return ownerDirection != FlexLayoutDirection.Inherit ? ownerDirection : FlexLayoutDirection.LTR;
+                return ownerDirection != FlexLayoutDirection.Inherit ? ownerDirection : FlexLayoutDirection.Ltr;
             return Data->Style.Direction;
         }
 
@@ -965,7 +965,7 @@ namespace Yaui.Layout.Yoga
         internal void SetPosition(FlexLayoutDirection direction, float ownerWidth, float ownerHeight)
         {
             ref var style = ref Data->Style;
-            var directionRespectingRoot = Data->Owner != null ? direction : FlexLayoutDirection.LTR;
+            var directionRespectingRoot = Data->Owner != null ? direction : FlexLayoutDirection.Ltr;
             var mainAxis = FlexDirectionHelper.ResolveDirection(style.FlexDirection, directionRespectingRoot);
             var crossAxis = FlexDirectionHelper.ResolveCrossDirection(mainAxis, directionRespectingRoot);
 
@@ -1056,7 +1056,7 @@ namespace Yaui.Layout.Yoga
         /// </summary>
         public void CalculateLayout(float availableWidth = float.NaN, float availableHeight = float.NaN)
         {
-            YogaAlgorithm.CalculateLayout(this, availableWidth, availableHeight, FlexLayoutDirection.LTR);
+            YogaAlgorithm.CalculateLayout(this, availableWidth, availableHeight, FlexLayoutDirection.Ltr);
         }
     }
 
@@ -1091,7 +1091,7 @@ namespace Yaui.Layout.Yoga
             {
                 var node = new YogaNode((NodeData*)root.Root);
                 if (node.IsDirty)
-                    YogaAlgorithm.CalculateLayout(node, root.Width, root.Height, FlexLayoutDirection.LTR);
+                    YogaAlgorithm.CalculateLayout(node, root.Width, root.Height, FlexLayoutDirection.Ltr);
             }
 
             foreach (var pointer in Boundaries)

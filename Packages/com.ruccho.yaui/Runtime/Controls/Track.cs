@@ -57,8 +57,8 @@ namespace Yaui
         /// <summary>The extent of an element along the axis: its fixed size, or its size from the last layout.</summary>
         public static float Extent(YauiElement element, TrackDirection direction)
         {
-            var size = IsVertical(direction) ? element.Layout.Height : element.Layout.Width;
-            if (size.Unit == LengthUnit.Point) return size.Value;
+            var size = IsVertical(direction) ? element.Layout.height : element.Layout.width;
+            if (size.unit == LengthUnit.Point) return size.value;
 
             return IsVertical(direction) ? element.LayoutRect.height : element.LayoutRect.width;
         }
@@ -79,38 +79,38 @@ namespace Yaui
                 var zero = Yaui.Length.Points(0f);
                 if (IsVertical(direction))
                 {
-                    layout.Inset.Left = zero;
-                    layout.Inset.Right = zero;
-                    layout.Width = Yaui.Length.Auto;
+                    layout.inset.left = zero;
+                    layout.inset.right = zero;
+                    layout.width = Yaui.Length.Auto;
                 }
                 else
                 {
-                    layout.Inset.Top = zero;
-                    layout.Inset.Bottom = zero;
-                    layout.Height = Yaui.Length.Auto;
+                    layout.inset.top = zero;
+                    layout.inset.bottom = zero;
+                    layout.height = Yaui.Length.Auto;
                 }
             }
 
-            layout.Position = PositionType.Absolute;
+            layout.position = PositionType.Absolute;
             var vertical = IsVertical(direction);
             var reversed = IsReversed(direction);
             var from = Yaui.Length.Percent(start * 100f);
             var margin = Yaui.Length.Points(-shift);
             if (vertical)
             {
-                layout.Inset.Top = reversed ? Yaui.Length.Auto : from;
-                layout.Inset.Bottom = reversed ? from : Yaui.Length.Auto;
-                layout.Margin.Top = reversed ? layout.Margin.Top : margin;
-                layout.Margin.Bottom = reversed ? margin : layout.Margin.Bottom;
-                if (length >= 0f) layout.Height = Yaui.Length.Percent(length * 100f);
+                layout.inset.top = reversed ? Yaui.Length.Auto : from;
+                layout.inset.bottom = reversed ? from : Yaui.Length.Auto;
+                layout.margin.top = reversed ? layout.margin.top : margin;
+                layout.margin.bottom = reversed ? margin : layout.margin.bottom;
+                if (length >= 0f) layout.height = Yaui.Length.Percent(length * 100f);
             }
             else
             {
-                layout.Inset.Left = reversed ? Yaui.Length.Auto : from;
-                layout.Inset.Right = reversed ? from : Yaui.Length.Auto;
-                layout.Margin.Left = reversed ? layout.Margin.Left : margin;
-                layout.Margin.Right = reversed ? margin : layout.Margin.Right;
-                if (length >= 0f) layout.Width = Yaui.Length.Percent(length * 100f);
+                layout.inset.left = reversed ? Yaui.Length.Auto : from;
+                layout.inset.right = reversed ? from : Yaui.Length.Auto;
+                layout.margin.left = reversed ? layout.margin.left : margin;
+                layout.margin.right = reversed ? margin : layout.margin.right;
+                if (length >= 0f) layout.width = Yaui.Length.Percent(length * 100f);
             }
 
             // Writing the same layout would still re-run the layout.
@@ -121,26 +121,26 @@ namespace Yaui
         public static void Fill(YauiElement element, TrackDirection direction, float fraction)
         {
             var layout = element.Layout;
-            layout.Position = PositionType.Absolute;
+            layout.position = PositionType.Absolute;
             var full = Yaui.Length.Points(0f);
             var size = Yaui.Length.Percent(fraction * 100f);
             if (IsVertical(direction))
             {
-                layout.Inset.Left = full;
-                layout.Inset.Right = full;
-                layout.Width = Yaui.Length.Auto;
-                layout.Height = size;
-                layout.Inset.Top = IsReversed(direction) ? Yaui.Length.Auto : full;
-                layout.Inset.Bottom = IsReversed(direction) ? full : Yaui.Length.Auto;
+                layout.inset.left = full;
+                layout.inset.right = full;
+                layout.width = Yaui.Length.Auto;
+                layout.height = size;
+                layout.inset.top = IsReversed(direction) ? Yaui.Length.Auto : full;
+                layout.inset.bottom = IsReversed(direction) ? full : Yaui.Length.Auto;
             }
             else
             {
-                layout.Inset.Top = full;
-                layout.Inset.Bottom = full;
-                layout.Height = Yaui.Length.Auto;
-                layout.Width = size;
-                layout.Inset.Left = IsReversed(direction) ? Yaui.Length.Auto : full;
-                layout.Inset.Right = IsReversed(direction) ? full : Yaui.Length.Auto;
+                layout.inset.top = full;
+                layout.inset.bottom = full;
+                layout.height = Yaui.Length.Auto;
+                layout.width = size;
+                layout.inset.left = IsReversed(direction) ? Yaui.Length.Auto : full;
+                layout.inset.right = IsReversed(direction) ? full : Yaui.Length.Auto;
             }
 
             if (!layout.Equals(element.Layout)) element.Layout = layout;
@@ -158,17 +158,17 @@ namespace Yaui
             var zero = Yaui.Length.Points(0f);
             if (IsVertical(previous))
             {
-                layout.Inset.Top = Yaui.Length.Auto;
-                layout.Inset.Bottom = Yaui.Length.Auto;
-                layout.Margin.Top = zero;
-                layout.Margin.Bottom = zero;
+                layout.inset.top = Yaui.Length.Auto;
+                layout.inset.bottom = Yaui.Length.Auto;
+                layout.margin.top = zero;
+                layout.margin.bottom = zero;
             }
             else
             {
-                layout.Inset.Left = Yaui.Length.Auto;
-                layout.Inset.Right = Yaui.Length.Auto;
-                layout.Margin.Left = zero;
-                layout.Margin.Right = zero;
+                layout.inset.left = Yaui.Length.Auto;
+                layout.inset.right = Yaui.Length.Auto;
+                layout.margin.left = zero;
+                layout.margin.right = zero;
             }
 
             element.Layout = layout;

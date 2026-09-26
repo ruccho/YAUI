@@ -17,7 +17,7 @@ namespace Yaui
         /// <summary>The part of the texture drawn, in UVs within 0..1 (Y up). Textures do not repeat.</summary>
         [SerializeField] private Rect uvRect = new(0f, 0f, 1f, 1f);
 
-        [NonSerialized] private YauiTexture boundTexture;
+        [NonSerialized] private YauiTexture _boundTexture;
 
         public Texture Texture
         {
@@ -72,8 +72,8 @@ namespace Yaui
 
         protected override void OnUnregistering()
         {
-            boundTexture.Release();
-            boundTexture = default;
+            _boundTexture.Release();
+            _boundTexture = default;
         }
 
         protected override void OnLayoutApplied()
@@ -92,10 +92,10 @@ namespace Yaui
             if (!IsRegistered) return;
 
             SyncHittable();
-            if (texture != boundTexture.Texture)
+            if (texture != _boundTexture.Texture)
             {
-                boundTexture.Release();
-                boundTexture = texture != null ? YauiTexture.Acquire(texture) : default;
+                _boundTexture.Release();
+                _boundTexture = texture != null ? YauiTexture.Acquire(texture) : default;
             }
 
             if (texture == null)
@@ -105,8 +105,8 @@ namespace Yaui
             }
 
             Span<YauiPrimitive> primitive = stackalloc YauiPrimitive[1];
-            primitive[0] = YauiPrimitive.Image(ContentBox, boundTexture, uvRect, color)
-                .WithCornerRadius(Box.CornerRadius);
+            primitive[0] = YauiPrimitive.Image(ContentBox, _boundTexture, uvRect, color)
+                .WithCornerRadius(Box.cornerRadius);
             SetContent(primitive);
         }
     }

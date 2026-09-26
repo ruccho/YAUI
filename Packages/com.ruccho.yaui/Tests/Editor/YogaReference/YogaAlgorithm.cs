@@ -29,7 +29,7 @@ namespace Yaui.Tests.YogaReference
     /// </summary>
     internal static class YogaAlgorithm
     {
-        private static uint s_currentGenerationCount;
+        private static uint _sCurrentGenerationCount;
 
         // ──────────────────────────────────────────────────────────────────────
         // Public entry point
@@ -43,7 +43,7 @@ namespace Yaui.Tests.YogaReference
         {
             // netstandard2.1 has no uint overload of Interlocked.Increment; wrap-around semantics are the same.
             Interlocked.Increment(
-                ref System.Runtime.CompilerServices.Unsafe.As<uint, int>(ref s_currentGenerationCount));
+                ref System.Runtime.CompilerServices.Unsafe.As<uint, int>(ref _sCurrentGenerationCount));
             node.ProcessDimensions();
             var direction = node.ResolveDirection(ownerDirection);
 
@@ -96,7 +96,7 @@ namespace Yaui.Tests.YogaReference
                     node, width, height, ownerDirection,
                     widthSizingMode, heightSizingMode,
                     availableWidth, availableHeight,
-                    true, 0, s_currentGenerationCount))
+                    true, 0, _sCurrentGenerationCount))
             {
                 node.SetPosition(node.Layout.Direction, availableWidth, availableHeight);
                 PixelGridHelper.RoundLayoutResultsToPixelGrid(node, 0.0f, 0.0f);
@@ -115,7 +115,7 @@ namespace Yaui.Tests.YogaReference
 
             // Boundaries are laid out in parallel: use the generation this call incremented to.
             var generation = (uint)Interlocked.Increment(
-                ref System.Runtime.CompilerServices.Unsafe.As<uint, int>(ref s_currentGenerationCount));
+                ref System.Runtime.CompilerServices.Unsafe.As<uint, int>(ref _sCurrentGenerationCount));
             var ownerInnerWidth = owner.LayoutWidth - owner.LayoutPaddingLeft - owner.LayoutPaddingRight -
                                   owner.LayoutBorderLeft - owner.LayoutBorderRight;
             var ownerInnerHeight = owner.LayoutHeight - owner.LayoutPaddingTop - owner.LayoutPaddingBottom -
@@ -329,8 +329,8 @@ namespace Yaui.Tests.YogaReference
             var flexRowDirection = FlexDirectionHelper.ResolveDirection(FlexDirection.Row, direction);
             var flexColumnDirection = FlexDirectionHelper.ResolveDirection(FlexDirection.Column, direction);
 
-            var startEdge = direction == FlexLayoutDirection.LTR ? YogaPhysicalEdge.Left : YogaPhysicalEdge.Right;
-            var endEdge = direction == FlexLayoutDirection.LTR ? YogaPhysicalEdge.Right : YogaPhysicalEdge.Left;
+            var startEdge = direction == FlexLayoutDirection.Ltr ? YogaPhysicalEdge.Left : YogaPhysicalEdge.Right;
+            var endEdge = direction == FlexLayoutDirection.Ltr ? YogaPhysicalEdge.Right : YogaPhysicalEdge.Left;
 
             var marginRowLeading = node.Style.ComputeInlineStartMargin(flexRowDirection, direction, ownerWidth);
             node.SetLayoutMargin(marginRowLeading, startEdge);

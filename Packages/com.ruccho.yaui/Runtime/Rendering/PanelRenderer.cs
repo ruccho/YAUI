@@ -50,35 +50,35 @@ namespace Yaui.Rendering
             Shader.PropertyToID("_YauiTex6"), Shader.PropertyToID("_YauiTex7")
         };
 
-        private readonly Vector4[] atlasParams = new Vector4[TextureRegistry.SlotCount];
+        private readonly Vector4[] _atlasParams = new Vector4[TextureRegistry.SlotCount];
 
         private static readonly int StencilRefId = Shader.PropertyToID("_YauiStencilRef");
         private static readonly int StencilCompId = Shader.PropertyToID("_YauiStencilComp");
         private static readonly int StencilPassId = Shader.PropertyToID("_YauiStencilPass");
 
-        private readonly Material material;
+        private readonly Material _material;
 
         // The uber shader with per-pixel clipping, for panels that have rotated nodes or rounded clips.
-        private readonly Material pixelClipMaterial;
+        private readonly Material _pixelClipMaterial;
 
         // The shapes of masks, with and without per-pixel clipping.
-        private readonly Material maskMaterial;
-        private readonly Material pixelClipMaskMaterial;
+        private readonly Material _maskMaterial;
+        private readonly Material _pixelClipMaskMaterial;
 
         // Materials with the stencil state of a segment, by base material, kind and depth.
-        private readonly Dictionary<(Material, SegmentKind, int), Material> stencilMaterials = new();
-        private readonly OverlayRenderPass pass;
-        private readonly SceneViewRenderPass sceneViewPass;
-        private readonly List<PanelState> sorted = new();
-        private readonly List<DrawItem> draws = new();
-        private readonly List<DrawItem> worldCustomDraws = new();
-        private readonly Dictionary<Shader, (bool Yaui, int ForwardPass)> customShaders = new();
-        private readonly BlockPool overlayBlocks = new();
-        private readonly BlockPool worldBlocks = new();
-        private GraphicsBuffer indices;
-        private int indexedQuads;
-        private bool overlayNeedsStencil;
-        private Camera target;
+        private readonly Dictionary<(Material, SegmentKind, int), Material> _stencilMaterials = new();
+        private readonly OverlayRenderPass _pass;
+        private readonly SceneViewRenderPass _sceneViewPass;
+        private readonly List<PanelState> _sorted = new();
+        private readonly List<DrawItem> _draws = new();
+        private readonly List<DrawItem> _worldCustomDraws = new();
+        private readonly Dictionary<Shader, (bool Yaui, int ForwardPass)> _customShaders = new();
+        private readonly BlockPool _overlayBlocks = new();
+        private readonly BlockPool _worldBlocks = new();
+        private GraphicsBuffer _indices;
+        private int _indexedQuads;
+        private bool _overlayNeedsStencil;
+        private Camera _target;
 
         private struct DrawItem
         {
@@ -98,19 +98,19 @@ namespace Yaui.Rendering
         /// <summary>Property blocks reused every frame, for draws of a varying number.</summary>
         private sealed class BlockPool
         {
-            private readonly List<MaterialPropertyBlock> blocks = new();
-            private int used;
+            private readonly List<MaterialPropertyBlock> _blocks = new();
+            private int _used;
 
             public void Reset()
             {
-                used = 0;
+                _used = 0;
             }
 
             public MaterialPropertyBlock Next()
             {
-                if (used == blocks.Count) blocks.Add(new MaterialPropertyBlock());
+                if (_used == _blocks.Count) _blocks.Add(new MaterialPropertyBlock());
 
-                var block = blocks[used++];
+                var block = _blocks[_used++];
                 block.Clear();
                 return block;
             }
@@ -119,17 +119,17 @@ namespace Yaui.Rendering
         public PanelRenderer()
         {
             var shader = Resources.Load<Shader>("Yaui/Uber");
-            material = new Material(shader) { hideFlags = HideFlags.HideAndDontSave, renderQueue = 3000 };
-            pixelClipMaterial = new Material(material) { hideFlags = HideFlags.HideAndDontSave };
-            pixelClipMaterial.EnableKeyword("YAUI_PIXEL_CLIP");
-            maskMaterial = new Material(Resources.Load<Shader>("Yaui/Mask"))
+            _material = new Material(shader) { hideFlags = HideFlags.HideAndDontSave, renderQueue = 3000 };
+            _pixelClipMaterial = new Material(_material) { hideFlags = HideFlags.HideAndDontSave };
+            _pixelClipMaterial.EnableKeyword("YAUI_PIXEL_CLIP");
+            _maskMaterial = new Material(Resources.Load<Shader>("Yaui/Mask"))
             {
                 hideFlags = HideFlags.HideAndDontSave, renderQueue = 3000
             };
-            pixelClipMaskMaterial = new Material(maskMaterial) { hideFlags = HideFlags.HideAndDontSave };
-            pixelClipMaskMaterial.EnableKeyword("YAUI_PIXEL_CLIP");
-            pass = new OverlayRenderPass(this);
-            sceneViewPass = new SceneViewRenderPass(this);
+            _pixelClipMaskMaterial = new Material(_maskMaterial) { hideFlags = HideFlags.HideAndDontSave };
+            _pixelClipMaskMaterial.EnableKeyword("YAUI_PIXEL_CLIP");
+            _pass = new OverlayRenderPass(this);
+            _sceneViewPass = new SceneViewRenderPass(this);
             RenderPipelineManager.beginCameraRendering += OnBeginCameraRendering;
         }
 
@@ -141,12 +141,12 @@ namespace Yaui.Rendering
         /// <summary>Picks the camera to draw overlays on: the last game camera rendering to the screen.</summary>
         public void SelectCamera(List<Camera> cameras)
         {
-            target = null;
+            _target = null;
             foreach (var camera in cameras)
                 if (camera.cameraType == CameraType.Game && camera.targetTexture == null)
-                    target = camera;
+                    _target = camera;
 
-            if (target != null) TargetSize = new Vector2Int(target.pixelWidth, target.pixelHeight);
+            if (_target != null) TargetSize = new Vector2Int(_target.pixelWidth, _target.pixelHeight);
         }
 
         /// <summary>Main thread, after the uploads: binds the shared data (read when the draws execute).</summary>
@@ -172,7 +172,7 @@ namespace Yaui.Rendering
             foreach (var panel in YauiSystem.AllPanels) maxQuads = Math.Max(maxQuads, panel.DrawCount);
 
             EnsureIndices(maxQuads);
-            worldBlocks.Reset();
+            _worldBlocks.Reset();
             foreach (var panel in YauiSystem.AllPanels)
                 if (panel.HasDraws && panel.OrderBuffer != null && panel.Panel.RenderMode == PanelRenderMode.World)
                     RenderWorld(panel);
@@ -190,13 +190,13 @@ namespace Yaui.Rendering
 
         private void EnsureIndices(int quads)
         {
-            if (indices != null && indexedQuads >= quads) return;
+            if (_indices != null && _indexedQuads >= quads) return;
 
-            indexedQuads = Math.Max(1024, Mathf.NextPowerOfTwo(quads));
-            indices?.Dispose();
-            indices = new GraphicsBuffer(GraphicsBuffer.Target.Index, indexedQuads * 6, sizeof(uint));
-            var data = new uint[indexedQuads * 6];
-            for (var q = 0; q < indexedQuads; q++)
+            _indexedQuads = Math.Max(1024, Mathf.NextPowerOfTwo(quads));
+            _indices?.Dispose();
+            _indices = new GraphicsBuffer(GraphicsBuffer.Target.Index, _indexedQuads * 6, sizeof(uint));
+            var data = new uint[_indexedQuads * 6];
+            for (var q = 0; q < _indexedQuads; q++)
             {
                 var v = (uint)q * 4;
                 // Two triangles: (0,0) (0,1) (1,0) / (1,0) (0,1) (1,1), corner = x | y << 1.
@@ -208,10 +208,10 @@ namespace Yaui.Rendering
                 data[q * 6 + 5] = v + 3;
             }
 
-            indices.SetData(data);
+            _indices.SetData(data);
         }
 
-        private readonly List<Camera> worldCameras = new();
+        private readonly List<Camera> _worldCameras = new();
 
         /// <summary>Binds the textures of a segment to the slots of its draw.</summary>
         private void BindTextures(PanelState panel, DrawSegment segment, MaterialPropertyBlock properties)
@@ -224,7 +224,7 @@ namespace Yaui.Rendering
                 var id = slot < segment.TextureCount ? panel.SegmentTextures[segment.TextureStart + slot] : 0;
                 var texture = registry.Get(id);
                 properties.SetTexture(TextureIds[slot], texture != null ? texture : Texture2D.whiteTexture);
-                atlasParams[slot] = registry.Parameters(id);
+                _atlasParams[slot] = registry.Parameters(id);
                 if (id > 0)
                 {
                     if (slot < 4)
@@ -236,7 +236,7 @@ namespace Yaui.Rendering
 
             properties.SetVector(TexIds0Id, ids0);
             properties.SetVector(TexIds1Id, ids1);
-            properties.SetVectorArray(AtlasParamsId, atlasParams);
+            properties.SetVectorArray(AtlasParamsId, _atlasParams);
         }
 
         private void RenderWorld(PanelState panel)
@@ -268,7 +268,7 @@ namespace Yaui.Rendering
             // of the segments (a mask's shape, its content, and its removal). Each segment is placed a little closer
             // to each camera than the one before.
             CollectWorldCameras();
-            foreach (var camera in worldCameras)
+            foreach (var camera in _worldCameras)
             {
                 var center = bounds.center;
                 var towards = camera.orthographic
@@ -301,7 +301,7 @@ namespace Yaui.Rendering
                 receiveShadows = false,
                 layer = panel.Panel.gameObject.layer
             };
-            Graphics.RenderPrimitivesIndexed(renderParams, MeshTopology.Triangles, indices,
+            Graphics.RenderPrimitivesIndexed(renderParams, MeshTopology.Triangles, _indices,
                 panel.Segments[index].Count * 6);
         }
 
@@ -312,10 +312,10 @@ namespace Yaui.Rendering
         private void RenderCustomSegment(PanelState panel, int index, Matrix4x4 panelMatrix, Bounds bounds,
             Camera camera)
         {
-            worldCustomDraws.Clear();
-            AddCustomDraws(worldCustomDraws, panel, panel.Segments[index], true, panelMatrix, default, 0f,
-                worldBlocks);
-            foreach (var draw in worldCustomDraws)
+            _worldCustomDraws.Clear();
+            AddCustomDraws(_worldCustomDraws, panel, panel.Segments[index], true, panelMatrix, default, 0f,
+                _worldBlocks);
+            foreach (var draw in _worldCustomDraws)
             {
                 var renderParams = new RenderParams(draw.Material)
                 {
@@ -393,7 +393,7 @@ namespace Yaui.Rendering
         private (bool Yaui, int ForwardPass) ShaderInfo(Material material)
         {
             var shader = material.shader;
-            if (customShaders.TryGetValue(shader, out var info)) return info;
+            if (_customShaders.TryGetValue(shader, out var info)) return info;
 
             var overlay = material.FindPass("Overlay");
             info.Yaui = overlay >= 0 && shader.FindPassTagValue(overlay, LightModeTag) == YauiOverlayTag;
@@ -406,18 +406,18 @@ namespace Yaui.Rendering
                     info.ForwardPass = i;
             }
 
-            customShaders[shader] = info;
+            _customShaders[shader] = info;
             return info;
         }
 
         private void CollectWorldCameras()
         {
-            worldCameras.Clear();
-            foreach (var camera in Camera.allCameras) worldCameras.Add(camera);
+            _worldCameras.Clear();
+            foreach (var camera in Camera.allCameras) _worldCameras.Add(camera);
 #if UNITY_EDITOR
             foreach (UnityEditor.SceneView view in UnityEditor.SceneView.sceneViews)
                 if (view.camera != null)
-                    worldCameras.Add(view.camera);
+                    _worldCameras.Add(view.camera);
 #endif
         }
 
@@ -429,38 +429,38 @@ namespace Yaui.Rendering
                 foreach (var panel in YauiSystem.AllPanels)
                     if (panel.HasDraws && panel.Panel.RenderMode == PanelRenderMode.Overlay)
                     {
-                        camera.GetUniversalAdditionalCameraData().scriptableRenderer.EnqueuePass(sceneViewPass);
+                        camera.GetUniversalAdditionalCameraData().scriptableRenderer.EnqueuePass(_sceneViewPass);
                         return;
                     }
 
                 return;
             }
 
-            if (camera != target) return;
+            if (camera != _target) return;
 
             foreach (var panel in YauiSystem.AllPanels)
                 if (panel.HasDraws && panel.Panel.RenderMode == PanelRenderMode.Overlay)
                 {
-                    camera.GetUniversalAdditionalCameraData().scriptableRenderer.EnqueuePass(pass);
+                    camera.GetUniversalAdditionalCameraData().scriptableRenderer.EnqueuePass(_pass);
                     return;
                 }
         }
 
         private void PrepareOverlayDraws(Camera camera)
         {
-            sorted.Clear();
+            _sorted.Clear();
             foreach (var panel in YauiSystem.AllPanels)
                 if (panel.HasDraws && panel.OrderBuffer != null &&
                     panel.Panel.RenderMode == PanelRenderMode.Overlay)
-                    sorted.Add(panel);
+                    _sorted.Add(panel);
 
-            sorted.Sort(SortOrderComparer.Instance);
-            draws.Clear();
-            overlayBlocks.Reset();
-            overlayNeedsStencil = false;
-            foreach (var panel in sorted)
+            _sorted.Sort(SortOrderComparer.Instance);
+            _draws.Clear();
+            _overlayBlocks.Reset();
+            _overlayNeedsStencil = false;
+            foreach (var panel in _sorted)
             {
-                overlayNeedsStencil |= panel.HasMasks;
+                _overlayNeedsStencil |= panel.HasMasks;
 
                 // Canvas space: origin at the top-left, Y down.
                 var projection = Matrix4x4.Ortho(0f, panel.CanvasSize.x, panel.CanvasSize.y, 0f, -1f, 1f);
@@ -470,8 +470,8 @@ namespace Yaui.Rendering
                     var segment = panel.Segments[i];
                     if (segment.Kind == SegmentKind.Custom)
                     {
-                        AddCustomDraws(draws, panel, segment, false, Matrix4x4.identity, projection, pixelSize,
-                            overlayBlocks);
+                        AddCustomDraws(_draws, panel, segment, false, Matrix4x4.identity, projection, pixelSize,
+                            _overlayBlocks);
                         continue;
                     }
 
@@ -484,7 +484,7 @@ namespace Yaui.Rendering
                     var pass = segmentMaterial.FindPass("Overlay");
                     if (pass < 0) continue;
 
-                    draws.Add(new DrawItem
+                    _draws.Add(new DrawItem
                     {
                         Count = segment.Count,
                         Projection = projection,
@@ -504,11 +504,11 @@ namespace Yaui.Rendering
         {
             Material baseMaterial;
             if (segment.Kind != SegmentKind.Draw)
-                baseMaterial = panel.NeedsPixelClip ? pixelClipMaskMaterial : maskMaterial;
+                baseMaterial = panel.NeedsPixelClip ? _pixelClipMaskMaterial : _maskMaterial;
             else if (segment.Material != null)
                 baseMaterial = segment.Material;
             else
-                baseMaterial = panel.NeedsPixelClip ? pixelClipMaterial : material;
+                baseMaterial = panel.NeedsPixelClip ? _pixelClipMaterial : _material;
 
             return WithStencil(baseMaterial, segment.Kind, segment.StencilDepth, segment.Material != null);
         }
@@ -522,10 +522,10 @@ namespace Yaui.Rendering
             if (kind == SegmentKind.Draw && depth == 0) return baseMaterial;
 
             var key = (baseMaterial, kind, depth);
-            if (!stencilMaterials.TryGetValue(key, out var derived) || derived == null)
+            if (!_stencilMaterials.TryGetValue(key, out var derived) || derived == null)
             {
                 derived = new Material(baseMaterial) { hideFlags = HideFlags.HideAndDontSave };
-                stencilMaterials[key] = derived;
+                _stencilMaterials[key] = derived;
             }
             else if (custom)
             {
@@ -568,15 +568,15 @@ namespace Yaui.Rendering
         public void Dispose()
         {
             RenderPipelineManager.beginCameraRendering -= OnBeginCameraRendering;
-            indices?.Dispose();
-            indices = null;
-            DestroyMaterial(material);
-            DestroyMaterial(pixelClipMaterial);
-            DestroyMaterial(maskMaterial);
-            DestroyMaterial(pixelClipMaskMaterial);
-            foreach (var derived in stencilMaterials.Values) DestroyMaterial(derived);
+            _indices?.Dispose();
+            _indices = null;
+            DestroyMaterial(_material);
+            DestroyMaterial(_pixelClipMaterial);
+            DestroyMaterial(_maskMaterial);
+            DestroyMaterial(_pixelClipMaskMaterial);
+            foreach (var derived in _stencilMaterials.Values) DestroyMaterial(derived);
 
-            stencilMaterials.Clear();
+            _stencilMaterials.Clear();
         }
 
         private sealed class SortOrderComparer : IComparer<PanelState>
@@ -592,13 +592,13 @@ namespace Yaui.Rendering
         /// <summary>Draws overlay panels in the Scene view with the world pass, at <see cref="YauiPanel.SceneViewCanvasToWorld"/>.</summary>
         private sealed class SceneViewRenderPass : ScriptableRenderPass
         {
-            private readonly PanelRenderer renderer;
-            private readonly List<DrawItem> draws = new();
-            private readonly BlockPool blocks = new();
+            private readonly PanelRenderer _renderer;
+            private readonly List<DrawItem> _draws = new();
+            private readonly BlockPool _blocks = new();
 
             public SceneViewRenderPass(PanelRenderer renderer)
             {
-                this.renderer = renderer;
+                this._renderer = renderer;
                 renderPassEvent = RenderPassEvent.AfterRenderingTransparents;
             }
 
@@ -611,8 +611,8 @@ namespace Yaui.Rendering
             public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData)
             {
                 var resourceData = frameData.Get<UniversalResourceData>();
-                draws.Clear();
-                blocks.Reset();
+                _draws.Clear();
+                _blocks.Reset();
                 foreach (var panel in YauiSystem.AllPanels)
                 {
                     if (!panel.HasDraws || panel.OrderBuffer == null ||
@@ -625,11 +625,11 @@ namespace Yaui.Rendering
                         var segment = panel.Segments[i];
                         if (segment.Kind == SegmentKind.Custom)
                         {
-                            renderer.AddCustomDraws(draws, panel, segment, true, matrix, default, 0f, blocks);
+                            _renderer.AddCustomDraws(_draws, panel, segment, true, matrix, default, 0f, _blocks);
                             continue;
                         }
 
-                        var segmentMaterial = renderer.MaterialOf(panel, segment);
+                        var segmentMaterial = _renderer.MaterialOf(panel, segment);
                         var pass = segmentMaterial.FindPass("World");
                         if (pass < 0) continue;
 
@@ -638,8 +638,8 @@ namespace Yaui.Rendering
                         properties.SetBuffer(OrderId, panel.OrderBuffer);
                         properties.SetInt(OrderOffsetId, segment.Start);
                         properties.SetMatrix(PanelMatrixId, matrix);
-                        renderer.BindTextures(panel, segment, properties);
-                        draws.Add(new DrawItem
+                        _renderer.BindTextures(panel, segment, properties);
+                        _draws.Add(new DrawItem
                         {
                             Count = segment.Count,
                             Properties = properties,
@@ -653,8 +653,8 @@ namespace Yaui.Rendering
                 builder.SetRenderAttachment(resourceData.activeColorTexture, 0);
                 builder.SetRenderAttachmentDepth(resourceData.activeDepthTexture, AccessFlags.ReadWrite);
                 builder.AllowPassCulling(false);
-                data.Draws = draws;
-                data.Indices = renderer.indices;
+                data.Draws = _draws;
+                data.Indices = _renderer._indices;
                 builder.SetRenderFunc(static (PassData d, RasterGraphContext context) =>
                 {
                     foreach (var draw in d.Draws)
@@ -670,11 +670,11 @@ namespace Yaui.Rendering
 
         private sealed class OverlayRenderPass : ScriptableRenderPass
         {
-            private readonly PanelRenderer renderer;
+            private readonly PanelRenderer _renderer;
 
             public OverlayRenderPass(PanelRenderer renderer)
             {
-                this.renderer = renderer;
+                this._renderer = renderer;
                 renderPassEvent = RenderPassEvent.AfterRendering + 10;
             }
 
@@ -688,11 +688,11 @@ namespace Yaui.Rendering
             {
                 var resourceData = frameData.Get<UniversalResourceData>();
                 var cameraData = frameData.Get<UniversalCameraData>();
-                renderer.PrepareOverlayDraws(cameraData.camera);
+                _renderer.PrepareOverlayDraws(cameraData.camera);
 
                 using var builder = renderGraph.AddRasterRenderPass<PassData>("Yaui Overlay", out var data);
                 builder.SetRenderAttachment(resourceData.activeColorTexture, 0);
-                if (renderer.overlayNeedsStencil)
+                if (_renderer._overlayNeedsStencil)
                 {
                     // The overlay draws after post-processing, where there is no depth-stencil buffer: a transient,
                     // cleared one for the masks.
@@ -720,8 +720,8 @@ namespace Yaui.Rendering
 
                 builder.AllowPassCulling(false);
                 builder.AllowGlobalStateModification(true);
-                data.Draws = renderer.draws;
-                data.Indices = renderer.indices;
+                data.Draws = _renderer._draws;
+                data.Indices = _renderer._indices;
                 builder.SetRenderFunc(static (PassData d, RasterGraphContext context) =>
                 {
                     foreach (var draw in d.Draws)

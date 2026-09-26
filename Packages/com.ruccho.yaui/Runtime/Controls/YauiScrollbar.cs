@@ -28,9 +28,9 @@ namespace Yaui
 
         [SerializeField] private ScrollEvent onValueChanged = new();
 
-        [NonSerialized] private float grabOffset;
-        [NonSerialized] private TrackDirection? appliedDirection;
-        [NonSerialized] private bool dragging;
+        [NonSerialized] private float _grabOffset;
+        [NonSerialized] private TrackDirection? _appliedDirection;
+        [NonSerialized] private bool _dragging;
 
         public YauiElement Handle
         {
@@ -127,9 +127,9 @@ namespace Yaui
         private void UpdateVisuals()
         {
             // The inspector may change the direction: what the other axis had is cleared.
-            if (appliedDirection is { } previous && previous != direction) Track.ClearAxis(handle, previous, direction);
+            if (_appliedDirection is { } previous && previous != direction) Track.ClearAxis(handle, previous, direction);
 
-            appliedDirection = direction;
+            _appliedDirection = direction;
             if (handle != null) Track.Place(handle, direction, Value * (1f - size), size, 0f, true);
         }
 
@@ -138,16 +138,16 @@ namespace Yaui
             base.OnPointerDown(eventData);
             if (!IsInteractable || eventData.button != PointerEventData.InputButton.Left) return;
 
-            grabOffset = 0f;
-            dragging = false;
+            _grabOffset = 0f;
+            _dragging = false;
             if (handle != null && handle.ScreenToLocal(eventData.position, out var inHandle) &&
                 new Rect(Vector2.zero, handle.LayoutRect.size).Contains(inHandle))
             {
                 // Grabbing the handle keeps the point under the pointer.
-                grabOffset = Track.Along(direction, inHandle);
-                if (Track.IsReversed(direction)) grabOffset -= Track.Along(direction, handle.LayoutRect.size);
+                _grabOffset = Track.Along(direction, inHandle);
+                if (Track.IsReversed(direction)) _grabOffset -= Track.Along(direction, handle.LayoutRect.size);
 
-                dragging = true;
+                _dragging = true;
                 return;
             }
 
@@ -175,10 +175,10 @@ namespace Yaui
 
         public virtual void OnDrag(PointerEventData eventData)
         {
-            if (!IsInteractable || !dragging || eventData.button != PointerEventData.InputButton.Left) return;
+            if (!IsInteractable || !_dragging || eventData.button != PointerEventData.InputButton.Left) return;
 
             // The fraction of the track where the handle starts, over the room it has to move.
-            if (Track.TryFractionAt(TrackElement, direction, eventData.position, grabOffset, out var fraction) &&
+            if (Track.TryFractionAt(TrackElement, direction, eventData.position, _grabOffset, out var fraction) &&
                 size < 1f)
                 Value = Mathf.Clamp01(fraction / (1f - size));
         }
@@ -186,7 +186,7 @@ namespace Yaui
         public override void OnPointerUp(PointerEventData eventData)
         {
             base.OnPointerUp(eventData);
-            dragging = false;
+            _dragging = false;
         }
 
         public override void OnMove(AxisEventData eventData)
@@ -220,28 +220,28 @@ namespace Yaui
 
         public override YauiSelectable FindSelectableOnLeft()
         {
-            return Navigation.Mode == NavigationMode.Automatic && !Track.IsVertical(direction)
+            return Navigation.mode == NavigationMode.Automatic && !Track.IsVertical(direction)
                 ? null
                 : base.FindSelectableOnLeft();
         }
 
         public override YauiSelectable FindSelectableOnRight()
         {
-            return Navigation.Mode == NavigationMode.Automatic && !Track.IsVertical(direction)
+            return Navigation.mode == NavigationMode.Automatic && !Track.IsVertical(direction)
                 ? null
                 : base.FindSelectableOnRight();
         }
 
         public override YauiSelectable FindSelectableOnUp()
         {
-            return Navigation.Mode == NavigationMode.Automatic && Track.IsVertical(direction)
+            return Navigation.mode == NavigationMode.Automatic && Track.IsVertical(direction)
                 ? null
                 : base.FindSelectableOnUp();
         }
 
         public override YauiSelectable FindSelectableOnDown()
         {
-            return Navigation.Mode == NavigationMode.Automatic && Track.IsVertical(direction)
+            return Navigation.mode == NavigationMode.Automatic && Track.IsVertical(direction)
                 ? null
                 : base.FindSelectableOnDown();
         }

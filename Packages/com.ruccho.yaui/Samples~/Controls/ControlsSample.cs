@@ -15,7 +15,7 @@ namespace Yaui.Samples.Controls
         [SerializeField] YauiDropdown fruit;
         [SerializeField] YauiText status;
 
-        int presses;
+        int _presses;
 
         void OnEnable()
         {
@@ -52,8 +52,8 @@ namespace Yaui.Samples.Controls
 
         void OnPressed()
         {
-            presses++;
-            buttonLabel.Text = $"Pressed {presses}";
+            _presses++;
+            buttonLabel.Text = $"Pressed {_presses}";
         }
 
         void OnChanged(bool _) => UpdateStatus();
@@ -73,7 +73,7 @@ namespace Yaui.Samples.Controls
             var size = sizes.ActiveToggle != null ? sizes.ActiveToggle.name : "none";
             var name = string.IsNullOrEmpty(nameField.Text) ? "nobody" : nameField.Text;
             status.Text = $"Hello, {name}. Size: {size}, sound: {(checkbox.IsOn ? "on" : "off")}, " +
-                          $"volume: {slider.Value:0}, fruit: {fruit.Options[fruit.Value].Text}";
+                          $"volume: {slider.Value:0}, fruit: {fruit.Options[fruit.Value].text}";
         }
     }
 }

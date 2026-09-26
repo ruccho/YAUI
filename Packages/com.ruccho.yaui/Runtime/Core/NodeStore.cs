@@ -46,25 +46,25 @@ namespace Yaui.Core
     /// </summary>
     internal sealed class NodeStore : IDisposable
     {
-        private NativeList<NodeCpuData> cpu;
+        private NativeList<NodeCpuData> _cpu;
 
         public NodeStore(int capacity)
         {
             Gpu = new GpuStore<NodeGpuData>(capacity, 1);
-            cpu = new NativeList<NodeCpuData>(capacity, Allocator.Persistent);
-            cpu.Add(default);
+            _cpu = new NativeList<NodeCpuData>(capacity, Allocator.Persistent);
+            _cpu.Add(default);
         }
 
         public GpuStore<NodeGpuData> Gpu { get; }
 
-        public NativeArray<NodeCpuData> Cpu => cpu.AsArray();
+        public NativeArray<NodeCpuData> Cpu => _cpu.AsArray();
 
         public int Allocate()
         {
             var slot = Gpu.Allocate();
-            while (cpu.Length <= slot) cpu.Add(default);
+            while (_cpu.Length <= slot) _cpu.Add(default);
 
-            cpu[slot] = new NodeCpuData { Scale = 1f, Pivot = 0.5f, Opacity = 1f, Tint = GpuPacking.White8 };
+            _cpu[slot] = new NodeCpuData { Scale = 1f, Pivot = 0.5f, Opacity = 1f, Tint = GpuPacking.White8 };
             return slot;
         }
 
@@ -73,12 +73,12 @@ namespace Yaui.Core
             Gpu.Free(slot);
         }
 
-        public ref NodeCpuData this[int slot] => ref cpu.ElementAt(slot);
+        public ref NodeCpuData this[int slot] => ref _cpu.ElementAt(slot);
 
         public void Dispose()
         {
             Gpu.Dispose();
-            if (cpu.IsCreated) cpu.Dispose();
+            if (_cpu.IsCreated) _cpu.Dispose();
         }
     }
 }

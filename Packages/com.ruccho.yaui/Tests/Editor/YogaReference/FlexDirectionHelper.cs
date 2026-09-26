@@ -31,7 +31,7 @@ namespace Yaui.Tests.YogaReference
         /// <summary>Apply RTL transformation to flex direction.</summary>
         public static FlexDirection ResolveDirection(FlexDirection flexDirection, FlexLayoutDirection direction)
         {
-            if (direction == FlexLayoutDirection.RTL)
+            if (direction == FlexLayoutDirection.Rtl)
             {
                 if (flexDirection == FlexDirection.Row) return FlexDirection.RowReverse;
                 if (flexDirection == FlexDirection.RowReverse) return FlexDirection.Row;
@@ -78,7 +78,7 @@ namespace Yaui.Tests.YogaReference
         public static YogaPhysicalEdge InlineStartEdge(FlexDirection flexDirection, FlexLayoutDirection direction)
         {
             if (IsRow(flexDirection))
-                return direction == FlexLayoutDirection.RTL ? YogaPhysicalEdge.Right : YogaPhysicalEdge.Left;
+                return direction == FlexLayoutDirection.Rtl ? YogaPhysicalEdge.Right : YogaPhysicalEdge.Left;
             return YogaPhysicalEdge.Top;
         }
 
@@ -86,7 +86,7 @@ namespace Yaui.Tests.YogaReference
         public static YogaPhysicalEdge InlineEndEdge(FlexDirection flexDirection, FlexLayoutDirection direction)
         {
             if (IsRow(flexDirection))
-                return direction == FlexLayoutDirection.RTL ? YogaPhysicalEdge.Left : YogaPhysicalEdge.Right;
+                return direction == FlexLayoutDirection.Rtl ? YogaPhysicalEdge.Left : YogaPhysicalEdge.Right;
             return YogaPhysicalEdge.Bottom;
         }
 

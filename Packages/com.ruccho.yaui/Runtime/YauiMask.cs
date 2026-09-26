@@ -21,7 +21,7 @@ namespace Yaui
         /// <summary>Whether the element itself (its box, image or text) is drawn, or only used as the mask.</summary>
         [SerializeField] private bool showMaskGraphic = true;
 
-        private YauiElement element;
+        private YauiElement _element;
 
         public bool ShowMaskGraphic
         {
@@ -33,7 +33,7 @@ namespace Yaui
             }
         }
 
-        private YauiElement Element => element != null ? element : element = GetComponent<YauiElement>();
+        private YauiElement Element => _element != null ? _element : _element = GetComponent<YauiElement>();
 
         private void OnEnable()
         {
@@ -42,7 +42,7 @@ namespace Yaui
 
         private void OnDisable()
         {
-            if (element != null) element.SetMask(null);
+            if (_element != null) _element.SetMask(null);
         }
 
         private void OnValidate()

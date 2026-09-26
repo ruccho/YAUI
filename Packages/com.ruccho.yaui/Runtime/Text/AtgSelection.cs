@@ -15,7 +15,7 @@ namespace Yaui.Text
     {
         public delegate void WordBoundsFunc(IntPtr info, int index, out int start, out int end);
 
-        private static bool initialized;
+        private static bool _initialized;
 
         public static bool Available { get; private set; }
 
@@ -36,9 +36,9 @@ namespace Yaui.Text
 
         public static bool Initialize()
         {
-            if (initialized) return Available;
+            if (_initialized) return Available;
 
-            initialized = true;
+            _initialized = true;
             try
             {
                 var type = typeof(FontAsset).Assembly.GetType("UnityEngine.TextCore.Text.TextSelectionService") ??

@@ -18,13 +18,13 @@ namespace Yaui
     [Serializable]
     public struct Length : IEquatable<Length>
     {
-        public float Value;
-        public LengthUnit Unit;
+        public float value;
+        public LengthUnit unit;
 
         public Length(float value, LengthUnit unit)
         {
-            Value = value;
-            Unit = unit;
+            this.value = value;
+            this.unit = unit;
         }
 
         public static Length Auto => new(0f, LengthUnit.Auto);
@@ -46,7 +46,7 @@ namespace Yaui
 
         public bool Equals(Length other)
         {
-            return Value.Equals(other.Value) && Unit == other.Unit;
+            return value.Equals(other.value) && unit == other.unit;
         }
 
         public override bool Equals(object obj)
@@ -56,16 +56,16 @@ namespace Yaui
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Value, (int)Unit);
+            return HashCode.Combine(value, (int)unit);
         }
 
         public override string ToString()
         {
-            return Unit switch
+            return unit switch
             {
                 LengthUnit.Auto => "auto",
-                LengthUnit.Percent => $"{Value}%",
-                _ => Value.ToString()
+                LengthUnit.Percent => $"{value}%",
+                _ => value.ToString()
             };
         }
     }
@@ -73,28 +73,28 @@ namespace Yaui
     [Serializable]
     public struct Edges : IEquatable<Edges>
     {
-        public Length Left;
-        public Length Top;
-        public Length Right;
-        public Length Bottom;
+        public Length left;
+        public Length top;
+        public Length right;
+        public Length bottom;
 
         public Edges(Length all)
         {
-            Left = Top = Right = Bottom = all;
+            left = top = right = bottom = all;
         }
 
         public Edges(Length horizontal, Length vertical)
         {
-            Left = Right = horizontal;
-            Top = Bottom = vertical;
+            left = right = horizontal;
+            top = bottom = vertical;
         }
 
         public Edges(Length left, Length top, Length right, Length bottom)
         {
-            Left = left;
-            Top = top;
-            Right = right;
-            Bottom = bottom;
+            this.left = left;
+            this.top = top;
+            this.right = right;
+            this.bottom = bottom;
         }
 
         public static Edges Zero => new(Length.Points(0f));
@@ -103,8 +103,8 @@ namespace Yaui
 
         public bool Equals(Edges other)
         {
-            return Left.Equals(other.Left) && Top.Equals(other.Top) && Right.Equals(other.Right) &&
-                   Bottom.Equals(other.Bottom);
+            return left.Equals(other.left) && top.Equals(other.top) && right.Equals(other.right) &&
+                   bottom.Equals(other.bottom);
         }
 
         public override bool Equals(object obj)
@@ -114,7 +114,7 @@ namespace Yaui
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Left, Top, Right, Bottom);
+            return HashCode.Combine(left, top, right, bottom);
         }
     }
 
@@ -131,69 +131,69 @@ namespace Yaui
     [Serializable]
     public struct LayoutStyle : IEquatable<LayoutStyle>
     {
-        public PositionType Position;
-        public Edges Inset;
+        public PositionType position;
+        public Edges inset;
 
-        public FlexDirection Direction;
-        public FlexWrap Wrap;
-        public FlexJustify JustifyContent;
-        public FlexAlign AlignItems;
-        public FlexAlign AlignSelf;
-        public FlexAlign AlignContent;
+        public FlexDirection direction;
+        public FlexWrap wrap;
+        public FlexJustify justifyContent;
+        public FlexAlign alignItems;
+        public FlexAlign alignSelf;
+        public FlexAlign alignContent;
 
-        public float Grow;
-        public float Shrink;
-        public Length Basis;
+        public float grow;
+        public float shrink;
+        public Length basis;
 
-        public Length Width;
-        public Length Height;
-        public Length MinWidth;
-        public Length MinHeight;
-        public Length MaxWidth;
-        public Length MaxHeight;
+        public Length width;
+        public Length height;
+        public Length minWidth;
+        public Length minHeight;
+        public Length maxWidth;
+        public Length maxHeight;
 
-        public Edges Margin;
-        public Edges Padding;
+        public Edges margin;
+        public Edges padding;
 
         /// <summary>x: between columns, y: between rows.</summary>
-        public Vector2 Gap;
+        public Vector2 gap;
 
         /// <summary>CSS defaults, except that the direction is a column as in Yoga and UI Toolkit.</summary>
         public static LayoutStyle Default => new()
         {
-            Position = PositionType.Relative,
-            Inset = Edges.Auto,
-            Direction = FlexDirection.Column,
-            Wrap = FlexWrap.NoWrap,
-            JustifyContent = FlexJustify.FlexStart,
-            AlignItems = FlexAlign.Stretch,
-            AlignSelf = FlexAlign.Auto,
-            AlignContent = FlexAlign.FlexStart,
-            Grow = 0f,
-            Shrink = 1f,
-            Basis = Length.Auto,
-            Width = Length.Auto,
-            Height = Length.Auto,
-            MinWidth = Length.Auto,
-            MinHeight = Length.Auto,
-            MaxWidth = Length.Auto,
-            MaxHeight = Length.Auto,
-            Margin = Edges.Zero,
-            Padding = Edges.Zero,
-            Gap = Vector2.zero
+            position = PositionType.Relative,
+            inset = Edges.Auto,
+            direction = FlexDirection.Column,
+            wrap = FlexWrap.NoWrap,
+            justifyContent = FlexJustify.FlexStart,
+            alignItems = FlexAlign.Stretch,
+            alignSelf = FlexAlign.Auto,
+            alignContent = FlexAlign.FlexStart,
+            grow = 0f,
+            shrink = 1f,
+            basis = Length.Auto,
+            width = Length.Auto,
+            height = Length.Auto,
+            minWidth = Length.Auto,
+            minHeight = Length.Auto,
+            maxWidth = Length.Auto,
+            maxHeight = Length.Auto,
+            margin = Edges.Zero,
+            padding = Edges.Zero,
+            gap = Vector2.zero
         };
 
         public bool Equals(LayoutStyle other)
         {
-            return Position == other.Position && Inset.Equals(other.Inset) && Direction == other.Direction &&
-                   Wrap == other.Wrap && JustifyContent == other.JustifyContent && AlignItems == other.AlignItems &&
-                   AlignSelf == other.AlignSelf && AlignContent == other.AlignContent && Grow.Equals(other.Grow) &&
-                   Shrink.Equals(other.Shrink) && Basis.Equals(other.Basis) && Width.Equals(other.Width) &&
-                   Height.Equals(other.Height) && MinWidth.Equals(other.MinWidth) &&
-                   MinHeight.Equals(other.MinHeight) &&
-                   MaxWidth.Equals(other.MaxWidth) && MaxHeight.Equals(other.MaxHeight) &&
-                   Margin.Equals(other.Margin) &&
-                   Padding.Equals(other.Padding) && Gap.Equals(other.Gap);
+            return position == other.position && inset.Equals(other.inset) && direction == other.direction &&
+                   wrap == other.wrap && justifyContent == other.justifyContent && alignItems == other.alignItems &&
+                   alignSelf == other.alignSelf && alignContent == other.alignContent && grow.Equals(other.grow) &&
+                   shrink.Equals(other.shrink) && basis.Equals(other.basis) && width.Equals(other.width) &&
+                   height.Equals(other.height) && minWidth.Equals(other.minWidth) &&
+                   minHeight.Equals(other.minHeight) &&
+                   maxWidth.Equals(other.maxWidth) && maxHeight.Equals(other.maxHeight) &&
+                   margin.Equals(other.margin) &&
+                   padding.Equals(other.padding) && gap.Equals(other.gap);
         }
 
         public override bool Equals(object obj)
@@ -203,7 +203,7 @@ namespace Yaui
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Direction, Width, Height, Margin, Padding);
+            return HashCode.Combine(direction, width, height, margin, padding);
         }
     }
 
@@ -239,41 +239,41 @@ namespace Yaui
     [Serializable]
     public struct BoxStyle
     {
-        public Color BackgroundColor;
+        public Color backgroundColor;
 
         /// <summary>x: top-left, y: top-right, z: bottom-right, w: bottom-left.</summary>
-        public Vector4 CornerRadius;
+        public Vector4 cornerRadius;
 
         /// <summary>Also insets the content in the layout, like CSS.</summary>
-        public float BorderWidth;
+        public float borderWidth;
 
-        public Color BorderColor;
+        public Color borderColor;
 
         /// <summary>No shadow when the alpha is zero.</summary>
-        public Color ShadowColor;
+        public Color shadowColor;
 
-        public Vector2 ShadowOffset;
+        public Vector2 shadowOffset;
 
         /// <summary>Gaussian sigma in canvas units.</summary>
-        public float ShadowBlur;
+        public float shadowBlur;
 
-        public float ShadowSpread;
+        public float shadowSpread;
 
         public static BoxStyle Default => new()
         {
-            BackgroundColor = Color.clear,
-            CornerRadius = Vector4.zero,
-            BorderWidth = 0f,
-            BorderColor = Color.black,
-            ShadowColor = Color.clear,
-            ShadowOffset = Vector2.zero,
-            ShadowBlur = 0f,
-            ShadowSpread = 0f
+            backgroundColor = Color.clear,
+            cornerRadius = Vector4.zero,
+            borderWidth = 0f,
+            borderColor = Color.black,
+            shadowColor = Color.clear,
+            shadowOffset = Vector2.zero,
+            shadowBlur = 0f,
+            shadowSpread = 0f
         };
 
-        internal bool HasShadow => ShadowColor.a > 0f;
+        internal bool HasShadow => shadowColor.a > 0f;
 
-        internal bool IsVisible => BackgroundColor.a > 0f || (BorderWidth > 0f && BorderColor.a > 0f) || HasShadow;
+        internal bool IsVisible => backgroundColor.a > 0f || (borderWidth > 0f && borderColor.a > 0f) || HasShadow;
     }
 
     /// <summary>
@@ -283,22 +283,22 @@ namespace Yaui
     [Serializable]
     public struct TransformStyle
     {
-        public Vector2 Translate;
+        public Vector2 translate;
 
         /// <summary>Degrees, clockwise.</summary>
-        public float Rotation;
+        public float rotation;
 
-        public Vector2 Scale;
+        public Vector2 scale;
 
         /// <summary>Origin of the rotation and scale, normalized in the element's box.</summary>
-        public Vector2 Pivot;
+        public Vector2 pivot;
 
         public static TransformStyle Identity => new()
         {
-            Translate = Vector2.zero,
-            Rotation = 0f,
-            Scale = Vector2.one,
-            Pivot = new Vector2(0.5f, 0.5f)
+            translate = Vector2.zero,
+            rotation = 0f,
+            scale = Vector2.one,
+            pivot = new Vector2(0.5f, 0.5f)
         };
     }
 }

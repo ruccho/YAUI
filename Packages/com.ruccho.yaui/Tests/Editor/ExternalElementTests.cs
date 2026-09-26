@@ -14,28 +14,28 @@ namespace Yaui.Tests
     /// </summary>
     public class ExternalElementTests
     {
-        private readonly List<Object> created = new();
+        private readonly List<Object> _created = new();
 
         [TearDown]
         public void TearDown()
         {
-            foreach (var o in created)
+            foreach (var o in _created)
                 if (o != null)
                     Object.DestroyImmediate(o);
 
-            created.Clear();
+            _created.Clear();
         }
 
         private YauiElement CreateRoot()
         {
             var go = new GameObject("TestPanel");
-            created.Add(go);
+            _created.Add(go);
             var panel = go.AddComponent<YauiPanel>();
             panel.RenderMode = PanelRenderMode.World;
             panel.ReferenceResolution = new Vector2(1000f, 1000f);
             var root = panel.GetComponent<YauiElement>();
             var layout = root.Layout;
-            layout.AlignItems = FlexAlign.FlexStart;
+            layout.alignItems = FlexAlign.FlexStart;
             root.Layout = layout;
             return root;
         }
@@ -43,7 +43,7 @@ namespace Yaui.Tests
         private MonospaceLabel CreateLabel(YauiElement parent, string text)
         {
             var atlas = new Texture2D(256, 256, TextureFormat.Alpha8, false) { hideFlags = HideFlags.DontSave };
-            created.Add(atlas);
+            _created.Add(atlas);
             var go = new GameObject("Label");
             go.transform.SetParent(parent.transform, false);
             var label = go.AddComponent<MonospaceLabel>();
@@ -65,7 +65,7 @@ namespace Yaui.Tests
             Assert.AreEqual(new Vector2(50f, 20f), label.LayoutRect.size);
 
             var layout = label.Layout;
-            layout.Width = 30f;
+            layout.width = 30f;
             label.Layout = layout;
             YauiPanel.ForceUpdate();
             Assert.AreEqual(new Vector2(30f, 40f), label.LayoutRect.size, "Three columns: two lines.");
@@ -81,7 +81,7 @@ namespace Yaui.Tests
             var root = CreateRoot();
             var label = CreateLabel(root, "Hi");
             var box = label.Box;
-            box.BackgroundColor = Color.white;
+            box.backgroundColor = Color.white;
             label.Box = box;
             YauiPanel.ForceUpdate();
 
@@ -155,7 +155,7 @@ namespace Yaui.Tests
             Assert.IsFalse(state.OrderDirty);
 
             var other = new Texture2D(256, 256, TextureFormat.Alpha8, false) { hideFlags = HideFlags.DontSave };
-            created.Add(other);
+            _created.Add(other);
 
             // Registered already, so that it does not take over the id the label releases.
             var held = YauiTexture.Acquire(other);

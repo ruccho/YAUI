@@ -28,8 +28,8 @@ namespace Yaui
         [SerializeField] private SliderEvent onValueChanged = new();
 
         // Where in the handle the pointer grabbed it, along the axis in canvas units.
-        [NonSerialized] private float grabOffset;
-        [NonSerialized] private TrackDirection? appliedDirection;
+        [NonSerialized] private float _grabOffset;
+        [NonSerialized] private TrackDirection? _appliedDirection;
 
         public YauiElement Fill
         {
@@ -163,9 +163,9 @@ namespace Yaui
             if (fill != null) Track.Fill(fill, direction, n);
 
             // The inspector may change the direction: what the other axis had is cleared.
-            if (appliedDirection is { } previous && previous != direction) Track.ClearAxis(handle, previous, direction);
+            if (_appliedDirection is { } previous && previous != direction) Track.ClearAxis(handle, previous, direction);
 
-            appliedDirection = direction;
+            _appliedDirection = direction;
             if (handle != null) Track.Place(handle, direction, n, -1f, Track.Extent(handle, direction) * 0.5f, false);
         }
 
@@ -175,11 +175,11 @@ namespace Yaui
             if (!IsInteractable || eventData.button != PointerEventData.InputButton.Left) return;
 
             // Grabbing the handle keeps the point under the pointer; elsewhere the value jumps there.
-            grabOffset = 0f;
+            _grabOffset = 0f;
             if (handle != null && handle.ScreenToLocal(eventData.position, out var inHandle) &&
                 new Rect(Vector2.zero, handle.LayoutRect.size).Contains(inHandle))
             {
-                grabOffset = Track.Along(direction, inHandle) - Track.Extent(handle, direction) * 0.5f;
+                _grabOffset = Track.Along(direction, inHandle) - Track.Extent(handle, direction) * 0.5f;
                 return;
             }
 
@@ -198,7 +198,7 @@ namespace Yaui
 
         private void MoveTo(Vector2 screenPosition)
         {
-            if (Track.TryFractionAt(TrackElement, direction, screenPosition, grabOffset, out var fraction))
+            if (Track.TryFractionAt(TrackElement, direction, screenPosition, _grabOffset, out var fraction))
                 NormalizedValue = Mathf.Clamp01(fraction);
         }
 
@@ -236,28 +236,28 @@ namespace Yaui
         // The keys along the slider change its value instead of moving the selection.
         public override YauiSelectable FindSelectableOnLeft()
         {
-            return Navigation.Mode == NavigationMode.Automatic && !Track.IsVertical(direction)
+            return Navigation.mode == NavigationMode.Automatic && !Track.IsVertical(direction)
                 ? null
                 : base.FindSelectableOnLeft();
         }
 
         public override YauiSelectable FindSelectableOnRight()
         {
-            return Navigation.Mode == NavigationMode.Automatic && !Track.IsVertical(direction)
+            return Navigation.mode == NavigationMode.Automatic && !Track.IsVertical(direction)
                 ? null
                 : base.FindSelectableOnRight();
         }
 
         public override YauiSelectable FindSelectableOnUp()
         {
-            return Navigation.Mode == NavigationMode.Automatic && Track.IsVertical(direction)
+            return Navigation.mode == NavigationMode.Automatic && Track.IsVertical(direction)
                 ? null
                 : base.FindSelectableOnUp();
         }
 
         public override YauiSelectable FindSelectableOnDown()
         {
-            return Navigation.Mode == NavigationMode.Automatic && Track.IsVertical(direction)
+            return Navigation.mode == NavigationMode.Automatic && Track.IsVertical(direction)
                 ? null
                 : base.FindSelectableOnDown();
         }

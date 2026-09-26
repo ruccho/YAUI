@@ -21,16 +21,16 @@ namespace Yaui
         /// <summary>Canvas units per unit of the particle systems.</summary>
         [SerializeField] private float scale = 1f;
 
-        private readonly List<ParticleSystem> systems = new();
-        private readonly List<ParticleSystemRenderer> renderers = new();
-        private readonly List<Mesh> meshes = new();
-        private readonly List<Mesh> trailMeshes = new();
+        private readonly List<ParticleSystem> _systems = new();
+        private readonly List<ParticleSystemRenderer> _renderers = new();
+        private readonly List<Mesh> _meshes = new();
+        private readonly List<Mesh> _trailMeshes = new();
 
         // Renderers this component disabled, to enable again.
-        private readonly List<ParticleSystemRenderer> disabled = new();
-        private bool systemsDirty = true;
+        private readonly List<ParticleSystemRenderer> _disabled = new();
+        private bool _systemsDirty = true;
 
-        private static Camera bakeCamera;
+        private static Camera _bakeCamera;
 
         public float Scale
         {
@@ -41,7 +41,7 @@ namespace Yaui
         /// <summary>Finds the particle systems again, after they were added or removed below this GameObject.</summary>
         public void Refresh()
         {
-            systemsDirty = true;
+            _systemsDirty = true;
         }
 
         protected override void OnEnable()
@@ -58,51 +58,51 @@ namespace Yaui
 
         private void OnDestroy()
         {
-            foreach (var mesh in meshes) DestroyObject(mesh);
-            foreach (var mesh in trailMeshes) DestroyObject(mesh);
+            foreach (var mesh in _meshes) DestroyObject(mesh);
+            foreach (var mesh in _trailMeshes) DestroyObject(mesh);
 
-            meshes.Clear();
-            trailMeshes.Clear();
+            _meshes.Clear();
+            _trailMeshes.Clear();
         }
 
         private void OnTransformChildrenChanged()
         {
-            systemsDirty = true;
+            _systemsDirty = true;
         }
 
         protected override void OnValidate()
         {
             base.OnValidate();
-            systemsDirty = true;
+            _systemsDirty = true;
         }
 
         protected override void OnCollectDraws(YauiDrawList draws)
         {
-            if (systemsDirty) FindSystems();
+            if (_systemsDirty) FindSystems();
 
             var camera = BakeCamera;
             var size = Element.LayoutRect.size;
             // Y up in the systems, Y down on the canvas.
             var toBox = Matrix4x4.Translate(new Vector3(size.x * 0.5f, size.y * 0.5f, 0f)) *
                         Matrix4x4.Scale(new Vector3(scale, -scale, scale)) * transform.worldToLocalMatrix;
-            for (var i = 0; i < systems.Count; i++)
+            for (var i = 0; i < _systems.Count; i++)
             {
-                var system = systems[i];
-                var renderer = renderers[i];
+                var system = _systems[i];
+                var renderer = _renderers[i];
                 if (system == null || renderer == null || !system.gameObject.activeInHierarchy) continue;
 
                 // The meshes are in the local space of each system.
                 var local = toBox * system.transform.localToWorldMatrix;
                 if (system.particleCount > 0 && renderer.sharedMaterial != null)
                 {
-                    var mesh = MeshAt(meshes, i);
+                    var mesh = MeshAt(_meshes, i);
                     renderer.BakeMesh(mesh, camera, ParticleSystemBakeMeshOptions.Default);
                     draws.DrawMesh(mesh, renderer.sharedMaterial, local);
                 }
 
                 if (system.trails.enabled && renderer.trailMaterial != null)
                 {
-                    var mesh = MeshAt(trailMeshes, i);
+                    var mesh = MeshAt(_trailMeshes, i);
                     renderer.BakeTrailsMesh(mesh, camera, ParticleSystemBakeMeshOptions.Default);
                     if (mesh.vertexCount > 0) draws.DrawMesh(mesh, renderer.trailMaterial, local);
                 }
@@ -111,22 +111,22 @@ namespace Yaui
 
         private void FindSystems()
         {
-            systemsDirty = false;
+            _systemsDirty = false;
             RestoreRenderers();
-            systems.Clear();
-            renderers.Clear();
+            _systems.Clear();
+            _renderers.Clear();
             FindIn(transform);
-            foreach (var renderer in renderers)
+            foreach (var renderer in _renderers)
             {
                 if (renderer == null || !renderer.enabled) continue;
 
                 renderer.enabled = false;
-                disabled.Add(renderer);
+                _disabled.Add(renderer);
             }
 
             // Systems that are not rendered would stop simulating.
             if (Application.isPlaying)
-                foreach (var system in systems)
+                foreach (var system in _systems)
                 {
                     var main = system.main;
                     main.cullingMode = ParticleSystemCullingMode.AlwaysSimulate;
@@ -137,8 +137,8 @@ namespace Yaui
         {
             if (t.TryGetComponent<ParticleSystem>(out var system))
             {
-                systems.Add(system);
-                renderers.Add(system.GetComponent<ParticleSystemRenderer>());
+                _systems.Add(system);
+                _renderers.Add(system.GetComponent<ParticleSystemRenderer>());
             }
 
             for (var i = 0; i < t.childCount; i++)
@@ -151,11 +151,11 @@ namespace Yaui
 
         private void RestoreRenderers()
         {
-            foreach (var renderer in disabled)
+            foreach (var renderer in _disabled)
                 if (renderer != null)
                     renderer.enabled = true;
 
-            disabled.Clear();
+            _disabled.Clear();
         }
 
         private static Mesh MeshAt(List<Mesh> list, int index)
@@ -179,16 +179,16 @@ namespace Yaui
         {
             get
             {
-                if (bakeCamera != null) return bakeCamera;
+                if (_bakeCamera != null) return _bakeCamera;
 
                 var go = new GameObject("YauiParticle Bake Camera") { hideFlags = HideFlags.HideAndDontSave };
-                bakeCamera = go.AddComponent<Camera>();
-                bakeCamera.enabled = false;
-                bakeCamera.orthographic = true;
-                bakeCamera.orthographicSize = 1e5f;
-                bakeCamera.nearClipPlane = -1e5f;
-                bakeCamera.farClipPlane = 1e5f;
-                return bakeCamera;
+                _bakeCamera = go.AddComponent<Camera>();
+                _bakeCamera.enabled = false;
+                _bakeCamera.orthographic = true;
+                _bakeCamera.orthographicSize = 1e5f;
+                _bakeCamera.nearClipPlane = -1e5f;
+                _bakeCamera.farClipPlane = 1e5f;
+                return _bakeCamera;
             }
         }
 

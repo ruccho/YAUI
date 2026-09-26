@@ -11,11 +11,11 @@ namespace Yaui.Editor
     {
         public static string Format(Length length)
         {
-            return length.Unit switch
+            return length.unit switch
             {
                 LengthUnit.Auto => "auto",
-                LengthUnit.Percent => length.Value.ToString("0.##", CultureInfo.InvariantCulture) + "%",
-                _ => length.Value.ToString("0.##", CultureInfo.InvariantCulture)
+                LengthUnit.Percent => length.value.ToString("0.##", CultureInfo.InvariantCulture) + "%",
+                _ => length.value.ToString("0.##", CultureInfo.InvariantCulture)
             };
         }
 
@@ -38,20 +38,20 @@ namespace Yaui.Editor
 
         public static Length Read(SerializedProperty property)
         {
-            return new Length(property.FindPropertyRelative(nameof(Length.Value)).floatValue,
-                (LengthUnit)property.FindPropertyRelative(nameof(Length.Unit)).enumValueIndex);
+            return new Length(property.FindPropertyRelative(nameof(Length.value)).floatValue,
+                (LengthUnit)property.FindPropertyRelative(nameof(Length.unit)).enumValueIndex);
         }
 
         public static void Write(SerializedProperty property, Length length)
         {
-            property.FindPropertyRelative(nameof(Length.Value)).floatValue = length.Value;
-            property.FindPropertyRelative(nameof(Length.Unit)).enumValueIndex = (int)length.Unit;
+            property.FindPropertyRelative(nameof(Length.value)).floatValue = length.value;
+            property.FindPropertyRelative(nameof(Length.unit)).enumValueIndex = (int)length.unit;
         }
 
         private static bool HasMixed(SerializedProperty property)
         {
-            return property.FindPropertyRelative(nameof(Length.Value)).hasMultipleDifferentValues ||
-                   property.FindPropertyRelative(nameof(Length.Unit)).hasMultipleDifferentValues;
+            return property.FindPropertyRelative(nameof(Length.value)).hasMultipleDifferentValues ||
+                   property.FindPropertyRelative(nameof(Length.unit)).hasMultipleDifferentValues;
         }
 
         /// <summary>A text field for a <see cref="Length"/>.</summary>

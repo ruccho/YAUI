@@ -19,7 +19,7 @@ namespace Yaui
     {
         private static readonly List<(YauiElement, int)> Hits = new();
 
-        private YauiPanel panel;
+        private YauiPanel _panel;
 
         /// <summary>Overlay panels are not seen through a camera; world space panels are.</summary>
         public override Camera eventCamera =>
@@ -32,7 +32,7 @@ namespace Yaui
         public override int renderOrderPriority =>
             Panel != null && Panel.RenderMode == PanelRenderMode.Overlay ? int.MaxValue : int.MinValue;
 
-        private YauiPanel Panel => panel != null ? panel : panel = GetComponent<YauiPanel>();
+        private YauiPanel Panel => _panel != null ? _panel : _panel = GetComponent<YauiPanel>();
 
         public override void Raycast(PointerEventData eventData, List<RaycastResult> resultAppendList)
         {

@@ -32,19 +32,19 @@ namespace Yaui.Core
         private static readonly ProfilerMarker CollectMarker = new("Yaui.Collect");
         private static readonly ProfilerMarker LayoutMarker = new("Yaui.Layout");
 
-        private static bool initialized;
+        private static bool _initialized;
         private static readonly List<PanelState> Panels = new();
         private static readonly List<PanelState> LayoutPanels = new();
         private static readonly List<YauiCustomDraw> CustomDraws = new();
-        private static NativeList<RootLayout> layoutRoots;
-        private static NativeList<IntPtr> layoutBoundaries;
-        private static NativeList<IntPtr> parallelBoundaries;
-        private static JobHandle layoutJob;
-        private static GCHandle layoutJobPanels;
-        private static bool layoutInFlight;
-        private static bool submittedSinceCollect;
+        private static NativeList<RootLayout> _layoutRoots;
+        private static NativeList<IntPtr> _layoutBoundaries;
+        private static NativeList<IntPtr> _parallelBoundaries;
+        private static JobHandle _layoutJob;
+        private static GCHandle _layoutJobPanels;
+        private static bool _layoutInFlight;
+        private static bool _submittedSinceCollect;
 
-        public static bool IsInitialized => initialized;
+        public static bool IsInitialized => _initialized;
 
         /// <summary>Counts the initializations, so that handles from before a shutdown are recognized as stale.</summary>
         public static int Generation { get; private set; }
@@ -63,9 +63,9 @@ namespace Yaui.Core
 
         public static void EnsureInitialized()
         {
-            if (initialized) return;
+            if (_initialized) return;
 
-            initialized = true;
+            _initialized = true;
             Generation++;
             Nodes = new NodeStore(1024);
             Primitives = new GpuStore<PrimitiveData>(1024, 1);
@@ -74,9 +74,9 @@ namespace Yaui.Core
             Clips[0] = new ClipGpuData { Rect = ClipGpuData.NoClip };
             Textures = new TextureRegistry();
             TextPipeline.Subscribe();
-            layoutRoots = new NativeList<RootLayout>(4, Allocator.Persistent);
-            layoutBoundaries = new NativeList<IntPtr>(64, Allocator.Persistent);
-            parallelBoundaries = new NativeList<IntPtr>(64, Allocator.Persistent);
+            _layoutRoots = new NativeList<RootLayout>(4, Allocator.Persistent);
+            _layoutBoundaries = new NativeList<IntPtr>(64, Allocator.Persistent);
+            _parallelBoundaries = new NativeList<IntPtr>(64, Allocator.Persistent);
             Renderer = new PanelRenderer();
 
             InstallPlayerLoop();
@@ -92,13 +92,13 @@ namespace Yaui.Core
         /// <summary>Edit mode has no player loop: submits from the editor update, before the views render.</summary>
         private static void EditorUpdate()
         {
-            if (!Application.isPlaying && !submittedSinceCollect) Submit();
+            if (!Application.isPlaying && !_submittedSinceCollect) Submit();
         }
 #endif
 
         private static void Shutdown()
         {
-            if (!initialized) return;
+            if (!_initialized) return;
 
             CompleteLayout();
             TextPipeline.Complete();
@@ -118,13 +118,13 @@ namespace Yaui.Core
             Textures.Dispose();
             Nodes.Dispose();
             YogaNodeStore.DisposeAll();
-            layoutRoots.Dispose();
-            layoutBoundaries.Dispose();
-            parallelBoundaries.Dispose();
+            _layoutRoots.Dispose();
+            _layoutBoundaries.Dispose();
+            _parallelBoundaries.Dispose();
             Primitives.Dispose();
             Exts.Dispose();
             Clips.Dispose();
-            initialized = false;
+            _initialized = false;
         }
 
         public static PanelState CreatePanel(YauiPanel panel)
@@ -151,10 +151,10 @@ namespace Yaui.Core
         /// <summary>Main thread: runs the pipeline now, so that changes are laid out and uploaded immediately.</summary>
         public static void ForceUpdate()
         {
-            if (!initialized) return;
+            if (!_initialized) return;
 
             // Applies what was submitted before, then submits the changes made since.
-            if (submittedSinceCollect) Collect();
+            if (_submittedSinceCollect) Collect();
 
             Submit();
             Collect();
@@ -162,7 +162,7 @@ namespace Yaui.Core
 
         public static void DestroyPanel(PanelState state)
         {
-            if (!initialized) return;
+            if (!_initialized) return;
 
             CompleteLayout();
             Panels.Remove(state);
@@ -243,7 +243,7 @@ namespace Yaui.Core
         /// </summary>
         private static void EarlySubmit()
         {
-            if (initialized)
+            if (_initialized)
             {
                 using var _ = EarlySubmitMarker.Auto();
                 TextPipeline.Schedule();
@@ -253,21 +253,21 @@ namespace Yaui.Core
         /// <summary>Main thread: the deadline of changes for this frame. Starts the heavy work on worker threads.</summary>
         private static void Submit()
         {
-            if (!initialized) return;
+            if (!_initialized) return;
 
             using var _ = SubmitMarker.Auto();
             Tickers.Tick();
 
             // A frame without rendering leaves the previous work uncollected.
-            if (layoutInFlight) Collect();
+            if (_layoutInFlight) Collect();
 
-            submittedSinceCollect = true;
+            _submittedSinceCollect = true;
             Pools.RecycleReleasedNodes();
             TextPipeline.Schedule();
             LayoutPanels.Clear();
-            layoutRoots.Clear();
-            layoutBoundaries.Clear();
-            parallelBoundaries.Clear();
+            _layoutRoots.Clear();
+            _layoutBoundaries.Clear();
+            _parallelBoundaries.Clear();
             foreach (var panel in Panels)
             {
                 if (panel.Root == null) continue;
@@ -279,36 +279,36 @@ namespace Yaui.Core
                 {
                     panel.LayoutScheduled = true;
                     LayoutPanels.Add(panel);
-                    layoutRoots.Add(panel.RootLayout);
+                    _layoutRoots.Add(panel.RootLayout);
                 }
             }
 
             Renderer.QueueWorldPanels();
             if (LayoutPanels.Count == 0) return;
 
-            layoutJobPanels = GCHandle.Alloc(LayoutPanels);
+            _layoutJobPanels = GCHandle.Alloc(LayoutPanels);
             // Measuring texts reads their generation.
             // Measures of changed texts (managed; they may dirty layout boundaries), then the layout (Burst).
-            layoutJob = new LayoutJob { Panels = layoutJobPanels, Boundaries = layoutBoundaries }
+            _layoutJob = new LayoutJob { Panels = _layoutJobPanels, Boundaries = _layoutBoundaries }
                 .Schedule(TextPipeline.Handle);
-            layoutJob = new TreeLayoutJob
+            _layoutJob = new TreeLayoutJob
             {
-                Roots = layoutRoots, Boundaries = layoutBoundaries, Parallel = parallelBoundaries
-            }.Schedule(layoutJob);
-            layoutJob = new BoundaryLayoutJob { Boundaries = parallelBoundaries.AsDeferredJobArray() }
-                .Schedule(parallelBoundaries, 4, layoutJob);
-            layoutJob = new BoundaryFixupJob { Boundaries = layoutBoundaries }.Schedule(layoutJob);
+                Roots = _layoutRoots, Boundaries = _layoutBoundaries, Parallel = _parallelBoundaries
+            }.Schedule(_layoutJob);
+            _layoutJob = new BoundaryLayoutJob { Boundaries = _parallelBoundaries.AsDeferredJobArray() }
+                .Schedule(_parallelBoundaries, 4, _layoutJob);
+            _layoutJob = new BoundaryFixupJob { Boundaries = _layoutBoundaries }.Schedule(_layoutJob);
             JobHandle.ScheduleBatchedJobs();
-            layoutInFlight = true;
+            _layoutInFlight = true;
         }
 
         private static void CompleteLayout()
         {
-            if (!layoutInFlight) return;
+            if (!_layoutInFlight) return;
 
-            layoutJob.Complete();
-            layoutJobPanels.Free();
-            layoutInFlight = false;
+            _layoutJob.Complete();
+            _layoutJobPanels.Free();
+            _layoutInFlight = false;
         }
 
         private static void OnBeginContextRendering(ScriptableRenderContext context, List<Camera> cameras)
@@ -321,12 +321,12 @@ namespace Yaui.Core
         /// <summary>Main thread, right before rendering: applies the results and uploads the changes.</summary>
         private static void Collect()
         {
-            if (!initialized) return;
+            if (!_initialized) return;
 
             // Edit mode (and anything else that skips the player loop) runs the pipeline synchronously.
-            if (!submittedSinceCollect) Submit();
+            if (!_submittedSinceCollect) Submit();
 
-            submittedSinceCollect = false;
+            _submittedSinceCollect = false;
             using var _ = CollectMarker.Auto();
             CompleteLayout();
             TextPipeline.Complete();

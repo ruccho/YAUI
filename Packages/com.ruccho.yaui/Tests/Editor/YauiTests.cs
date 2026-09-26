@@ -12,22 +12,22 @@ namespace Yaui.Tests
     /// </summary>
     public class YauiTests
     {
-        private readonly List<GameObject> created = new();
+        private readonly List<GameObject> _created = new();
 
         [TearDown]
         public void TearDown()
         {
-            foreach (var go in created)
+            foreach (var go in _created)
                 if (go != null)
                     Object.DestroyImmediate(go);
 
-            created.Clear();
+            _created.Clear();
         }
 
         private YauiPanel CreatePanel(float width = 1000f, float height = 1000f)
         {
             var go = new GameObject("TestPanel");
-            created.Add(go);
+            _created.Add(go);
             var panel = go.AddComponent<YauiPanel>();
             panel.RenderMode = PanelRenderMode.World;
             panel.ReferenceResolution = new Vector2(width, height);
@@ -45,11 +45,11 @@ namespace Yaui.Tests
         {
             var element = Create<YauiElement>(parent);
             var layout = LayoutStyle.Default;
-            layout.Width = width;
-            layout.Height = height;
+            layout.width = width;
+            layout.height = height;
             element.Layout = layout;
             var box = BoxStyle.Default;
-            box.BackgroundColor = color == default ? Color.white : color;
+            box.backgroundColor = color == default ? Color.white : color;
             element.Box = box;
             return element;
         }
@@ -65,16 +65,16 @@ namespace Yaui.Tests
             var panel = CreatePanel();
             var root = panel.GetComponent<YauiElement>();
             var layout = LayoutStyle.Default;
-            layout.Direction = FlexDirection.Row;
-            layout.Padding = new Edges(10f);
-            layout.Gap = new Vector2(20f, 0f);
-            layout.AlignItems = FlexAlign.FlexStart;
+            layout.direction = FlexDirection.Row;
+            layout.padding = new Edges(10f);
+            layout.gap = new Vector2(20f, 0f);
+            layout.alignItems = FlexAlign.FlexStart;
             root.Layout = layout;
 
             var a = Box(root, 100f, 50f);
             var b = Box(root, 100f, 50f);
             var grow = b.Layout;
-            grow.Grow = 1f;
+            grow.grow = 1f;
             b.Layout = grow;
             YauiPanel.ForceUpdate();
 
@@ -88,8 +88,8 @@ namespace Yaui.Tests
             var panel = CreatePanel(800f, 600f);
             var child = Box(panel.GetComponent<YauiElement>(), 0f, 0f);
             var layout = child.Layout;
-            layout.Width = Length.Percent(50f);
-            layout.Height = Length.Percent(25f);
+            layout.width = Length.Percent(50f);
+            layout.height = Length.Percent(25f);
             child.Layout = layout;
             YauiPanel.ForceUpdate();
 
@@ -102,7 +102,7 @@ namespace Yaui.Tests
             var panel = CreatePanel();
             var root = panel.GetComponent<YauiElement>();
             var layout = root.Layout;
-            layout.AlignItems = FlexAlign.FlexStart;
+            layout.alignItems = FlexAlign.FlexStart;
             root.Layout = layout;
 
             var text = Create<YauiText>(root);
@@ -114,7 +114,7 @@ namespace Yaui.Tests
             Assert.Greater(single.y, 0f);
 
             var textLayout = text.Layout;
-            textLayout.Width = 120f;
+            textLayout.width = 120f;
             text.Layout = textLayout;
             text.Text = "The quick brown fox jumps over the lazy dog";
             YauiPanel.ForceUpdate();
@@ -131,7 +131,7 @@ namespace Yaui.Tests
                 var panel = CreatePanel();
                 var root = panel.GetComponent<YauiElement>();
                 var layout = root.Layout;
-                layout.AlignItems = FlexAlign.FlexStart;
+                layout.alignItems = FlexAlign.FlexStart;
                 root.Layout = layout;
                 var text = Create<YauiText>(root);
                 text.FontSize = 32f;
@@ -153,7 +153,7 @@ namespace Yaui.Tests
             var root = panel.GetComponent<YauiElement>();
             var box = Box(root, 300f, 100f);
             var boxLayout = box.Layout;
-            boxLayout.AlignItems = FlexAlign.FlexStart;
+            boxLayout.alignItems = FlexAlign.FlexStart;
             box.Layout = boxLayout;
             var after = Box(root, 50f, 50f);
             var text = Create<YauiText>(box);
@@ -177,17 +177,17 @@ namespace Yaui.Tests
             var panel = CreatePanel();
             var root = panel.GetComponent<YauiElement>();
             var layout = root.Layout;
-            layout.AlignItems = FlexAlign.FlexStart;
+            layout.alignItems = FlexAlign.FlexStart;
             root.Layout = layout;
 
             var back = Box(root, 200f, 200f);
             var front = Box(back, 100f, 100f, Color.red);
             var invisible = Create<YauiElement>(root);
             var invisibleLayout = LayoutStyle.Default;
-            invisibleLayout.Position = PositionType.Absolute;
-            invisibleLayout.Inset = new Edges(0f, 0f, Length.Auto, Length.Auto);
-            invisibleLayout.Width = 500f;
-            invisibleLayout.Height = 500f;
+            invisibleLayout.position = PositionType.Absolute;
+            invisibleLayout.inset = new Edges(0f, 0f, Length.Auto, Length.Auto);
+            invisibleLayout.width = 500f;
+            invisibleLayout.height = 500f;
             invisible.Layout = invisibleLayout;
             YauiPanel.ForceUpdate();
 
@@ -206,7 +206,7 @@ namespace Yaui.Tests
             var panel = CreatePanel();
             var root = panel.GetComponent<YauiElement>();
             var layout = root.Layout;
-            layout.AlignItems = FlexAlign.FlexStart;
+            layout.alignItems = FlexAlign.FlexStart;
             root.Layout = layout;
 
             var clip = Box(root, 100f, 100f, new Color(0f, 0f, 0f, 0f));
@@ -234,8 +234,8 @@ namespace Yaui.Tests
             foreach (var element in new[] { a, b })
             {
                 var layout = element.Layout;
-                layout.Position = PositionType.Absolute;
-                layout.Inset = new Edges(0f, 0f, Length.Auto, Length.Auto);
+                layout.position = PositionType.Absolute;
+                layout.inset = new Edges(0f, 0f, Length.Auto, Length.Auto);
                 element.Layout = layout;
             }
 
@@ -275,7 +275,7 @@ namespace Yaui.Tests
             var panel = CreatePanel();
             var root = panel.GetComponent<YauiElement>();
             var layout = root.Layout;
-            layout.AlignItems = FlexAlign.FlexStart;
+            layout.alignItems = FlexAlign.FlexStart;
             root.Layout = layout;
 
             var outer = Box(root, 200f, 200f);
@@ -309,11 +309,11 @@ namespace Yaui.Tests
 
         private sealed class TestDraw : YauiCustomDraw
         {
-            public int Collected;
+            public int collected;
 
             protected override void OnCollectDraws(YauiDrawList draws)
             {
-                Collected++;
+                collected++;
             }
         }
 
@@ -342,7 +342,7 @@ namespace Yaui.Tests
                 new[] { Core.SegmentKind.Draw, Core.SegmentKind.Custom, Core.SegmentKind.Draw }, SegmentKinds(panel));
             Assert.AreSame(draw, segments[1].CustomDraw);
             Assert.AreEqual(2, segments[2].Count);
-            Assert.Greater(draw.Collected, 0, "Custom draws record their draws at the collection.");
+            Assert.Greater(draw.collected, 0, "Custom draws record their draws at the collection.");
 
             // Root, a and a's child, a's meshes, b.
             draw.Position = YauiCustomDrawPosition.AfterChildren;
@@ -407,8 +407,8 @@ namespace Yaui.Tests
             {
                 var image = Create<YauiImage>(root);
                 var layout = LayoutStyle.Default;
-                layout.Width = 10f;
-                layout.Height = 10f;
+                layout.width = 10f;
+                layout.height = 10f;
                 image.Layout = layout;
                 image.Sprite = sprite;
             }
@@ -501,14 +501,14 @@ namespace Yaui.Tests
             var panel = CreatePanel();
             var root = panel.GetComponent<YauiElement>();
             var layout = root.Layout;
-            layout.AlignItems = FlexAlign.FlexStart;
+            layout.alignItems = FlexAlign.FlexStart;
             root.Layout = layout;
             var text = Create<YauiText>(root);
             text.WordWrap = false;
             text.FontSize = 32f;
             text.Text = "The quick brown fox jumps over the lazy dog";
             var textLayout = text.Layout;
-            textLayout.Width = 200f;
+            textLayout.width = 200f;
             text.Layout = textLayout;
             YauiPanel.ForceUpdate();
             var overflowing = DrawnGlyphs(text);
@@ -575,8 +575,8 @@ namespace Yaui.Tests
             {
                 var image = Create<YauiImage>(panel.GetComponent<YauiElement>());
                 var layout = image.Layout;
-                layout.Width = 100f;
-                layout.Height = 50f;
+                layout.width = 100f;
+                layout.height = 50f;
                 image.Layout = layout;
                 image.Sprite = Sprite.Create(texture, new Rect(0f, 0f, 8f, 8f), Vector2.zero);
                 image.Type = ImageType.Filled;
@@ -611,8 +611,8 @@ namespace Yaui.Tests
             {
                 var image = Create<YauiRawImage>(panel.GetComponent<YauiElement>());
                 var layout = image.Layout;
-                layout.Width = 40f;
-                layout.Height = 30f;
+                layout.width = 40f;
+                layout.height = 30f;
                 image.Layout = layout;
                 image.Texture = texture;
                 YauiPanel.ForceUpdate();

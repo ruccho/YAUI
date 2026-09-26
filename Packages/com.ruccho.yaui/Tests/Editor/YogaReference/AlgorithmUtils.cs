@@ -425,19 +425,19 @@ namespace Yaui.Tests.YogaReference
 
     internal static class FlexLineHelper
     {
-        [ThreadStatic] private static Stack<List<YogaNode>>? s_listPool;
+        [ThreadStatic] private static Stack<List<YogaNode>>? _sListPool;
 
         internal static List<YogaNode> RentList()
         {
-            s_listPool ??= new Stack<List<YogaNode>>();
-            return s_listPool.Count > 0 ? s_listPool.Pop() : new List<YogaNode>();
+            _sListPool ??= new Stack<List<YogaNode>>();
+            return _sListPool.Count > 0 ? _sListPool.Pop() : new List<YogaNode>();
         }
 
         internal static void ReturnList(List<YogaNode> list)
         {
             list.Clear();
-            s_listPool ??= new Stack<List<YogaNode>>();
-            s_listPool.Push(list);
+            _sListPool ??= new Stack<List<YogaNode>>();
+            _sListPool.Push(list);
         }
 
         // AI-HINT (perf #144): FlexLine is allocated once per flex line per frame.
@@ -452,11 +452,11 @@ namespace Yaui.Tests.YogaReference
         // reach whole UI subtrees, so clearing on return keeps the thread-static
         // pool from pinning that memory between layout passes. The only way into the
         // pool is ReturnFlexLine, so a popped line is always clean at rent time.
-        [ThreadStatic] private static Stack<FlexLine>? s_flexLinePool;
+        [ThreadStatic] private static Stack<FlexLine>? _sFlexLinePool;
 
         internal static FlexLine RentFlexLine()
         {
-            var pool = s_flexLinePool ??= new Stack<FlexLine>();
+            var pool = _sFlexLinePool ??= new Stack<FlexLine>();
             return pool.Count > 0 ? pool.Pop() : new FlexLine();
         }
 
@@ -466,7 +466,7 @@ namespace Yaui.Tests.YogaReference
             line.SizeConsumed = 0;
             line.NumberOfAutoMargins = 0;
             line.Layout = default;
-            var pool = s_flexLinePool ??= new Stack<FlexLine>();
+            var pool = _sFlexLinePool ??= new Stack<FlexLine>();
             pool.Push(line);
         }
 

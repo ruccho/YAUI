@@ -19,10 +19,10 @@ namespace Yaui.Text
         private static readonly List<Color32> Colors = new();
         private static readonly List<int> Indices = new();
 
-        private Mesh mesh;
-        private Material[] materials;
-        private string text;
-        private TextGenerationSettings settings;
+        private Mesh _mesh;
+        private Material[] _materials;
+        private string _text;
+        private TextGenerationSettings _settings;
 
         public bool IsGenerated { get; private set; }
 
@@ -35,34 +35,34 @@ namespace Yaui.Text
         public void Prepare(string value, Font font, float fontSize, Color color, TextAlign align, bool wordWrap,
             bool richText)
         {
-            text = value ?? string.Empty;
-            settings = TextGenerationSettings.Default;
-            settings.text = text;
-            settings.font = font;
-            settings.fontSize = fontSize;
-            settings.color = color;
-            settings.richText = richText;
-            settings.wrapMode = wordWrap ? TextWrapMode.Wrap : TextWrapMode.NoWrap;
-            settings.horizontalAlignment = align switch
+            _text = value ?? string.Empty;
+            _settings = TextGenerationSettings.Default;
+            _settings.text = _text;
+            _settings.font = font;
+            _settings.fontSize = fontSize;
+            _settings.color = color;
+            _settings.richText = richText;
+            _settings.wrapMode = wordWrap ? TextWrapMode.Wrap : TextWrapMode.NoWrap;
+            _settings.horizontalAlignment = align switch
             {
                 TextAlign.Center => HorizontalAlignment.Center,
                 TextAlign.Right => HorizontalAlignment.Right,
                 TextAlign.Justified => HorizontalAlignment.Justified,
                 _ => HorizontalAlignment.Left
             };
-            settings.verticalAlignment = VerticalAlignment.Top;
+            _settings.verticalAlignment = VerticalAlignment.Top;
             IsGenerated = false;
         }
 
         /// <summary>Main thread: generates within <paramref name="width"/> (negative: unconstrained).</summary>
         public void Generate(float width)
         {
-            settings.extents = new Vector2(width >= 0f ? width : -1f, -1f);
-            var result = TextGenerator.GenerateText(settings);
-            mesh ??= new Mesh { hideFlags = HideFlags.HideAndDontSave };
-            mesh.Clear();
-            result.FillMesh(mesh);
-            materials = result.materials;
+            _settings.extents = new Vector2(width >= 0f ? width : -1f, -1f);
+            var result = TextGenerator.GenerateText(_settings);
+            _mesh ??= new Mesh { hideFlags = HideFlags.HideAndDontSave };
+            _mesh.Clear();
+            result.FillMesh(_mesh);
+            _materials = result.materials;
             Size = result.size;
             GeneratedWidth = width >= 0f ? width : -1f;
             IsGenerated = true;
@@ -72,19 +72,19 @@ namespace Yaui.Text
         public void Convert(List<GlyphQuad> output)
         {
             output.Clear();
-            if (mesh == null || materials == null) return;
+            if (_mesh == null || _materials == null) return;
 
-            mesh.GetVertices(Vertices);
-            mesh.GetUVs(0, Uvs);
-            mesh.GetColors(Colors);
-            for (var sub = 0; sub < mesh.subMeshCount && sub < materials.Length; sub++)
+            _mesh.GetVertices(Vertices);
+            _mesh.GetUVs(0, Uvs);
+            _mesh.GetColors(Colors);
+            for (var sub = 0; sub < _mesh.subMeshCount && sub < _materials.Length; sub++)
             {
-                var material = materials[sub];
+                var material = _materials[sub];
                 var atlas = material != null ? material.mainTexture : null;
                 if (atlas == null) continue;
 
                 var spread = material.HasFloat("_GradientScale") ? material.GetFloat("_GradientScale") : 0f;
-                mesh.GetIndices(Indices, sub);
+                _mesh.GetIndices(Indices, sub);
                 for (var i = 0; i + 5 < Indices.Count; i += 6)
                 {
                     var first = Indices[i];

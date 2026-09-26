@@ -156,14 +156,14 @@ namespace Yaui.Rendering
             return new uint2(Half2(v.x, v.y), Half2(v.z, v.w));
         }
 
-        private static bool? linear;
+        private static bool? _linear;
 
         /// <summary>Converts to linear space when the project uses it, like vertex colors of UI.</summary>
         public static uint2 Color(Color color)
         {
             // The color space does not change at runtime; querying it is a native call.
-            linear ??= QualitySettings.activeColorSpace == ColorSpace.Linear;
-            return Half4(linear.Value ? (Vector4)color.linear : (Vector4)color);
+            _linear ??= QualitySettings.activeColorSpace == ColorSpace.Linear;
+            return Half4(_linear.Value ? (Vector4)color.linear : (Vector4)color);
         }
 
         private static uint Unorm16(float v)
@@ -179,14 +179,14 @@ namespace Yaui.Rendering
         /// <summary>A color as RGBA8, converted to linear space like <see cref="Color(UnityEngine.Color)"/>.</summary>
         public static uint Rgba8(Color color)
         {
-            linear ??= QualitySettings.activeColorSpace == ColorSpace.Linear;
-            var c = linear.Value ? color.linear : color;
+            _linear ??= QualitySettings.activeColorSpace == ColorSpace.Linear;
+            var c = _linear.Value ? color.linear : color;
             return Unorm8(c.r) | (Unorm8(c.g) << 8) | (Unorm8(c.b) << 16) | (Unorm8(c.a) << 24);
         }
 
         public const uint White8 = 0xffffffffu;
 
-        public static uint2 Unorm16x4(float4 v)
+        public static uint2 Unorm16X4(float4 v)
         {
             return new uint2(Unorm16(v.x) | (Unorm16(v.y) << 16), Unorm16(v.z) | (Unorm16(v.w) << 16));
         }

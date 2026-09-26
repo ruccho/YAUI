@@ -12,14 +12,14 @@ namespace Yaui.Tests
     /// </summary>
     public class YogaEquivalenceTests
     {
-        private readonly List<YogaNode> created = new();
+        private readonly List<YogaNode> _created = new();
 
         [TearDown]
         public void TearDown()
         {
-            foreach (var node in created) YogaNodeStore.Destroy(node);
+            foreach (var node in _created) YogaNodeStore.Destroy(node);
 
-            created.Clear();
+            _created.Clear();
         }
 
         // A text-like measure: wraps 160 units of content at the available width, 20 units per line.
@@ -58,7 +58,7 @@ namespace Yaui.Tests
         private Pair Build(Random random, int depth)
         {
             var pair = new Pair { Node = YogaNodeStore.Create(), Reference = new Ref.YogaNode() };
-            created.Add(pair.Node);
+            _created.Add(pair.Node);
             var n = pair.Node;
             var r = pair.Reference;
 

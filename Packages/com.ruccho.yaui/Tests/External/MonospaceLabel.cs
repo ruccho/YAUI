@@ -21,12 +21,12 @@ namespace Yaui.Tests.External
         [SerializeField] private bool shadow;
         [SerializeField] private bool underline;
 
-        private YauiTexture atlasTexture;
+        private YauiTexture _atlasTexture;
 
         // What the layout thread measures.
-        private int measuredLength;
+        private int _measuredLength;
 
-        private YauiPrimitive[] buffer = new YauiPrimitive[16];
+        private YauiPrimitive[] _buffer = new YauiPrimitive[16];
 
         public string Text
         {
@@ -71,7 +71,7 @@ namespace Yaui.Tests.External
         }
 
         /// <summary>The texture as registered, for tests.</summary>
-        public YauiTexture AtlasTexture => atlasTexture;
+        public YauiTexture AtlasTexture => _atlasTexture;
 
         public int PrimitiveCount => ContentCount;
 
@@ -81,15 +81,15 @@ namespace Yaui.Tests.External
 
         protected override void OnPrepareMeasure()
         {
-            measuredLength = text.Length;
+            _measuredLength = text.Length;
         }
 
         protected override Vector2 MeasureContent(float width, YauiMeasureMode widthMode, float height,
             YauiMeasureMode heightMode)
         {
-            var columns = Columns(measuredLength, widthMode == YauiMeasureMode.Undefined ? float.PositiveInfinity : width);
-            var lines = measuredLength == 0 ? 0 : (measuredLength + columns - 1) / columns;
-            var size = new Vector2(Math.Min(measuredLength, columns) * Advance, lines * LineHeight);
+            var columns = Columns(_measuredLength, widthMode == YauiMeasureMode.Undefined ? float.PositiveInfinity : width);
+            var lines = _measuredLength == 0 ? 0 : (_measuredLength + columns - 1) / columns;
+            var size = new Vector2(Math.Min(_measuredLength, columns) * Advance, lines * LineHeight);
             if (widthMode == YauiMeasureMode.Exactly) size.x = width;
             else if (widthMode == YauiMeasureMode.AtMost) size.x = Math.Min(size.x, width);
 
@@ -111,8 +111,8 @@ namespace Yaui.Tests.External
 
         protected override void OnUnregistering()
         {
-            atlasTexture.Release();
-            atlasTexture = default;
+            _atlasTexture.Release();
+            _atlasTexture = default;
         }
 
         protected override void OnLayoutApplied()
@@ -132,10 +132,10 @@ namespace Yaui.Tests.External
             if (!IsRegistered) return;
 
             SyncHittable();
-            if (atlas != atlasTexture.Texture)
+            if (atlas != _atlasTexture.Texture)
             {
-                atlasTexture.Release();
-                atlasTexture = atlas != null ? YauiTexture.AcquireDistanceField(atlas, Spread) : default;
+                _atlasTexture.Release();
+                _atlasTexture = atlas != null ? YauiTexture.AcquireDistanceField(atlas, Spread) : default;
             }
 
             if (atlas == null || text.Length == 0)
@@ -148,7 +148,7 @@ namespace Yaui.Tests.External
             var columns = Columns(text.Length, box.width);
             var lines = (text.Length + columns - 1) / columns;
             var count = text.Length * (shadow ? 2 : 1) + (underline ? lines : 0);
-            if (buffer.Length < count) Array.Resize(ref buffer, count);
+            if (_buffer.Length < count) Array.Resize(ref _buffer, count);
 
             // Shadows first, under all glyphs.
             var written = 0;
@@ -157,23 +157,23 @@ namespace Yaui.Tests.External
                 {
                     var rect = GlyphRect(box, i, columns);
                     rect.position += new Vector2(1f, 1f);
-                    buffer[written++] = YauiPrimitive.DistanceFieldShadow(rect, atlasTexture, GlyphUv(text[i]),
+                    _buffer[written++] = YauiPrimitive.DistanceFieldShadow(rect, _atlasTexture, GlyphUv(text[i]),
                         new Color(0f, 0f, 0f, 0.5f), 1f, 2f);
                 }
 
             for (var i = 0; i < text.Length; i++)
-                buffer[written++] = YauiPrimitive.DistanceField(GlyphRect(box, i, columns), atlasTexture,
+                _buffer[written++] = YauiPrimitive.DistanceField(GlyphRect(box, i, columns), _atlasTexture,
                     GlyphUv(text[i]), color);
 
             if (underline)
                 for (var line = 0; line < lines; line++)
                 {
                     var length = Math.Min(columns, text.Length - line * columns);
-                    buffer[written++] = YauiPrimitive.Rectangle(
+                    _buffer[written++] = YauiPrimitive.Rectangle(
                         new Rect(box.x, box.y + (line + 1) * LineHeight - 2f, length * Advance, 2f), color);
                 }
 
-            SetContent(buffer.AsSpan(0, written));
+            SetContent(_buffer.AsSpan(0, written));
         }
 
         private static Rect GlyphRect(Rect box, int index, int columns)

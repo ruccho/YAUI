@@ -236,9 +236,9 @@ namespace Yaui.Layout.Yoga
         /// <summary>Resolve the left edge value considering Start/End/Left/Horizontal/All fallbacks.</summary>
         private static YogaValue ComputeLeftEdge(in YogaValues9 edges, FlexLayoutDirection layoutDirection)
         {
-            if (layoutDirection == FlexLayoutDirection.LTR && edges.Get((int)YogaEdge.Start).IsDefined)
+            if (layoutDirection == FlexLayoutDirection.Ltr && edges.Get((int)YogaEdge.Start).IsDefined)
                 return edges.Get((int)YogaEdge.Start);
-            if (layoutDirection == FlexLayoutDirection.RTL && edges.Get((int)YogaEdge.End).IsDefined)
+            if (layoutDirection == FlexLayoutDirection.Rtl && edges.Get((int)YogaEdge.End).IsDefined)
                 return edges.Get((int)YogaEdge.End);
             if (edges.Get((int)YogaEdge.Left).IsDefined)
                 return edges.Get((int)YogaEdge.Left);
@@ -256,9 +256,9 @@ namespace Yaui.Layout.Yoga
 
         private static YogaValue ComputeRightEdge(in YogaValues9 edges, FlexLayoutDirection layoutDirection)
         {
-            if (layoutDirection == FlexLayoutDirection.LTR && edges.Get((int)YogaEdge.End).IsDefined)
+            if (layoutDirection == FlexLayoutDirection.Ltr && edges.Get((int)YogaEdge.End).IsDefined)
                 return edges.Get((int)YogaEdge.End);
-            if (layoutDirection == FlexLayoutDirection.RTL && edges.Get((int)YogaEdge.Start).IsDefined)
+            if (layoutDirection == FlexLayoutDirection.Rtl && edges.Get((int)YogaEdge.Start).IsDefined)
                 return edges.Get((int)YogaEdge.Start);
             if (edges.Get((int)YogaEdge.Right).IsDefined)
                 return edges.Get((int)YogaEdge.Right);
@@ -508,14 +508,14 @@ namespace Yaui.Layout.Yoga
 
         public float ComputeBorderForAxis(FlexDirection axis)
         {
-            return ComputeInlineStartBorder(axis, FlexLayoutDirection.LTR) +
-                   ComputeInlineEndBorder(axis, FlexLayoutDirection.LTR);
+            return ComputeInlineStartBorder(axis, FlexLayoutDirection.Ltr) +
+                   ComputeInlineEndBorder(axis, FlexLayoutDirection.Ltr);
         }
 
         public float ComputeMarginForAxis(FlexDirection axis, float widthSize)
         {
-            return ComputeInlineStartMargin(axis, FlexLayoutDirection.LTR, widthSize) +
-                   ComputeInlineEndMargin(axis, FlexLayoutDirection.LTR, widthSize);
+            return ComputeInlineStartMargin(axis, FlexLayoutDirection.Ltr, widthSize) +
+                   ComputeInlineEndMargin(axis, FlexLayoutDirection.Ltr, widthSize);
         }
 
         public float ComputeGapForAxis(FlexDirection axis, float ownerSize)

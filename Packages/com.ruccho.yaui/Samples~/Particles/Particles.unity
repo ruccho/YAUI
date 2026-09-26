@@ -2447,90 +2447,90 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Yaui::Yaui.YauiElement
   layout:
-    Position: 0
-    Inset:
-      Left:
-        Value: 0
-        Unit: 0
-      Top:
-        Value: 0
-        Unit: 0
-      Right:
-        Value: 0
-        Unit: 0
-      Bottom:
-        Value: 0
-        Unit: 0
-    Direction: 0
-    Wrap: 0
-    JustifyContent: 2
-    AlignItems: 2
-    AlignSelf: 0
-    AlignContent: 1
-    Grow: 0
-    Shrink: 1
-    Basis:
-      Value: 0
-      Unit: 0
-    Width:
-      Value: 320
-      Unit: 1
-    Height:
-      Value: 320
-      Unit: 1
-    MinWidth:
-      Value: 0
-      Unit: 0
-    MinHeight:
-      Value: 0
-      Unit: 0
-    MaxWidth:
-      Value: 0
-      Unit: 0
-    MaxHeight:
-      Value: 0
-      Unit: 0
-    Margin:
-      Left:
-        Value: 0
-        Unit: 1
-      Top:
-        Value: 0
-        Unit: 1
-      Right:
-        Value: 0
-        Unit: 1
-      Bottom:
-        Value: 0
-        Unit: 1
-    Padding:
-      Left:
-        Value: 0
-        Unit: 1
-      Top:
-        Value: 0
-        Unit: 1
-      Right:
-        Value: 0
-        Unit: 1
-      Bottom:
-        Value: 0
-        Unit: 1
-    Gap: {x: 0, y: 0}
+    position: 0
+    inset:
+      left:
+        value: 0
+        unit: 0
+      top:
+        value: 0
+        unit: 0
+      right:
+        value: 0
+        unit: 0
+      bottom:
+        value: 0
+        unit: 0
+    direction: 0
+    wrap: 0
+    justifyContent: 2
+    alignItems: 2
+    alignSelf: 0
+    alignContent: 1
+    grow: 0
+    shrink: 1
+    basis:
+      value: 0
+      unit: 0
+    width:
+      value: 320
+      unit: 1
+    height:
+      value: 320
+      unit: 1
+    minWidth:
+      value: 0
+      unit: 0
+    minHeight:
+      value: 0
+      unit: 0
+    maxWidth:
+      value: 0
+      unit: 0
+    maxHeight:
+      value: 0
+      unit: 0
+    margin:
+      left:
+        value: 0
+        unit: 1
+      top:
+        value: 0
+        unit: 1
+      right:
+        value: 0
+        unit: 1
+      bottom:
+        value: 0
+        unit: 1
+    padding:
+      left:
+        value: 0
+        unit: 1
+      top:
+        value: 0
+        unit: 1
+      right:
+        value: 0
+        unit: 1
+      bottom:
+        value: 0
+        unit: 1
+    gap: {x: 0, y: 0}
   box:
-    BackgroundColor: {r: 0.2, g: 0.3, b: 0.6, a: 1}
-    CornerRadius: {x: 24, y: 24, z: 24, w: 24}
-    BorderWidth: 0
-    BorderColor: {r: 0, g: 0, b: 0, a: 1}
-    ShadowColor: {r: 0, g: 0, b: 0, a: 0}
-    ShadowOffset: {x: 0, y: 0}
-    ShadowBlur: 0
-    ShadowSpread: 0
+    backgroundColor: {r: 0.2, g: 0.3, b: 0.6, a: 1}
+    cornerRadius: {x: 24, y: 24, z: 24, w: 24}
+    borderWidth: 0
+    borderColor: {r: 0, g: 0, b: 0, a: 1}
+    shadowColor: {r: 0, g: 0, b: 0, a: 0}
+    shadowOffset: {x: 0, y: 0}
+    shadowBlur: 0
+    shadowSpread: 0
   renderTransform:
-    Translate: {x: 0, y: 0}
-    Rotation: 0
-    Scale: {x: 1, y: 1}
-    Pivot: {x: 0.5, y: 0.5}
+    translate: {x: 0, y: 0}
+    rotation: 0
+    scale: {x: 1, y: 1}
+    pivot: {x: 0.5, y: 0.5}
   opacity: 1
   clipChildren: 0
   raycastTarget: 1
@@ -2580,90 +2580,90 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Yaui::Yaui.YauiElement
   layout:
-    Position: 0
-    Inset:
-      Left:
-        Value: 0
-        Unit: 0
-      Top:
-        Value: 0
-        Unit: 0
-      Right:
-        Value: 0
-        Unit: 0
-      Bottom:
-        Value: 0
-        Unit: 0
-    Direction: 0
-    Wrap: 0
-    JustifyContent: 2
-    AlignItems: 2
-    AlignSelf: 0
-    AlignContent: 1
-    Grow: 0
-    Shrink: 1
-    Basis:
-      Value: 0
-      Unit: 0
-    Width:
-      Value: 140
-      Unit: 1
-    Height:
-      Value: 140
-      Unit: 1
-    MinWidth:
-      Value: 0
-      Unit: 0
-    MinHeight:
-      Value: 0
-      Unit: 0
-    MaxWidth:
-      Value: 0
-      Unit: 0
-    MaxHeight:
-      Value: 0
-      Unit: 0
-    Margin:
-      Left:
-        Value: 0
-        Unit: 1
-      Top:
-        Value: 0
-        Unit: 1
-      Right:
-        Value: 0
-        Unit: 1
-      Bottom:
-        Value: 0
-        Unit: 1
-    Padding:
-      Left:
-        Value: 0
-        Unit: 1
-      Top:
-        Value: 0
-        Unit: 1
-      Right:
-        Value: 0
-        Unit: 1
-      Bottom:
-        Value: 0
-        Unit: 1
-    Gap: {x: 0, y: 0}
+    position: 0
+    inset:
+      left:
+        value: 0
+        unit: 0
+      top:
+        value: 0
+        unit: 0
+      right:
+        value: 0
+        unit: 0
+      bottom:
+        value: 0
+        unit: 0
+    direction: 0
+    wrap: 0
+    justifyContent: 2
+    alignItems: 2
+    alignSelf: 0
+    alignContent: 1
+    grow: 0
+    shrink: 1
+    basis:
+      value: 0
+      unit: 0
+    width:
+      value: 140
+      unit: 1
+    height:
+      value: 140
+      unit: 1
+    minWidth:
+      value: 0
+      unit: 0
+    minHeight:
+      value: 0
+      unit: 0
+    maxWidth:
+      value: 0
+      unit: 0
+    maxHeight:
+      value: 0
+      unit: 0
+    margin:
+      left:
+        value: 0
+        unit: 1
+      top:
+        value: 0
+        unit: 1
+      right:
+        value: 0
+        unit: 1
+      bottom:
+        value: 0
+        unit: 1
+    padding:
+      left:
+        value: 0
+        unit: 1
+      top:
+        value: 0
+        unit: 1
+      right:
+        value: 0
+        unit: 1
+      bottom:
+        value: 0
+        unit: 1
+    gap: {x: 0, y: 0}
   box:
-    BackgroundColor: {r: 0.9, g: 0.3, b: 0.35, a: 1}
-    CornerRadius: {x: 16, y: 16, z: 16, w: 16}
-    BorderWidth: 0
-    BorderColor: {r: 0, g: 0, b: 0, a: 1}
-    ShadowColor: {r: 0, g: 0, b: 0, a: 0}
-    ShadowOffset: {x: 0, y: 0}
-    ShadowBlur: 0
-    ShadowSpread: 0
+    backgroundColor: {r: 0.9, g: 0.3, b: 0.35, a: 1}
+    cornerRadius: {x: 16, y: 16, z: 16, w: 16}
+    borderWidth: 0
+    borderColor: {r: 0, g: 0, b: 0, a: 1}
+    shadowColor: {r: 0, g: 0, b: 0, a: 0}
+    shadowOffset: {x: 0, y: 0}
+    shadowBlur: 0
+    shadowSpread: 0
   renderTransform:
-    Translate: {x: 0, y: 0}
-    Rotation: 0
-    Scale: {x: 1, y: 1}
-    Pivot: {x: 0.5, y: 0.5}
+    translate: {x: 0, y: 0}
+    rotation: 0
+    scale: {x: 1, y: 1}
+    pivot: {x: 0.5, y: 0.5}
   opacity: 1
   clipChildren: 0
   raycastTarget: 1
@@ -2719,90 +2719,90 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Yaui::Yaui.YauiElement
   layout:
-    Position: 0
-    Inset:
-      Left:
-        Value: 0
-        Unit: 0
-      Top:
-        Value: 0
-        Unit: 0
-      Right:
-        Value: 0
-        Unit: 0
-      Bottom:
-        Value: 0
-        Unit: 0
-    Direction: 2
-    Wrap: 0
-    JustifyContent: 2
-    AlignItems: 2
-    AlignSelf: 0
-    AlignContent: 1
-    Grow: 0
-    Shrink: 1
-    Basis:
-      Value: 0
-      Unit: 0
-    Width:
-      Value: 0
-      Unit: 0
-    Height:
-      Value: 0
-      Unit: 0
-    MinWidth:
-      Value: 0
-      Unit: 0
-    MinHeight:
-      Value: 0
-      Unit: 0
-    MaxWidth:
-      Value: 0
-      Unit: 0
-    MaxHeight:
-      Value: 0
-      Unit: 0
-    Margin:
-      Left:
-        Value: 0
-        Unit: 1
-      Top:
-        Value: 0
-        Unit: 1
-      Right:
-        Value: 0
-        Unit: 1
-      Bottom:
-        Value: 0
-        Unit: 1
-    Padding:
-      Left:
-        Value: 0
-        Unit: 1
-      Top:
-        Value: 0
-        Unit: 1
-      Right:
-        Value: 0
-        Unit: 1
-      Bottom:
-        Value: 0
-        Unit: 1
-    Gap: {x: 60, y: 0}
+    position: 0
+    inset:
+      left:
+        value: 0
+        unit: 0
+      top:
+        value: 0
+        unit: 0
+      right:
+        value: 0
+        unit: 0
+      bottom:
+        value: 0
+        unit: 0
+    direction: 2
+    wrap: 0
+    justifyContent: 2
+    alignItems: 2
+    alignSelf: 0
+    alignContent: 1
+    grow: 0
+    shrink: 1
+    basis:
+      value: 0
+      unit: 0
+    width:
+      value: 0
+      unit: 0
+    height:
+      value: 0
+      unit: 0
+    minWidth:
+      value: 0
+      unit: 0
+    minHeight:
+      value: 0
+      unit: 0
+    maxWidth:
+      value: 0
+      unit: 0
+    maxHeight:
+      value: 0
+      unit: 0
+    margin:
+      left:
+        value: 0
+        unit: 1
+      top:
+        value: 0
+        unit: 1
+      right:
+        value: 0
+        unit: 1
+      bottom:
+        value: 0
+        unit: 1
+    padding:
+      left:
+        value: 0
+        unit: 1
+      top:
+        value: 0
+        unit: 1
+      right:
+        value: 0
+        unit: 1
+      bottom:
+        value: 0
+        unit: 1
+    gap: {x: 60, y: 0}
   box:
-    BackgroundColor: {r: 0, g: 0, b: 0, a: 0}
-    CornerRadius: {x: 0, y: 0, z: 0, w: 0}
-    BorderWidth: 0
-    BorderColor: {r: 0, g: 0, b: 0, a: 1}
-    ShadowColor: {r: 0, g: 0, b: 0, a: 0}
-    ShadowOffset: {x: 0, y: 0}
-    ShadowBlur: 0
-    ShadowSpread: 0
+    backgroundColor: {r: 0, g: 0, b: 0, a: 0}
+    cornerRadius: {x: 0, y: 0, z: 0, w: 0}
+    borderWidth: 0
+    borderColor: {r: 0, g: 0, b: 0, a: 1}
+    shadowColor: {r: 0, g: 0, b: 0, a: 0}
+    shadowOffset: {x: 0, y: 0}
+    shadowBlur: 0
+    shadowSpread: 0
   renderTransform:
-    Translate: {x: 0, y: 0}
-    Rotation: 0
-    Scale: {x: 1, y: 1}
-    Pivot: {x: 0.5, y: 0.5}
+    translate: {x: 0, y: 0}
+    rotation: 0
+    scale: {x: 1, y: 1}
+    pivot: {x: 0.5, y: 0.5}
   opacity: 1
   clipChildren: 0
   raycastTarget: 1
@@ -5153,90 +5153,90 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Yaui::Yaui.YauiElement
   layout:
-    Position: 1
-    Inset:
-      Left:
-        Value: 0
-        Unit: 1
-      Top:
-        Value: 0
-        Unit: 1
-      Right:
-        Value: 0
-        Unit: 1
-      Bottom:
-        Value: 0
-        Unit: 1
-    Direction: 0
-    Wrap: 0
-    JustifyContent: 1
-    AlignItems: 4
-    AlignSelf: 0
-    AlignContent: 1
-    Grow: 0
-    Shrink: 1
-    Basis:
-      Value: 0
-      Unit: 0
-    Width:
-      Value: 0
-      Unit: 0
-    Height:
-      Value: 0
-      Unit: 0
-    MinWidth:
-      Value: 0
-      Unit: 0
-    MinHeight:
-      Value: 0
-      Unit: 0
-    MaxWidth:
-      Value: 0
-      Unit: 0
-    MaxHeight:
-      Value: 0
-      Unit: 0
-    Margin:
-      Left:
-        Value: 0
-        Unit: 1
-      Top:
-        Value: 0
-        Unit: 1
-      Right:
-        Value: 0
-        Unit: 1
-      Bottom:
-        Value: 0
-        Unit: 1
-    Padding:
-      Left:
-        Value: 0
-        Unit: 1
-      Top:
-        Value: 0
-        Unit: 1
-      Right:
-        Value: 0
-        Unit: 1
-      Bottom:
-        Value: 0
-        Unit: 1
-    Gap: {x: 0, y: 0}
+    position: 1
+    inset:
+      left:
+        value: 0
+        unit: 1
+      top:
+        value: 0
+        unit: 1
+      right:
+        value: 0
+        unit: 1
+      bottom:
+        value: 0
+        unit: 1
+    direction: 0
+    wrap: 0
+    justifyContent: 1
+    alignItems: 4
+    alignSelf: 0
+    alignContent: 1
+    grow: 0
+    shrink: 1
+    basis:
+      value: 0
+      unit: 0
+    width:
+      value: 0
+      unit: 0
+    height:
+      value: 0
+      unit: 0
+    minWidth:
+      value: 0
+      unit: 0
+    minHeight:
+      value: 0
+      unit: 0
+    maxWidth:
+      value: 0
+      unit: 0
+    maxHeight:
+      value: 0
+      unit: 0
+    margin:
+      left:
+        value: 0
+        unit: 1
+      top:
+        value: 0
+        unit: 1
+      right:
+        value: 0
+        unit: 1
+      bottom:
+        value: 0
+        unit: 1
+    padding:
+      left:
+        value: 0
+        unit: 1
+      top:
+        value: 0
+        unit: 1
+      right:
+        value: 0
+        unit: 1
+      bottom:
+        value: 0
+        unit: 1
+    gap: {x: 0, y: 0}
   box:
-    BackgroundColor: {r: 0, g: 0, b: 0, a: 0}
-    CornerRadius: {x: 0, y: 0, z: 0, w: 0}
-    BorderWidth: 0
-    BorderColor: {r: 0, g: 0, b: 0, a: 1}
-    ShadowColor: {r: 0, g: 0, b: 0, a: 0}
-    ShadowOffset: {x: 0, y: 0}
-    ShadowBlur: 0
-    ShadowSpread: 0
+    backgroundColor: {r: 0, g: 0, b: 0, a: 0}
+    cornerRadius: {x: 0, y: 0, z: 0, w: 0}
+    borderWidth: 0
+    borderColor: {r: 0, g: 0, b: 0, a: 1}
+    shadowColor: {r: 0, g: 0, b: 0, a: 0}
+    shadowOffset: {x: 0, y: 0}
+    shadowBlur: 0
+    shadowSpread: 0
   renderTransform:
-    Translate: {x: 0, y: 0}
-    Rotation: 0
-    Scale: {x: 1, y: 1}
-    Pivot: {x: 0.5, y: 0.5}
+    translate: {x: 0, y: 0}
+    rotation: 0
+    scale: {x: 1, y: 1}
+    pivot: {x: 0.5, y: 0.5}
   opacity: 1
   clipChildren: 0
   raycastTarget: 1
@@ -5301,90 +5301,90 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Yaui::Yaui.YauiElement
   layout:
-    Position: 0
-    Inset:
-      Left:
-        Value: 0
-        Unit: 0
-      Top:
-        Value: 0
-        Unit: 0
-      Right:
-        Value: 0
-        Unit: 0
-      Bottom:
-        Value: 0
-        Unit: 0
-    Direction: 0
-    Wrap: 0
-    JustifyContent: 2
-    AlignItems: 2
-    AlignSelf: 0
-    AlignContent: 1
-    Grow: 0
-    Shrink: 1
-    Basis:
-      Value: 0
-      Unit: 0
-    Width:
-      Value: 320
-      Unit: 1
-    Height:
-      Value: 320
-      Unit: 1
-    MinWidth:
-      Value: 0
-      Unit: 0
-    MinHeight:
-      Value: 0
-      Unit: 0
-    MaxWidth:
-      Value: 0
-      Unit: 0
-    MaxHeight:
-      Value: 0
-      Unit: 0
-    Margin:
-      Left:
-        Value: 0
-        Unit: 1
-      Top:
-        Value: 0
-        Unit: 1
-      Right:
-        Value: 0
-        Unit: 1
-      Bottom:
-        Value: 0
-        Unit: 1
-    Padding:
-      Left:
-        Value: 0
-        Unit: 1
-      Top:
-        Value: 0
-        Unit: 1
-      Right:
-        Value: 0
-        Unit: 1
-      Bottom:
-        Value: 0
-        Unit: 1
-    Gap: {x: 0, y: 0}
+    position: 0
+    inset:
+      left:
+        value: 0
+        unit: 0
+      top:
+        value: 0
+        unit: 0
+      right:
+        value: 0
+        unit: 0
+      bottom:
+        value: 0
+        unit: 0
+    direction: 0
+    wrap: 0
+    justifyContent: 2
+    alignItems: 2
+    alignSelf: 0
+    alignContent: 1
+    grow: 0
+    shrink: 1
+    basis:
+      value: 0
+      unit: 0
+    width:
+      value: 320
+      unit: 1
+    height:
+      value: 320
+      unit: 1
+    minWidth:
+      value: 0
+      unit: 0
+    minHeight:
+      value: 0
+      unit: 0
+    maxWidth:
+      value: 0
+      unit: 0
+    maxHeight:
+      value: 0
+      unit: 0
+    margin:
+      left:
+        value: 0
+        unit: 1
+      top:
+        value: 0
+        unit: 1
+      right:
+        value: 0
+        unit: 1
+      bottom:
+        value: 0
+        unit: 1
+    padding:
+      left:
+        value: 0
+        unit: 1
+      top:
+        value: 0
+        unit: 1
+      right:
+        value: 0
+        unit: 1
+      bottom:
+        value: 0
+        unit: 1
+    gap: {x: 0, y: 0}
   box:
-    BackgroundColor: {r: 0.45, g: 0.25, b: 0.55, a: 1}
-    CornerRadius: {x: 60, y: 60, z: 60, w: 60}
-    BorderWidth: 0
-    BorderColor: {r: 0, g: 0, b: 0, a: 1}
-    ShadowColor: {r: 0, g: 0, b: 0, a: 0}
-    ShadowOffset: {x: 0, y: 0}
-    ShadowBlur: 0
-    ShadowSpread: 0
+    backgroundColor: {r: 0.45, g: 0.25, b: 0.55, a: 1}
+    cornerRadius: {x: 60, y: 60, z: 60, w: 60}
+    borderWidth: 0
+    borderColor: {r: 0, g: 0, b: 0, a: 1}
+    shadowColor: {r: 0, g: 0, b: 0, a: 0}
+    shadowOffset: {x: 0, y: 0}
+    shadowBlur: 0
+    shadowSpread: 0
   renderTransform:
-    Translate: {x: 0, y: 0}
-    Rotation: 15
-    Scale: {x: 1, y: 1}
-    Pivot: {x: 0.5, y: 0.5}
+    translate: {x: 0, y: 0}
+    rotation: 15
+    scale: {x: 1, y: 1}
+    pivot: {x: 0.5, y: 0.5}
   opacity: 1
   clipChildren: 0
   raycastTarget: 1
@@ -5518,90 +5518,90 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Yaui::Yaui.YauiElement
   layout:
-    Position: 0
-    Inset:
-      Left:
-        Value: 0
-        Unit: 0
-      Top:
-        Value: 0
-        Unit: 0
-      Right:
-        Value: 0
-        Unit: 0
-      Bottom:
-        Value: 0
-        Unit: 0
-    Direction: 0
-    Wrap: 0
-    JustifyContent: 2
-    AlignItems: 2
-    AlignSelf: 0
-    AlignContent: 1
-    Grow: 0
-    Shrink: 1
-    Basis:
-      Value: 0
-      Unit: 0
-    Width:
-      Value: 320
-      Unit: 1
-    Height:
-      Value: 320
-      Unit: 1
-    MinWidth:
-      Value: 0
-      Unit: 0
-    MinHeight:
-      Value: 0
-      Unit: 0
-    MaxWidth:
-      Value: 0
-      Unit: 0
-    MaxHeight:
-      Value: 0
-      Unit: 0
-    Margin:
-      Left:
-        Value: 0
-        Unit: 1
-      Top:
-        Value: 0
-        Unit: 1
-      Right:
-        Value: 0
-        Unit: 1
-      Bottom:
-        Value: 0
-        Unit: 1
-    Padding:
-      Left:
-        Value: 0
-        Unit: 1
-      Top:
-        Value: 0
-        Unit: 1
-      Right:
-        Value: 0
-        Unit: 1
-      Bottom:
-        Value: 0
-        Unit: 1
-    Gap: {x: 0, y: 0}
+    position: 0
+    inset:
+      left:
+        value: 0
+        unit: 0
+      top:
+        value: 0
+        unit: 0
+      right:
+        value: 0
+        unit: 0
+      bottom:
+        value: 0
+        unit: 0
+    direction: 0
+    wrap: 0
+    justifyContent: 2
+    alignItems: 2
+    alignSelf: 0
+    alignContent: 1
+    grow: 0
+    shrink: 1
+    basis:
+      value: 0
+      unit: 0
+    width:
+      value: 320
+      unit: 1
+    height:
+      value: 320
+      unit: 1
+    minWidth:
+      value: 0
+      unit: 0
+    minHeight:
+      value: 0
+      unit: 0
+    maxWidth:
+      value: 0
+      unit: 0
+    maxHeight:
+      value: 0
+      unit: 0
+    margin:
+      left:
+        value: 0
+        unit: 1
+      top:
+        value: 0
+        unit: 1
+      right:
+        value: 0
+        unit: 1
+      bottom:
+        value: 0
+        unit: 1
+    padding:
+      left:
+        value: 0
+        unit: 1
+      top:
+        value: 0
+        unit: 1
+      right:
+        value: 0
+        unit: 1
+      bottom:
+        value: 0
+        unit: 1
+    gap: {x: 0, y: 0}
   box:
-    BackgroundColor: {r: 0.15, g: 0.45, b: 0.35, a: 1}
-    CornerRadius: {x: 120, y: 120, z: 120, w: 120}
-    BorderWidth: 0
-    BorderColor: {r: 0, g: 0, b: 0, a: 1}
-    ShadowColor: {r: 0, g: 0, b: 0, a: 0}
-    ShadowOffset: {x: 0, y: 0}
-    ShadowBlur: 0
-    ShadowSpread: 0
+    backgroundColor: {r: 0.15, g: 0.45, b: 0.35, a: 1}
+    cornerRadius: {x: 120, y: 120, z: 120, w: 120}
+    borderWidth: 0
+    borderColor: {r: 0, g: 0, b: 0, a: 1}
+    shadowColor: {r: 0, g: 0, b: 0, a: 0}
+    shadowOffset: {x: 0, y: 0}
+    shadowBlur: 0
+    shadowSpread: 0
   renderTransform:
-    Translate: {x: 0, y: 0}
-    Rotation: 0
-    Scale: {x: 1, y: 1}
-    Pivot: {x: 0.5, y: 0.5}
+    translate: {x: 0, y: 0}
+    rotation: 0
+    scale: {x: 1, y: 1}
+    pivot: {x: 0.5, y: 0.5}
   opacity: 0.7
   clipChildren: 1
   raycastTarget: 1
@@ -7933,90 +7933,90 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Yaui::Yaui.YauiElement
   layout:
-    Position: 1
-    Inset:
-      Left:
-        Value: 0
-        Unit: 1
-      Top:
-        Value: 0
-        Unit: 1
-      Right:
-        Value: 0
-        Unit: 1
-      Bottom:
-        Value: 0
-        Unit: 1
-    Direction: 0
-    Wrap: 0
-    JustifyContent: 1
-    AlignItems: 4
-    AlignSelf: 0
-    AlignContent: 1
-    Grow: 0
-    Shrink: 1
-    Basis:
-      Value: 0
-      Unit: 0
-    Width:
-      Value: 0
-      Unit: 0
-    Height:
-      Value: 0
-      Unit: 0
-    MinWidth:
-      Value: 0
-      Unit: 0
-    MinHeight:
-      Value: 0
-      Unit: 0
-    MaxWidth:
-      Value: 0
-      Unit: 0
-    MaxHeight:
-      Value: 0
-      Unit: 0
-    Margin:
-      Left:
-        Value: 0
-        Unit: 1
-      Top:
-        Value: 0
-        Unit: 1
-      Right:
-        Value: 0
-        Unit: 1
-      Bottom:
-        Value: 0
-        Unit: 1
-    Padding:
-      Left:
-        Value: 0
-        Unit: 1
-      Top:
-        Value: 0
-        Unit: 1
-      Right:
-        Value: 0
-        Unit: 1
-      Bottom:
-        Value: 0
-        Unit: 1
-    Gap: {x: 0, y: 0}
+    position: 1
+    inset:
+      left:
+        value: 0
+        unit: 1
+      top:
+        value: 0
+        unit: 1
+      right:
+        value: 0
+        unit: 1
+      bottom:
+        value: 0
+        unit: 1
+    direction: 0
+    wrap: 0
+    justifyContent: 1
+    alignItems: 4
+    alignSelf: 0
+    alignContent: 1
+    grow: 0
+    shrink: 1
+    basis:
+      value: 0
+      unit: 0
+    width:
+      value: 0
+      unit: 0
+    height:
+      value: 0
+      unit: 0
+    minWidth:
+      value: 0
+      unit: 0
+    minHeight:
+      value: 0
+      unit: 0
+    maxWidth:
+      value: 0
+      unit: 0
+    maxHeight:
+      value: 0
+      unit: 0
+    margin:
+      left:
+        value: 0
+        unit: 1
+      top:
+        value: 0
+        unit: 1
+      right:
+        value: 0
+        unit: 1
+      bottom:
+        value: 0
+        unit: 1
+    padding:
+      left:
+        value: 0
+        unit: 1
+      top:
+        value: 0
+        unit: 1
+      right:
+        value: 0
+        unit: 1
+      bottom:
+        value: 0
+        unit: 1
+    gap: {x: 0, y: 0}
   box:
-    BackgroundColor: {r: 0, g: 0, b: 0, a: 0}
-    CornerRadius: {x: 0, y: 0, z: 0, w: 0}
-    BorderWidth: 0
-    BorderColor: {r: 0, g: 0, b: 0, a: 1}
-    ShadowColor: {r: 0, g: 0, b: 0, a: 0}
-    ShadowOffset: {x: 0, y: 0}
-    ShadowBlur: 0
-    ShadowSpread: 0
+    backgroundColor: {r: 0, g: 0, b: 0, a: 0}
+    cornerRadius: {x: 0, y: 0, z: 0, w: 0}
+    borderWidth: 0
+    borderColor: {r: 0, g: 0, b: 0, a: 1}
+    shadowColor: {r: 0, g: 0, b: 0, a: 0}
+    shadowOffset: {x: 0, y: 0}
+    shadowBlur: 0
+    shadowSpread: 0
   renderTransform:
-    Translate: {x: 0, y: 0}
-    Rotation: 0
-    Scale: {x: 1, y: 1}
-    Pivot: {x: 0.5, y: 0.5}
+    translate: {x: 0, y: 0}
+    rotation: 0
+    scale: {x: 1, y: 1}
+    pivot: {x: 0.5, y: 0.5}
   opacity: 1
   clipChildren: 0
   raycastTarget: 1
@@ -10348,90 +10348,90 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Yaui::Yaui.YauiElement
   layout:
-    Position: 1
-    Inset:
-      Left:
-        Value: 0
-        Unit: 1
-      Top:
-        Value: 0
-        Unit: 1
-      Right:
-        Value: 0
-        Unit: 1
-      Bottom:
-        Value: 0
-        Unit: 1
-    Direction: 0
-    Wrap: 0
-    JustifyContent: 1
-    AlignItems: 4
-    AlignSelf: 0
-    AlignContent: 1
-    Grow: 0
-    Shrink: 1
-    Basis:
-      Value: 0
-      Unit: 0
-    Width:
-      Value: 0
-      Unit: 0
-    Height:
-      Value: 0
-      Unit: 0
-    MinWidth:
-      Value: 0
-      Unit: 0
-    MinHeight:
-      Value: 0
-      Unit: 0
-    MaxWidth:
-      Value: 0
-      Unit: 0
-    MaxHeight:
-      Value: 0
-      Unit: 0
-    Margin:
-      Left:
-        Value: 0
-        Unit: 1
-      Top:
-        Value: 0
-        Unit: 1
-      Right:
-        Value: 0
-        Unit: 1
-      Bottom:
-        Value: 0
-        Unit: 1
-    Padding:
-      Left:
-        Value: 0
-        Unit: 1
-      Top:
-        Value: 0
-        Unit: 1
-      Right:
-        Value: 0
-        Unit: 1
-      Bottom:
-        Value: 0
-        Unit: 1
-    Gap: {x: 0, y: 0}
+    position: 1
+    inset:
+      left:
+        value: 0
+        unit: 1
+      top:
+        value: 0
+        unit: 1
+      right:
+        value: 0
+        unit: 1
+      bottom:
+        value: 0
+        unit: 1
+    direction: 0
+    wrap: 0
+    justifyContent: 1
+    alignItems: 4
+    alignSelf: 0
+    alignContent: 1
+    grow: 0
+    shrink: 1
+    basis:
+      value: 0
+      unit: 0
+    width:
+      value: 0
+      unit: 0
+    height:
+      value: 0
+      unit: 0
+    minWidth:
+      value: 0
+      unit: 0
+    minHeight:
+      value: 0
+      unit: 0
+    maxWidth:
+      value: 0
+      unit: 0
+    maxHeight:
+      value: 0
+      unit: 0
+    margin:
+      left:
+        value: 0
+        unit: 1
+      top:
+        value: 0
+        unit: 1
+      right:
+        value: 0
+        unit: 1
+      bottom:
+        value: 0
+        unit: 1
+    padding:
+      left:
+        value: 0
+        unit: 1
+      top:
+        value: 0
+        unit: 1
+      right:
+        value: 0
+        unit: 1
+      bottom:
+        value: 0
+        unit: 1
+    gap: {x: 0, y: 0}
   box:
-    BackgroundColor: {r: 0, g: 0, b: 0, a: 0}
-    CornerRadius: {x: 0, y: 0, z: 0, w: 0}
-    BorderWidth: 0
-    BorderColor: {r: 0, g: 0, b: 0, a: 1}
-    ShadowColor: {r: 0, g: 0, b: 0, a: 0}
-    ShadowOffset: {x: 0, y: 0}
-    ShadowBlur: 0
-    ShadowSpread: 0
+    backgroundColor: {r: 0, g: 0, b: 0, a: 0}
+    cornerRadius: {x: 0, y: 0, z: 0, w: 0}
+    borderWidth: 0
+    borderColor: {r: 0, g: 0, b: 0, a: 1}
+    shadowColor: {r: 0, g: 0, b: 0, a: 0}
+    shadowOffset: {x: 0, y: 0}
+    shadowBlur: 0
+    shadowSpread: 0
   renderTransform:
-    Translate: {x: 0, y: 0}
-    Rotation: 0
-    Scale: {x: 1, y: 1}
-    Pivot: {x: 0.5, y: 0.5}
+    translate: {x: 0, y: 0}
+    rotation: 0
+    scale: {x: 1, y: 1}
+    pivot: {x: 0.5, y: 0.5}
   opacity: 1
   clipChildren: 0
   raycastTarget: 1
@@ -10482,90 +10482,90 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Yaui::Yaui.YauiElement
   layout:
-    Position: 0
-    Inset:
-      Left:
-        Value: 0
-        Unit: 0
-      Top:
-        Value: 0
-        Unit: 0
-      Right:
-        Value: 0
-        Unit: 0
-      Bottom:
-        Value: 0
-        Unit: 0
-    Direction: 0
-    Wrap: 0
-    JustifyContent: 2
-    AlignItems: 2
-    AlignSelf: 0
-    AlignContent: 1
-    Grow: 0
-    Shrink: 1
-    Basis:
-      Value: 0
-      Unit: 0
-    Width:
-      Value: 320
-      Unit: 1
-    Height:
-      Value: 320
-      Unit: 1
-    MinWidth:
-      Value: 0
-      Unit: 0
-    MinHeight:
-      Value: 0
-      Unit: 0
-    MaxWidth:
-      Value: 0
-      Unit: 0
-    MaxHeight:
-      Value: 0
-      Unit: 0
-    Margin:
-      Left:
-        Value: 0
-        Unit: 1
-      Top:
-        Value: 0
-        Unit: 1
-      Right:
-        Value: 0
-        Unit: 1
-      Bottom:
-        Value: 0
-        Unit: 1
-    Padding:
-      Left:
-        Value: 0
-        Unit: 1
-      Top:
-        Value: 0
-        Unit: 1
-      Right:
-        Value: 0
-        Unit: 1
-      Bottom:
-        Value: 0
-        Unit: 1
-    Gap: {x: 0, y: 0}
+    position: 0
+    inset:
+      left:
+        value: 0
+        unit: 0
+      top:
+        value: 0
+        unit: 0
+      right:
+        value: 0
+        unit: 0
+      bottom:
+        value: 0
+        unit: 0
+    direction: 0
+    wrap: 0
+    justifyContent: 2
+    alignItems: 2
+    alignSelf: 0
+    alignContent: 1
+    grow: 0
+    shrink: 1
+    basis:
+      value: 0
+      unit: 0
+    width:
+      value: 320
+      unit: 1
+    height:
+      value: 320
+      unit: 1
+    minWidth:
+      value: 0
+      unit: 0
+    minHeight:
+      value: 0
+      unit: 0
+    maxWidth:
+      value: 0
+      unit: 0
+    maxHeight:
+      value: 0
+      unit: 0
+    margin:
+      left:
+        value: 0
+        unit: 1
+      top:
+        value: 0
+        unit: 1
+      right:
+        value: 0
+        unit: 1
+      bottom:
+        value: 0
+        unit: 1
+    padding:
+      left:
+        value: 0
+        unit: 1
+      top:
+        value: 0
+        unit: 1
+      right:
+        value: 0
+        unit: 1
+      bottom:
+        value: 0
+        unit: 1
+    gap: {x: 0, y: 0}
   box:
-    BackgroundColor: {r: 0.3, g: 0.3, b: 0.3, a: 1}
-    CornerRadius: {x: 24, y: 24, z: 24, w: 24}
-    BorderWidth: 0
-    BorderColor: {r: 0, g: 0, b: 0, a: 1}
-    ShadowColor: {r: 0, g: 0, b: 0, a: 0}
-    ShadowOffset: {x: 0, y: 0}
-    ShadowBlur: 0
-    ShadowSpread: 0
+    backgroundColor: {r: 0.3, g: 0.3, b: 0.3, a: 1}
+    cornerRadius: {x: 24, y: 24, z: 24, w: 24}
+    borderWidth: 0
+    borderColor: {r: 0, g: 0, b: 0, a: 1}
+    shadowColor: {r: 0, g: 0, b: 0, a: 0}
+    shadowOffset: {x: 0, y: 0}
+    shadowBlur: 0
+    shadowSpread: 0
   renderTransform:
-    Translate: {x: 0, y: 0}
-    Rotation: 0
-    Scale: {x: 1, y: 1}
-    Pivot: {x: 0.5, y: 0.5}
+    translate: {x: 0, y: 0}
+    rotation: 0
+    scale: {x: 1, y: 1}
+    pivot: {x: 0.5, y: 0.5}
   opacity: 1
   clipChildren: 1
   raycastTarget: 1

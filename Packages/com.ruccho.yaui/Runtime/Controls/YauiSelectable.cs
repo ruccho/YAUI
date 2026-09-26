@@ -33,26 +33,26 @@ namespace Yaui
     [Serializable]
     public struct TransitionColors
     {
-        public Color Normal;
-        public Color Highlighted;
-        public Color Pressed;
-        public Color Selected;
-        public Color Disabled;
+        public Color normal;
+        public Color highlighted;
+        public Color pressed;
+        public Color selected;
+        public Color disabled;
 
-        [Range(1f, 5f)] public float ColorMultiplier;
+        [Range(1f, 5f)] public float colorMultiplier;
 
         /// <summary>Seconds to fade from one color to the next (unscaled time).</summary>
-        public float FadeDuration;
+        public float fadeDuration;
 
         public static TransitionColors Default => new()
         {
-            Normal = Color.white,
-            Highlighted = new Color32(245, 245, 245, 255),
-            Pressed = new Color32(200, 200, 200, 255),
-            Selected = new Color32(245, 245, 245, 255),
-            Disabled = new Color32(200, 200, 200, 128),
-            ColorMultiplier = 1f,
-            FadeDuration = 0.1f
+            normal = Color.white,
+            highlighted = new Color32(245, 245, 245, 255),
+            pressed = new Color32(200, 200, 200, 255),
+            selected = new Color32(245, 245, 245, 255),
+            disabled = new Color32(200, 200, 200, 128),
+            colorMultiplier = 1f,
+            fadeDuration = 0.1f
         };
     }
 
@@ -60,28 +60,28 @@ namespace Yaui
     [Serializable]
     public struct TransitionSprites
     {
-        public Sprite Highlighted;
-        public Sprite Pressed;
-        public Sprite Selected;
-        public Sprite Disabled;
+        public Sprite highlighted;
+        public Sprite pressed;
+        public Sprite selected;
+        public Sprite disabled;
     }
 
     [Serializable]
     public struct TransitionTriggers
     {
-        public string Normal;
-        public string Highlighted;
-        public string Pressed;
-        public string Selected;
-        public string Disabled;
+        public string normal;
+        public string highlighted;
+        public string pressed;
+        public string selected;
+        public string disabled;
 
         public static TransitionTriggers Default => new()
         {
-            Normal = "Normal",
-            Highlighted = "Highlighted",
-            Pressed = "Pressed",
-            Selected = "Selected",
-            Disabled = "Disabled"
+            normal = "Normal",
+            highlighted = "Highlighted",
+            pressed = "Pressed",
+            selected = "Selected",
+            disabled = "Disabled"
         };
     }
 
@@ -105,19 +105,19 @@ namespace Yaui
     [Serializable]
     public struct SelectableNavigation
     {
-        public NavigationMode Mode;
+        public NavigationMode mode;
 
         /// <summary>Automatic modes: moving past the last selectable in a direction selects the first.</summary>
-        public bool WrapAround;
+        public bool wrapAround;
 
         /// <summary>Explicit mode: the selectables of each direction. Other modes use them where set.</summary>
-        public YauiSelectable Up;
+        public YauiSelectable up;
 
-        public YauiSelectable Down;
-        public YauiSelectable Left;
-        public YauiSelectable Right;
+        public YauiSelectable down;
+        public YauiSelectable left;
+        public YauiSelectable right;
 
-        public static SelectableNavigation Default => new() { Mode = NavigationMode.Automatic };
+        public static SelectableNavigation Default => new() { mode = NavigationMode.Automatic };
     }
 
     /// <summary>
@@ -144,27 +144,27 @@ namespace Yaui
         [SerializeField] private TransitionTriggers triggers = TransitionTriggers.Default;
         [SerializeField] private SelectableNavigation navigation = SelectableNavigation.Default;
 
-        [NonSerialized] private YauiElement element;
-        [NonSerialized] private bool pointerInside;
-        [NonSerialized] private bool pointerDown;
-        [NonSerialized] private bool selected;
-        [NonSerialized] private SelectionState appliedState = (SelectionState)(-1);
+        [NonSerialized] private YauiElement _element;
+        [NonSerialized] private bool _pointerInside;
+        [NonSerialized] private bool _pointerDown;
+        [NonSerialized] private bool _selected;
+        [NonSerialized] private SelectionState _appliedState = (SelectionState)(-1);
 
         // The tint fade.
-        [NonSerialized] private Color fadeFrom;
-        [NonSerialized] private Color fadeTo;
-        [NonSerialized] private float fadeStart;
-        [NonSerialized] private float fadeDuration;
-        [NonSerialized] private YauiElement fadeTarget;
+        [NonSerialized] private Color _fadeFrom;
+        [NonSerialized] private Color _fadeTo;
+        [NonSerialized] private float _fadeStart;
+        [NonSerialized] private float _fadeDuration;
+        [NonSerialized] private YauiElement _fadeTarget;
 
         // Until when a submit shows the pressed state (unscaled seconds), or 0.
-        [NonSerialized] private float flashUntil;
+        [NonSerialized] private float _flashUntil;
 
         /// <summary>All enabled selectables.</summary>
         public static IReadOnlyList<YauiSelectable> AllSelectables => All;
 
         /// <summary>The element of this GameObject.</summary>
-        public YauiElement Element => element != null ? element : element = GetComponent<YauiElement>();
+        public YauiElement Element => _element != null ? _element : _element = GetComponent<YauiElement>();
 
         public bool Interactable
         {
@@ -246,22 +246,22 @@ namespace Yaui
             {
                 if (!IsInteractable) return SelectionState.Disabled;
 
-                if (pointerDown || flashUntil > 0f) return SelectionState.Pressed;
+                if (_pointerDown || _flashUntil > 0f) return SelectionState.Pressed;
 
-                if (selected) return SelectionState.Selected;
+                if (_selected) return SelectionState.Selected;
 
-                return pointerInside ? SelectionState.Highlighted : SelectionState.Normal;
+                return _pointerInside ? SelectionState.Highlighted : SelectionState.Normal;
             }
         }
 
         /// <summary>Whether the pointer that is down went down on this selectable.</summary>
-        protected bool IsPressed => IsInteractable && pointerDown;
+        protected bool IsPressed => IsInteractable && _pointerDown;
 
         protected virtual void OnEnable()
         {
             All.Add(this);
             if (EventSystem.current != null && EventSystem.current.currentSelectedGameObject == gameObject)
-                selected = true;
+                _selected = true;
 
             UpdateState(true);
         }
@@ -269,16 +269,16 @@ namespace Yaui
         protected virtual void OnDisable()
         {
             All.Remove(this);
-            pointerInside = false;
-            pointerDown = false;
-            selected = false;
-            flashUntil = 0f;
+            _pointerInside = false;
+            _pointerDown = false;
+            _selected = false;
+            _flashUntil = 0f;
             ClearTransition();
         }
 
         protected virtual void OnValidate()
         {
-            colors.FadeDuration = Mathf.Max(colors.FadeDuration, 0f);
+            colors.fadeDuration = Mathf.Max(colors.fadeDuration, 0f);
             if (isActiveAndEnabled) UpdateState(true);
         }
 
@@ -298,7 +298,7 @@ namespace Yaui
         {
             if (!IsInteractable || !Application.isPlaying) return;
 
-            flashUntil = Time.realtimeSinceStartup + Mathf.Max(colors.FadeDuration, 0.05f);
+            _flashUntil = Time.realtimeSinceStartup + Mathf.Max(colors.fadeDuration, 0.05f);
             UpdateState(false);
             Tickers.Add(this);
         }
@@ -307,13 +307,13 @@ namespace Yaui
 
         public virtual void OnPointerEnter(PointerEventData eventData)
         {
-            pointerInside = true;
+            _pointerInside = true;
             UpdateState(false);
         }
 
         public virtual void OnPointerExit(PointerEventData eventData)
         {
-            pointerInside = false;
+            _pointerInside = false;
             UpdateState(false);
         }
 
@@ -322,10 +322,10 @@ namespace Yaui
             if (eventData.button != PointerEventData.InputButton.Left) return;
 
             // Pointer presses select, unless the selectable takes no part in the navigation.
-            if (IsInteractable && navigation.Mode != NavigationMode.None && EventSystem.current != null)
+            if (IsInteractable && navigation.mode != NavigationMode.None && EventSystem.current != null)
                 EventSystem.current.SetSelectedGameObject(gameObject, eventData);
 
-            pointerDown = true;
+            _pointerDown = true;
             UpdateState(false);
         }
 
@@ -333,19 +333,19 @@ namespace Yaui
         {
             if (eventData.button != PointerEventData.InputButton.Left) return;
 
-            pointerDown = false;
+            _pointerDown = false;
             UpdateState(false);
         }
 
         public virtual void OnSelect(BaseEventData eventData)
         {
-            selected = true;
+            _selected = true;
             UpdateState(false);
         }
 
         public virtual void OnDeselect(BaseEventData eventData)
         {
-            selected = false;
+            _selected = false;
             UpdateState(false);
         }
 
@@ -369,36 +369,36 @@ namespace Yaui
 
         public virtual YauiSelectable FindSelectableOnLeft()
         {
-            return navigation.Left != null || navigation.Mode == NavigationMode.Explicit
-                ? navigation.Left
-                : navigation.Mode is NavigationMode.Automatic or NavigationMode.Horizontal
+            return navigation.left != null || navigation.mode == NavigationMode.Explicit
+                ? navigation.left
+                : navigation.mode is NavigationMode.Automatic or NavigationMode.Horizontal
                     ? FindSelectable(new float2(-1f, 0f))
                     : null;
         }
 
         public virtual YauiSelectable FindSelectableOnRight()
         {
-            return navigation.Right != null || navigation.Mode == NavigationMode.Explicit
-                ? navigation.Right
-                : navigation.Mode is NavigationMode.Automatic or NavigationMode.Horizontal
+            return navigation.right != null || navigation.mode == NavigationMode.Explicit
+                ? navigation.right
+                : navigation.mode is NavigationMode.Automatic or NavigationMode.Horizontal
                     ? FindSelectable(new float2(1f, 0f))
                     : null;
         }
 
         public virtual YauiSelectable FindSelectableOnUp()
         {
-            return navigation.Up != null || navigation.Mode == NavigationMode.Explicit
-                ? navigation.Up
-                : navigation.Mode is NavigationMode.Automatic or NavigationMode.Vertical
+            return navigation.up != null || navigation.mode == NavigationMode.Explicit
+                ? navigation.up
+                : navigation.mode is NavigationMode.Automatic or NavigationMode.Vertical
                     ? FindSelectable(new float2(0f, -1f))
                     : null;
         }
 
         public virtual YauiSelectable FindSelectableOnDown()
         {
-            return navigation.Down != null || navigation.Mode == NavigationMode.Explicit
-                ? navigation.Down
-                : navigation.Mode is NavigationMode.Automatic or NavigationMode.Vertical
+            return navigation.down != null || navigation.mode == NavigationMode.Explicit
+                ? navigation.down
+                : navigation.mode is NavigationMode.Automatic or NavigationMode.Vertical
                     ? FindSelectable(new float2(0f, 1f))
                     : null;
         }
@@ -422,7 +422,7 @@ namespace Yaui
             foreach (var candidate in All)
             {
                 if (candidate == this || !candidate.IsInteractable ||
-                    candidate.navigation.Mode == NavigationMode.None ||
+                    candidate.navigation.mode == NavigationMode.None ||
                     !TryGetCanvasBounds(candidate, out var bounds, out var candidatePanel) || candidatePanel != panel)
                     continue;
 
@@ -437,7 +437,7 @@ namespace Yaui
                         best = candidate;
                     }
                 }
-                else if (navigation.WrapAround)
+                else if (navigation.wrapAround)
                 {
                     // Wrapping around goes to the farthest one on the other side.
                     var distance = -math.dot(dir, bounds.Center - own.Center);
@@ -486,9 +486,9 @@ namespace Yaui
             if (!isActiveAndEnabled) return;
 
             var state = CurrentState;
-            if (state == appliedState && !instant) return;
+            if (state == _appliedState && !instant) return;
 
-            appliedState = state;
+            _appliedState = state;
             ApplyTransition(state, instant);
         }
 
@@ -498,16 +498,16 @@ namespace Yaui
             switch (transition)
             {
                 case SelectableTransition.ColorTint:
-                    FadeTint(target, ColorOf(state) * colors.ColorMultiplier, instant ? 0f : colors.FadeDuration);
+                    FadeTint(target, ColorOf(state) * colors.colorMultiplier, instant ? 0f : colors.fadeDuration);
                     break;
                 case SelectableTransition.SpriteSwap:
                     if (target is YauiImage image)
                         image.OverrideSprite = state switch
                         {
-                            SelectionState.Highlighted => sprites.Highlighted,
-                            SelectionState.Pressed => sprites.Pressed,
-                            SelectionState.Selected => sprites.Selected,
-                            SelectionState.Disabled => sprites.Disabled,
+                            SelectionState.Highlighted => sprites.highlighted,
+                            SelectionState.Pressed => sprites.pressed,
+                            SelectionState.Selected => sprites.selected,
+                            SelectionState.Disabled => sprites.disabled,
                             _ => null
                         };
 
@@ -515,11 +515,11 @@ namespace Yaui
                 case SelectableTransition.Animation:
                     SetTrigger(state switch
                     {
-                        SelectionState.Highlighted => triggers.Highlighted,
-                        SelectionState.Pressed => triggers.Pressed,
-                        SelectionState.Selected => triggers.Selected,
-                        SelectionState.Disabled => triggers.Disabled,
-                        _ => triggers.Normal
+                        SelectionState.Highlighted => triggers.highlighted,
+                        SelectionState.Pressed => triggers.pressed,
+                        SelectionState.Selected => triggers.selected,
+                        SelectionState.Disabled => triggers.disabled,
+                        _ => triggers.normal
                     });
                     break;
             }
@@ -529,11 +529,11 @@ namespace Yaui
         {
             return state switch
             {
-                SelectionState.Highlighted => colors.Highlighted,
-                SelectionState.Pressed => colors.Pressed,
-                SelectionState.Selected => colors.Selected,
-                SelectionState.Disabled => colors.Disabled,
-                _ => colors.Normal
+                SelectionState.Highlighted => colors.highlighted,
+                SelectionState.Pressed => colors.pressed,
+                SelectionState.Selected => colors.selected,
+                SelectionState.Disabled => colors.disabled,
+                _ => colors.normal
             };
         }
 
@@ -543,36 +543,36 @@ namespace Yaui
 
             if (duration <= 0f || !Application.isPlaying)
             {
-                fadeTarget = null;
+                _fadeTarget = null;
                 target.Tint = color;
                 return;
             }
 
-            fadeTarget = target;
-            fadeFrom = target.Tint;
-            fadeTo = color;
-            fadeStart = Time.realtimeSinceStartup;
-            fadeDuration = duration;
+            _fadeTarget = target;
+            _fadeFrom = target.Tint;
+            _fadeTo = color;
+            _fadeStart = Time.realtimeSinceStartup;
+            _fadeDuration = duration;
             Tickers.Add(this);
         }
 
         bool ITicker.Tick(float time)
         {
-            if (flashUntil > 0f && time >= flashUntil)
+            if (_flashUntil > 0f && time >= _flashUntil)
             {
-                flashUntil = 0f;
+                _flashUntil = 0f;
                 UpdateState(false);
             }
 
-            var running = flashUntil > 0f;
-            if (fadeTarget != null)
+            var running = _flashUntil > 0f;
+            if (_fadeTarget != null)
             {
-                var t = Mathf.Clamp01((time - fadeStart) / fadeDuration);
-                fadeTarget.Tint = Color.Lerp(fadeFrom, fadeTo, t);
+                var t = Mathf.Clamp01((time - _fadeStart) / _fadeDuration);
+                _fadeTarget.Tint = Color.Lerp(_fadeFrom, _fadeTo, t);
                 if (t < 1f)
                     running = true;
                 else
-                    fadeTarget = null;
+                    _fadeTarget = null;
             }
 
             return running;
@@ -585,11 +585,11 @@ namespace Yaui
                 animator.runtimeAnimatorController == null || string.IsNullOrEmpty(trigger))
                 return;
 
-            animator.ResetTrigger(triggers.Normal);
-            animator.ResetTrigger(triggers.Highlighted);
-            animator.ResetTrigger(triggers.Pressed);
-            animator.ResetTrigger(triggers.Selected);
-            animator.ResetTrigger(triggers.Disabled);
+            animator.ResetTrigger(triggers.normal);
+            animator.ResetTrigger(triggers.highlighted);
+            animator.ResetTrigger(triggers.pressed);
+            animator.ResetTrigger(triggers.selected);
+            animator.ResetTrigger(triggers.disabled);
             animator.SetTrigger(trigger);
         }
 
@@ -597,8 +597,8 @@ namespace Yaui
         private void ClearTransition()
         {
             Tickers.Remove(this);
-            fadeTarget = null;
-            appliedState = (SelectionState)(-1);
+            _fadeTarget = null;
+            _appliedState = (SelectionState)(-1);
             var target = TargetElement;
             if (target == null) return;
 

@@ -151,7 +151,7 @@ namespace Yaui
                 Data = new PrimitiveData
                 {
                     Rect = ToFloat4(rect),
-                    UvRect = GpuPacking.Unorm16x4(new float4(uv.xMin, uv.yMax, uv.xMax, uv.yMin)),
+                    UvRect = GpuPacking.Unorm16X4(new float4(uv.xMin, uv.yMax, uv.xMax, uv.yMin)),
                     Color = GpuPacking.Color(color),
                     Flags = PrimitiveTexture.With(flags, texture.Id)
                 }
@@ -172,15 +172,15 @@ namespace Yaui
     public readonly struct YauiTexture : IEquatable<YauiTexture>
     {
         internal readonly int Id;
-        private readonly int generation;
+        private readonly int _generation;
 
         internal YauiTexture(int id)
         {
             Id = id;
-            generation = YauiSystem.Generation;
+            _generation = YauiSystem.Generation;
         }
 
-        public bool IsValid => Id > 0 && YauiSystem.IsInitialized && generation == YauiSystem.Generation;
+        public bool IsValid => Id > 0 && YauiSystem.IsInitialized && _generation == YauiSystem.Generation;
 
         public Texture Texture => IsValid ? YauiSystem.Textures.Get(Id) : null;
 
@@ -212,7 +212,7 @@ namespace Yaui
 
         public bool Equals(YauiTexture other)
         {
-            return Id == other.Id && generation == other.generation;
+            return Id == other.Id && _generation == other._generation;
         }
 
         public override bool Equals(object obj)
@@ -222,7 +222,7 @@ namespace Yaui
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Id, generation);
+            return HashCode.Combine(Id, _generation);
         }
 
         public static bool operator ==(YauiTexture a, YauiTexture b)
@@ -243,17 +243,17 @@ namespace Yaui
     public readonly struct YauiSpriteTexture
     {
         internal readonly SpriteTexture Value;
-        private readonly Sprite sprite;
-        private readonly int generation;
+        private readonly Sprite _sprite;
+        private readonly int _generation;
 
         private YauiSpriteTexture(Sprite sprite, SpriteTexture value)
         {
-            this.sprite = sprite;
+            this._sprite = sprite;
             Value = value;
-            generation = YauiSystem.Generation;
+            _generation = YauiSystem.Generation;
         }
 
-        public bool IsValid => Value.IsValid && YauiSystem.IsInitialized && generation == YauiSystem.Generation;
+        public bool IsValid => Value.IsValid && YauiSystem.IsInitialized && _generation == YauiSystem.Generation;
 
         public YauiTexture Texture => IsValid ? new YauiTexture(Value.TextureId) : default;
 
@@ -273,7 +273,7 @@ namespace Yaui
 
         public void Release()
         {
-            if (IsValid) YauiSystem.Textures.ReleaseSprite(sprite, Value);
+            if (IsValid) YauiSystem.Textures.ReleaseSprite(_sprite, Value);
         }
     }
 

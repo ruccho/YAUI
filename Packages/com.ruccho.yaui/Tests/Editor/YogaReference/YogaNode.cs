@@ -889,7 +889,7 @@ namespace Yaui.Tests.YogaReference
         internal FlexLayoutDirection ResolveDirection(FlexLayoutDirection ownerDirection)
         {
             if (_style.Direction == FlexLayoutDirection.Inherit)
-                return ownerDirection != FlexLayoutDirection.Inherit ? ownerDirection : FlexLayoutDirection.LTR;
+                return ownerDirection != FlexLayoutDirection.Inherit ? ownerDirection : FlexLayoutDirection.Ltr;
             return _style.Direction;
         }
 
@@ -931,7 +931,7 @@ namespace Yaui.Tests.YogaReference
 
         internal void SetPosition(FlexLayoutDirection direction, float ownerWidth, float ownerHeight)
         {
-            var directionRespectingRoot = _owner != null ? direction : FlexLayoutDirection.LTR;
+            var directionRespectingRoot = _owner != null ? direction : FlexLayoutDirection.Ltr;
             var mainAxis = FlexDirectionHelper.ResolveDirection(_style.FlexDirection, directionRespectingRoot);
             var crossAxis = FlexDirectionHelper.ResolveCrossDirection(mainAxis, directionRespectingRoot);
 
@@ -1019,7 +1019,7 @@ namespace Yaui.Tests.YogaReference
         /// Calculate the layout for this node and all its children.
         /// </summary>
         public void CalculateLayout(float availableWidth = float.NaN, float availableHeight = float.NaN,
-            FlexLayoutDirection direction = FlexLayoutDirection.LTR)
+            FlexLayoutDirection direction = FlexLayoutDirection.Ltr)
         {
             YogaAlgorithm.CalculateLayout(this, availableWidth, availableHeight, direction);
         }

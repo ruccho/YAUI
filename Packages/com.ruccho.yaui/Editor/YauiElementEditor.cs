@@ -22,29 +22,29 @@ namespace Yaui.Editor
         private static readonly Color ContentColor = new(0.55f, 0.72f, 0.85f, 0.5f);
         private static readonly Vector3[] Corners = new Vector3[4];
 
-        private static bool showAllLayout;
+        private static bool _showAllLayout;
 
-        private bool toolsWereHidden;
+        private bool _toolsWereHidden;
 
-        private SerializedProperty layout;
-        private SerializedProperty box;
+        private SerializedProperty _layout;
+        private SerializedProperty _box;
 
         private void OnEnable()
         {
-            toolsWereHidden = Tools.hidden;
+            _toolsWereHidden = Tools.hidden;
             Tools.hidden = true;
-            layout = serializedObject.FindProperty("layout");
-            box = serializedObject.FindProperty("box");
+            _layout = serializedObject.FindProperty("layout");
+            _box = serializedObject.FindProperty("box");
         }
 
         private void OnDisable()
         {
-            Tools.hidden = toolsWereHidden;
+            Tools.hidden = _toolsWereHidden;
         }
 
         private SerializedProperty Layout(string name)
         {
-            return layout.FindPropertyRelative(name);
+            return _layout.FindPropertyRelative(name);
         }
 
         public override void OnInspectorGUI()
@@ -69,38 +69,38 @@ namespace Yaui.Editor
         private void DrawLayout()
         {
             EditorGUILayout.LabelField("Layout", EditorStyles.boldLabel);
-            LayoutGui.EnumButtons("Position", Layout(nameof(LayoutStyle.Position)),
+            LayoutGui.EnumButtons("Position", Layout(nameof(LayoutStyle.position)),
                 new[] { (int)PositionType.Relative, (int)PositionType.Absolute }, new[] { "Relative", "Absolute" });
-            if (Layout(nameof(LayoutStyle.Position)).intValue == (int)PositionType.Absolute ||
-                Layout(nameof(LayoutStyle.Position)).hasMultipleDifferentValues)
-                DrawEdges("Inset", Layout(nameof(LayoutStyle.Inset)));
+            if (Layout(nameof(LayoutStyle.position)).intValue == (int)PositionType.Absolute ||
+                Layout(nameof(LayoutStyle.position)).hasMultipleDifferentValues)
+                DrawEdges("Inset", Layout(nameof(LayoutStyle.inset)));
 
             EditorGUILayout.Space(2f);
-            LayoutGui.EnumButtons("Direction", Layout(nameof(LayoutStyle.Direction)),
+            LayoutGui.EnumButtons("Direction", Layout(nameof(LayoutStyle.direction)),
                 new[]
                 {
                     (int)FlexDirection.Row, (int)FlexDirection.Column, (int)FlexDirection.RowReverse,
                     (int)FlexDirection.ColumnReverse
                 },
                 new[] { "Row →", "Column ↓", "Row ←", "Column ↑" });
-            LayoutGui.EnumButtons("Wrap", Layout(nameof(LayoutStyle.Wrap)),
+            LayoutGui.EnumButtons("Wrap", Layout(nameof(LayoutStyle.wrap)),
                 new[] { (int)FlexWrap.NoWrap, (int)FlexWrap.Wrap, (int)FlexWrap.WrapReverse },
                 new[] { "No Wrap", "Wrap", "Reverse" });
-            LayoutGui.EnumButtons("Justify", Layout(nameof(LayoutStyle.JustifyContent)),
+            LayoutGui.EnumButtons("Justify", Layout(nameof(LayoutStyle.justifyContent)),
                 new[]
                 {
                     (int)FlexJustify.FlexStart, (int)FlexJustify.Center, (int)FlexJustify.FlexEnd,
                     (int)FlexJustify.SpaceBetween, (int)FlexJustify.SpaceAround, (int)FlexJustify.SpaceEvenly
                 },
                 new[] { "Start", "Center", "End", "Between", "Around", "Evenly" });
-            LayoutGui.EnumButtons("Align Items", Layout(nameof(LayoutStyle.AlignItems)),
+            LayoutGui.EnumButtons("Align Items", Layout(nameof(LayoutStyle.alignItems)),
                 new[]
                 {
                     (int)FlexAlign.FlexStart, (int)FlexAlign.Center, (int)FlexAlign.FlexEnd, (int)FlexAlign.Stretch,
                     (int)FlexAlign.Baseline
                 },
                 new[] { "Start", "Center", "End", "Stretch", "Baseline" });
-            LayoutGui.EnumButtons("Align Self", Layout(nameof(LayoutStyle.AlignSelf)),
+            LayoutGui.EnumButtons("Align Self", Layout(nameof(LayoutStyle.alignSelf)),
                 new[]
                 {
                     (int)FlexAlign.Auto, (int)FlexAlign.FlexStart, (int)FlexAlign.Center, (int)FlexAlign.FlexEnd,
@@ -109,21 +109,21 @@ namespace Yaui.Editor
                 new[] { "Auto", "Start", "Center", "End", "Stretch" });
 
             EditorGUILayout.Space(2f);
-            SizeRow("Size", Layout(nameof(LayoutStyle.Width)), Layout(nameof(LayoutStyle.Height)));
-            SizeRow("Min", Layout(nameof(LayoutStyle.MinWidth)), Layout(nameof(LayoutStyle.MinHeight)));
-            SizeRow("Max", Layout(nameof(LayoutStyle.MaxWidth)), Layout(nameof(LayoutStyle.MaxHeight)));
+            SizeRow("Size", Layout(nameof(LayoutStyle.width)), Layout(nameof(LayoutStyle.height)));
+            SizeRow("Min", Layout(nameof(LayoutStyle.minWidth)), Layout(nameof(LayoutStyle.minHeight)));
+            SizeRow("Max", Layout(nameof(LayoutStyle.maxWidth)), Layout(nameof(LayoutStyle.maxHeight)));
             FlexRow();
-            EditorGUILayout.PropertyField(Layout(nameof(LayoutStyle.Gap)));
+            EditorGUILayout.PropertyField(Layout(nameof(LayoutStyle.gap)));
 
             EditorGUILayout.Space(2f);
             DrawBoxModel();
 
-            showAllLayout = EditorGUILayout.Foldout(showAllLayout, "All Layout Properties", true);
-            if (showAllLayout)
+            _showAllLayout = EditorGUILayout.Foldout(_showAllLayout, "All Layout Properties", true);
+            if (_showAllLayout)
             {
                 EditorGUI.indentLevel++;
-                var iterator = layout.Copy();
-                var end = layout.GetEndProperty();
+                var iterator = _layout.Copy();
+                var end = _layout.GetEndProperty();
                 iterator.NextVisible(true);
                 while (!SerializedProperty.EqualContents(iterator, end))
                 {
@@ -157,12 +157,12 @@ namespace Yaui.Editor
             var third = (rect.width - 8f) / 3f;
             var indent = EditorGUI.indentLevel;
             EditorGUI.indentLevel = 0;
-            EditorGUI.PropertyField(new Rect(rect.x, rect.y, third, rect.height), Layout(nameof(LayoutStyle.Grow)),
+            EditorGUI.PropertyField(new Rect(rect.x, rect.y, third, rect.height), Layout(nameof(LayoutStyle.grow)),
                 GUIContent.none);
             EditorGUI.PropertyField(new Rect(rect.x + third + 4f, rect.y, third, rect.height),
-                Layout(nameof(LayoutStyle.Shrink)), GUIContent.none);
+                Layout(nameof(LayoutStyle.shrink)), GUIContent.none);
             LayoutGui.LengthField(new Rect(rect.x + (third + 4f) * 2f, rect.y, third, rect.height),
-                Layout(nameof(LayoutStyle.Basis)));
+                Layout(nameof(LayoutStyle.basis)));
             EditorGUI.indentLevel = indent;
         }
 
@@ -173,7 +173,7 @@ namespace Yaui.Editor
             var quarter = (rect.width - 12f) / 4f;
             var indent = EditorGUI.indentLevel;
             EditorGUI.indentLevel = 0;
-            string[] names = { nameof(Edges.Left), nameof(Edges.Top), nameof(Edges.Right), nameof(Edges.Bottom) };
+            string[] names = { nameof(Edges.left), nameof(Edges.top), nameof(Edges.right), nameof(Edges.bottom) };
             for (var i = 0; i < 4; i++)
                 LayoutGui.LengthField(new Rect(rect.x + (quarter + 4f) * i, rect.y, quarter, rect.height),
                     edges.FindPropertyRelative(names[i]));
@@ -188,9 +188,9 @@ namespace Yaui.Editor
             const float row = 18f;
             var rect = GUILayoutUtility.GetRect(0f, row * 7f + 8f, GUILayout.ExpandWidth(true));
             rect = new Rect(rect.x + 4f, rect.y + 4f, rect.width - 8f, rect.height - 8f);
-            var margin = Layout(nameof(LayoutStyle.Margin));
-            var padding = Layout(nameof(LayoutStyle.Padding));
-            var border = box.FindPropertyRelative(nameof(BoxStyle.BorderWidth));
+            var margin = Layout(nameof(LayoutStyle.margin));
+            var padding = Layout(nameof(LayoutStyle.padding));
+            var border = _box.FindPropertyRelative(nameof(BoxStyle.borderWidth));
 
             EditorGUI.DrawRect(rect, MarginColor);
             var borderRect = Inset(rect, field, row);
@@ -229,13 +229,13 @@ namespace Yaui.Editor
             var w = field - 4f;
             var h = row - 2f;
             LayoutGui.LengthField(new Rect(outer.center.x - w * 0.5f, outer.y + 1f, w, h),
-                edges.FindPropertyRelative(nameof(Edges.Top)));
+                edges.FindPropertyRelative(nameof(Edges.top)));
             LayoutGui.LengthField(new Rect(outer.center.x - w * 0.5f, inner.yMax + 1f, w, h),
-                edges.FindPropertyRelative(nameof(Edges.Bottom)));
+                edges.FindPropertyRelative(nameof(Edges.bottom)));
             LayoutGui.LengthField(new Rect(outer.x + 2f, outer.center.y - h * 0.5f, w, h),
-                edges.FindPropertyRelative(nameof(Edges.Left)));
+                edges.FindPropertyRelative(nameof(Edges.left)));
             LayoutGui.LengthField(new Rect(inner.xMax + 2f, outer.center.y - h * 0.5f, w, h),
-                edges.FindPropertyRelative(nameof(Edges.Right)));
+                edges.FindPropertyRelative(nameof(Edges.right)));
         }
 
         private void OnSceneGUI()
@@ -285,18 +285,18 @@ namespace Yaui.Editor
                 using var handleObject = new SerializedObject(element);
                 var handleLayout = handleObject.FindProperty("layout");
                 if (resized.x != size.x)
-                    LayoutGui.Write(handleLayout.FindPropertyRelative(nameof(LayoutStyle.Width)),
+                    LayoutGui.Write(handleLayout.FindPropertyRelative(nameof(LayoutStyle.width)),
                         Length.Points(Mathf.Round(math.max(resized.x, 0f))));
 
                 if (resized.y != size.y)
-                    LayoutGui.Write(handleLayout.FindPropertyRelative(nameof(LayoutStyle.Height)),
+                    LayoutGui.Write(handleLayout.FindPropertyRelative(nameof(LayoutStyle.height)),
                         Length.Points(Mathf.Round(math.max(resized.y, 0f))));
 
                 handleObject.ApplyModifiedProperties();
             }
 
             // Position: absolutely positioned elements move by their insets.
-            if (element.Layout.Position != PositionType.Absolute) return;
+            if (element.Layout.position != PositionType.Absolute) return;
 
             var center = World(size * 0.5f);
             EditorGUI.BeginChangeCheck();
@@ -307,10 +307,10 @@ namespace Yaui.Editor
             var to = toCanvas.MultiplyPoint3x4(moved);
             var delta = new float2(Mathf.Round(to.x - from.x), Mathf.Round(to.y - from.y));
             using var insetObject = new SerializedObject(element);
-            var inset = insetObject.FindProperty("layout").FindPropertyRelative(nameof(LayoutStyle.Inset));
-            MoveInset(inset.FindPropertyRelative(nameof(Edges.Left)), inset.FindPropertyRelative(nameof(Edges.Right)),
+            var inset = insetObject.FindProperty("layout").FindPropertyRelative(nameof(LayoutStyle.inset));
+            MoveInset(inset.FindPropertyRelative(nameof(Edges.left)), inset.FindPropertyRelative(nameof(Edges.right)),
                 delta.x);
-            MoveInset(inset.FindPropertyRelative(nameof(Edges.Top)), inset.FindPropertyRelative(nameof(Edges.Bottom)),
+            MoveInset(inset.FindPropertyRelative(nameof(Edges.top)), inset.FindPropertyRelative(nameof(Edges.bottom)),
                 delta.y);
             insetObject.ApplyModifiedProperties();
         }
@@ -335,10 +335,10 @@ namespace Yaui.Editor
 
             var s = LayoutGui.Read(start);
             var e = LayoutGui.Read(end);
-            if (s.Unit == LengthUnit.Point || e.Unit != LengthUnit.Point)
-                LayoutGui.Write(start, Length.Points((s.Unit == LengthUnit.Point ? s.Value : 0f) + delta));
+            if (s.unit == LengthUnit.Point || e.unit != LengthUnit.Point)
+                LayoutGui.Write(start, Length.Points((s.unit == LengthUnit.Point ? s.value : 0f) + delta));
             else
-                LayoutGui.Write(end, Length.Points(e.Value - delta));
+                LayoutGui.Write(end, Length.Points(e.value - delta));
         }
     }
 }

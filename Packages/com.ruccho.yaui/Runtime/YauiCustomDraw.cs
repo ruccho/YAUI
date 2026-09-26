@@ -32,7 +32,7 @@ namespace Yaui
     {
         [SerializeField] private YauiCustomDrawPosition position;
 
-        private YauiElement element;
+        private YauiElement _element;
 
         /// <summary>The draws recorded at the last collection.</summary>
         [NonSerialized] internal readonly YauiDrawList Draws = new();
@@ -48,7 +48,7 @@ namespace Yaui
         }
 
         /// <summary>The element whose draw order the meshes join.</summary>
-        protected YauiElement Element => element != null ? element : element = GetComponent<YauiElement>();
+        protected YauiElement Element => _element != null ? _element : _element = GetComponent<YauiElement>();
 
         internal YauiElement OwnerElement => Element;
 
@@ -62,7 +62,7 @@ namespace Yaui
         {
             YauiSystem.RemoveCustomDraw(this);
             Draws.Clear();
-            if (element != null) element.ClearCustomDraw(this);
+            if (_element != null) _element.ClearCustomDraw(this);
         }
 
         protected virtual void OnValidate()

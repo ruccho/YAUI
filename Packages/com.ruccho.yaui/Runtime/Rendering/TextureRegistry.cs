@@ -28,12 +28,12 @@ namespace Yaui.Rendering
     {
         public const int SlotCount = 8;
 
-        private readonly List<Texture> textures = new() { null };
-        private readonly List<Vector4> parameters = new() { Vector4.zero };
-        private readonly List<int> references = new() { 0 };
-        private readonly Stack<int> free = new();
-        private readonly Dictionary<Texture, int> ids = new();
-        private readonly Dictionary<Sprite, AtlasedSprite> atlasedSprites = new();
+        private readonly List<Texture> _textures = new() { null };
+        private readonly List<Vector4> _parameters = new() { Vector4.zero };
+        private readonly List<int> _references = new() { 0 };
+        private readonly Stack<int> _free = new();
+        private readonly Dictionary<Texture, int> _ids = new();
+        private readonly Dictionary<Sprite, AtlasedSprite> _atlasedSprites = new();
 
         private struct AtlasedSprite
         {
@@ -50,85 +50,85 @@ namespace Yaui.Rendering
 
         public Texture Get(int id)
         {
-            return id > 0 && id < textures.Count ? textures[id] : null;
+            return id > 0 && id < _textures.Count ? _textures[id] : null;
         }
 
         /// <summary>x: width in texels, y: distance field spread in texels, z: height in texels.</summary>
         public Vector4 Parameters(int id)
         {
-            return id > 0 && id < parameters.Count ? parameters[id] : Vector4.zero;
+            return id > 0 && id < _parameters.Count ? _parameters[id] : Vector4.zero;
         }
 
         /// <summary>The id of a texture that stays registered (font atlases).</summary>
         public int GetPermanent(Texture texture, float spread)
         {
             var id = Acquire(texture);
-            if (references[id] > 1) references[id]--;
+            if (_references[id] > 1) _references[id]--;
 
-            parameters[id] = new Vector4(texture.width, spread, texture.height, 0f);
+            _parameters[id] = new Vector4(texture.width, spread, texture.height, 0f);
             return id;
         }
 
         /// <summary>Marks a texture as a distance field atlas and updates its size (after a resize).</summary>
         public void SetDistanceField(int id, float spread)
         {
-            var texture = textures[id];
-            parameters[id] = new Vector4(texture.width, spread, texture.height, 0f);
+            var texture = _textures[id];
+            _parameters[id] = new Vector4(texture.width, spread, texture.height, 0f);
         }
 
         /// <summary>Registers a texture, or adds a reference to it. Released with <see cref="Release"/>.</summary>
         public int Acquire(Texture texture)
         {
-            if (ids.TryGetValue(texture, out var id))
+            if (_ids.TryGetValue(texture, out var id))
             {
-                references[id]++;
+                _references[id]++;
                 return id;
             }
 
-            if (free.Count > 0)
+            if (_free.Count > 0)
             {
-                id = free.Pop();
-                textures[id] = texture;
-                parameters[id] = new Vector4(texture.width, 0f, texture.height, 0f);
-                references[id] = 1;
+                id = _free.Pop();
+                _textures[id] = texture;
+                _parameters[id] = new Vector4(texture.width, 0f, texture.height, 0f);
+                _references[id] = 1;
             }
             else
             {
-                id = textures.Count;
+                id = _textures.Count;
                 if (id > ushort.MaxValue) throw new InvalidOperationException("[YAUI] Too many textures in use.");
 
-                textures.Add(texture);
-                parameters.Add(new Vector4(texture.width, 0f, texture.height, 0f));
-                references.Add(1);
+                _textures.Add(texture);
+                _parameters.Add(new Vector4(texture.width, 0f, texture.height, 0f));
+                _references.Add(1);
             }
 
-            ids[texture] = id;
+            _ids[texture] = id;
             return id;
         }
 
         public void Release(int id)
         {
-            if (id <= 0 || id >= references.Count || references[id] <= 0 || --references[id] > 0) return;
+            if (id <= 0 || id >= _references.Count || _references[id] <= 0 || --_references[id] > 0) return;
 
-            if (textures[id] != null) ids.Remove(textures[id]);
+            if (_textures[id] != null) _ids.Remove(_textures[id]);
 
-            textures[id] = null;
-            free.Push(id);
+            _textures[id] = null;
+            _free.Push(id);
         }
 
         /// <summary>A sprite to draw: in the dynamic atlas if it qualifies, otherwise its own texture.</summary>
         public SpriteTexture AcquireSprite(Sprite sprite)
         {
-            if (atlasedSprites.TryGetValue(sprite, out var atlased))
+            if (_atlasedSprites.TryGetValue(sprite, out var atlased))
             {
                 atlased.References++;
-                atlasedSprites[sprite] = atlased;
+                _atlasedSprites[sprite] = atlased;
                 return AtlasedTexture(atlased.Entry);
             }
 
             if (Atlas.TryAdd(sprite, out var entry))
             {
-                atlasedSprites[sprite] = new AtlasedSprite { Entry = entry, References = 1 };
+                _atlasedSprites[sprite] = new AtlasedSprite { Entry = entry, References = 1 };
                 return AtlasedTexture(entry);
             }
 
@@ -145,16 +145,16 @@ namespace Yaui.Rendering
 
         public void ReleaseSprite(Sprite sprite, SpriteTexture texture)
         {
-            if (sprite != null && atlasedSprites.TryGetValue(sprite, out var atlased))
+            if (sprite != null && _atlasedSprites.TryGetValue(sprite, out var atlased))
             {
                 if (--atlased.References == 0)
                 {
-                    atlasedSprites.Remove(sprite);
+                    _atlasedSprites.Remove(sprite);
                     Atlas.Remove(atlased.Entry);
                 }
                 else
                 {
-                    atlasedSprites[sprite] = atlased;
+                    _atlasedSprites[sprite] = atlased;
                 }
 
                 return;

@@ -14,54 +14,54 @@ namespace Yaui.Rendering
     {
         public const int ChunkShift = 6;
 
-        private NativeList<T> items;
-        private NativeList<int> free;
+        private NativeList<T> _items;
+        private NativeList<int> _free;
 
         // Free blocks of AllocateRange by capacity.
-        private readonly Dictionary<int, Stack<int>> freeRanges = new();
+        private readonly Dictionary<int, Stack<int>> _freeRanges = new();
 
         // One bit per chunk.
-        private NativeList<ulong> dirtyChunks;
-        private GraphicsBuffer buffer;
+        private NativeList<ulong> _dirtyChunks;
+        private GraphicsBuffer _buffer;
 
         /// <param name="reserved">Slots at the start that are never allocated, such as index 0 meaning "none".</param>
         public GpuStore(int capacity, int reserved = 0)
         {
-            items = new NativeList<T>(Math.Max(capacity, reserved + 1), Allocator.Persistent);
-            free = new NativeList<int>(64, Allocator.Persistent);
-            dirtyChunks = new NativeList<ulong>(16, Allocator.Persistent);
-            for (var i = 0; i < reserved; i++) items.Add(default);
+            _items = new NativeList<T>(Math.Max(capacity, reserved + 1), Allocator.Persistent);
+            _free = new NativeList<int>(64, Allocator.Persistent);
+            _dirtyChunks = new NativeList<ulong>(16, Allocator.Persistent);
+            for (var i = 0; i < reserved; i++) _items.Add(default);
 
             EnsureDirtyCapacity();
             MarkAllDirty();
         }
 
-        public int Length => items.Length;
+        public int Length => _items.Length;
 
-        public GraphicsBuffer Buffer => buffer;
+        public GraphicsBuffer Buffer => _buffer;
 
         /// <summary>Records by slot, for jobs. Valid until the next <see cref="Allocate"/>.</summary>
         public NativeArray<T> AsArray()
         {
-            return items.AsArray();
+            return _items.AsArray();
         }
 
         /// <summary>Dirty chunk bits, for jobs that write records. Valid until the next <see cref="Allocate"/>.</summary>
-        public NativeArray<ulong> DirtyChunks => dirtyChunks.AsArray();
+        public NativeArray<ulong> DirtyChunks => _dirtyChunks.AsArray();
 
         public int Allocate()
         {
             int slot;
-            if (free.Length > 0)
+            if (_free.Length > 0)
             {
-                slot = free[free.Length - 1];
-                free.RemoveAt(free.Length - 1);
-                items[slot] = default;
+                slot = _free[_free.Length - 1];
+                _free.RemoveAt(_free.Length - 1);
+                _items[slot] = default;
             }
             else
             {
-                slot = items.Length;
-                items.Add(default);
+                slot = _items.Length;
+                _items.Add(default);
                 EnsureDirtyCapacity();
             }
 
@@ -78,10 +78,10 @@ namespace Yaui.Rendering
         /// <summary>Allocates <paramref name="capacity"/> contiguous slots (see <see cref="RangeCapacity"/>).</summary>
         public int AllocateRange(int capacity)
         {
-            if (freeRanges.TryGetValue(capacity, out var stack) && stack.Count > 0) return stack.Pop();
+            if (_freeRanges.TryGetValue(capacity, out var stack) && stack.Count > 0) return stack.Pop();
 
-            var start = items.Length;
-            for (var i = 0; i < capacity; i++) items.Add(default);
+            var start = _items.Length;
+            for (var i = 0; i < capacity; i++) _items.Add(default);
 
             EnsureDirtyCapacity();
             for (var i = 0; i < capacity; i += 1 << ChunkShift) MarkDirty(start + i);
@@ -94,20 +94,20 @@ namespace Yaui.Rendering
         {
             for (var i = 0; i < capacity; i++)
             {
-                items[start + i] = default;
+                _items[start + i] = default;
                 MarkDirty(start + i);
             }
 
-            if (!freeRanges.TryGetValue(capacity, out var stack)) freeRanges[capacity] = stack = new Stack<int>();
+            if (!_freeRanges.TryGetValue(capacity, out var stack)) _freeRanges[capacity] = stack = new Stack<int>();
 
             stack.Push(start);
         }
 
         public void Free(int slot)
         {
-            items[slot] = default;
+            _items[slot] = default;
             MarkDirty(slot);
-            free.Add(slot);
+            _free.Add(slot);
         }
 
         /// <summary>Returns the record for writing and marks its chunk dirty.</summary>
@@ -116,18 +116,18 @@ namespace Yaui.Rendering
             get
             {
                 MarkDirty(slot);
-                return ref items.ElementAt(slot);
+                return ref _items.ElementAt(slot);
             }
         }
 
         public T Read(int slot)
         {
-            return items[slot];
+            return _items[slot];
         }
 
         public void MarkDirty(int slot)
         {
-            MarkDirty(dirtyChunks.AsArray(), slot);
+            MarkDirty(_dirtyChunks.AsArray(), slot);
         }
 
         /// <summary>Marks the chunk of <paramref name="slot"/> dirty. Usable from jobs with <see cref="DirtyChunks"/>.</summary>
@@ -139,33 +139,33 @@ namespace Yaui.Rendering
 
         private void MarkAllDirty()
         {
-            for (var i = 0; i < dirtyChunks.Length; i++) dirtyChunks[i] = ~0ul;
+            for (var i = 0; i < _dirtyChunks.Length; i++) _dirtyChunks[i] = ~0ul;
         }
 
         private void EnsureDirtyCapacity()
         {
-            var chunks = (items.Length + (1 << ChunkShift) - 1) >> ChunkShift;
+            var chunks = (_items.Length + (1 << ChunkShift) - 1) >> ChunkShift;
             var words = (chunks + 63) >> 6;
-            while (dirtyChunks.Length < words) dirtyChunks.Add(0);
+            while (_dirtyChunks.Length < words) _dirtyChunks.Add(0);
         }
 
         /// <summary>Sends the dirty chunks, recreating the buffer if it is too small. Returns the buffer.</summary>
         public GraphicsBuffer Upload()
         {
-            if (buffer == null || buffer.count < items.Length)
+            if (_buffer == null || _buffer.count < _items.Length)
             {
-                buffer?.Dispose();
-                buffer = new GraphicsBuffer(GraphicsBuffer.Target.Structured, Math.Max(items.Capacity, 64),
+                _buffer?.Dispose();
+                _buffer = new GraphicsBuffer(GraphicsBuffer.Target.Structured, Math.Max(_items.Capacity, 64),
                     UnsafeUtility.SizeOf<T>());
                 MarkAllDirty();
             }
 
-            var array = items.AsArray();
+            var array = _items.AsArray();
             var chunkSize = 1 << ChunkShift;
             var runStart = -1;
-            for (var word = 0; word < dirtyChunks.Length; word++)
+            for (var word = 0; word < _dirtyChunks.Length; word++)
             {
-                var bits = dirtyChunks[word];
+                var bits = _dirtyChunks[word];
                 if (bits == 0ul && runStart < 0) continue;
 
                 for (var bit = 0; bit < 64; bit++)
@@ -183,29 +183,29 @@ namespace Yaui.Rendering
                     }
                 }
 
-                dirtyChunks[word] = 0ul;
+                _dirtyChunks[word] = 0ul;
             }
 
             if (runStart >= 0) UploadRun(array, runStart * chunkSize, array.Length);
 
-            return buffer;
+            return _buffer;
         }
 
         private void UploadRun(NativeArray<T> array, int start, int end)
         {
             end = Math.Min(end, array.Length);
-            if (end > start) buffer.SetData(array, start, start, end - start);
+            if (end > start) _buffer.SetData(array, start, start, end - start);
         }
 
         public void Dispose()
         {
-            buffer?.Dispose();
-            buffer = null;
-            if (items.IsCreated)
+            _buffer?.Dispose();
+            _buffer = null;
+            if (_items.IsCreated)
             {
-                items.Dispose();
-                free.Dispose();
-                dirtyChunks.Dispose();
+                _items.Dispose();
+                _free.Dispose();
+                _dirtyChunks.Dispose();
             }
         }
     }

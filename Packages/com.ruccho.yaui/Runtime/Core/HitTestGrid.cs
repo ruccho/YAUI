@@ -20,28 +20,28 @@ namespace Yaui.Core
         private static readonly ProfilerMarker BuildMarker = new("Yaui.HitTest.Build");
         private static readonly ProfilerMarker QueryMarker = new("Yaui.HitTest.Query");
 
-        private NativeArray<int> cellStart = new(GridSize * GridSize + 1, Allocator.Persistent);
-        private NativeList<int> cellItems = new(256, Allocator.Persistent);
+        private NativeArray<int> _cellStart = new(GridSize * GridSize + 1, Allocator.Persistent);
+        private NativeList<int> _cellItems = new(256, Allocator.Persistent);
 
         // Per depth-first index, copied when built so that queries stay valid until the next build.
-        private NativeList<float2x3> inverseWorld = new(64, Allocator.Persistent);
-        private NativeList<float4> hitBounds = new(64, Allocator.Persistent);
-        private NativeList<float4> clipRects = new(64, Allocator.Persistent);
-        private NativeList<float2> sizes = new(64, Allocator.Persistent);
-        private NativeList<int> results = new(8, Allocator.Persistent);
-        private float2 canvasSize = 1f;
+        private NativeList<float2x3> _inverseWorld = new(64, Allocator.Persistent);
+        private NativeList<float4> _hitBounds = new(64, Allocator.Persistent);
+        private NativeList<float4> _clipRects = new(64, Allocator.Persistent);
+        private NativeList<float2> _sizes = new(64, Allocator.Persistent);
+        private NativeList<int> _results = new(8, Allocator.Persistent);
+        private float2 _canvasSize = 1f;
 
         /// <summary>Main thread: sorts the hittable elements into the grid.</summary>
         public void Build(NativeArray<int> nodes, NativeArray<int> parents, NativeArray<NodeCpuData> cpu,
             NativeArray<float2x3> world, NativeArray<float4> clipRects, float2 canvasSize)
         {
             using var _ = BuildMarker.Auto();
-            this.canvasSize = math.max(canvasSize, 1f);
+            this._canvasSize = math.max(canvasSize, 1f);
             var count = nodes.Length;
-            inverseWorld.ResizeUninitialized(count);
-            hitBounds.ResizeUninitialized(count);
-            this.clipRects.ResizeUninitialized(count);
-            sizes.ResizeUninitialized(count);
+            _inverseWorld.ResizeUninitialized(count);
+            _hitBounds.ResizeUninitialized(count);
+            this._clipRects.ResizeUninitialized(count);
+            _sizes.ResizeUninitialized(count);
             new BuildJob
             {
                 Nodes = nodes,
@@ -49,13 +49,13 @@ namespace Yaui.Core
                 Cpu = cpu,
                 World = world,
                 InheritedClips = clipRects,
-                CanvasSize = this.canvasSize,
-                InverseWorld = inverseWorld.AsArray(),
-                HitBounds = hitBounds.AsArray(),
-                ClipRects = this.clipRects.AsArray(),
-                Sizes = sizes.AsArray(),
-                CellStart = cellStart,
-                CellItems = cellItems
+                CanvasSize = this._canvasSize,
+                InverseWorld = _inverseWorld.AsArray(),
+                HitBounds = _hitBounds.AsArray(),
+                ClipRects = this._clipRects.AsArray(),
+                Sizes = _sizes.AsArray(),
+                CellStart = _cellStart,
+                CellItems = _cellItems
             }.Run();
         }
 
@@ -63,39 +63,39 @@ namespace Yaui.Core
         public int Query(float2 point)
         {
             QueryAll(point);
-            return results.Length > 0 ? results[0] : -1;
+            return _results.Length > 0 ? _results[0] : -1;
         }
 
         /// <summary>Main thread: the depth-first indices of all elements at a canvas point, topmost first.</summary>
         public NativeArray<int> QueryAll(float2 point)
         {
-            results.Clear();
-            if (hitBounds.Length == 0) return results.AsArray();
+            _results.Clear();
+            if (_hitBounds.Length == 0) return _results.AsArray();
 
             using var _ = QueryMarker.Auto();
             new QueryJob
             {
                 Point = point,
-                CanvasSize = canvasSize,
-                CellStart = cellStart,
-                CellItems = cellItems.AsArray(),
-                InverseWorld = inverseWorld.AsArray(),
-                ClipRects = clipRects.AsArray(),
-                Sizes = sizes.AsArray(),
-                Results = results
+                CanvasSize = _canvasSize,
+                CellStart = _cellStart,
+                CellItems = _cellItems.AsArray(),
+                InverseWorld = _inverseWorld.AsArray(),
+                ClipRects = _clipRects.AsArray(),
+                Sizes = _sizes.AsArray(),
+                Results = _results
             }.Run();
-            return results.AsArray();
+            return _results.AsArray();
         }
 
         public void Dispose()
         {
-            cellStart.Dispose();
-            cellItems.Dispose();
-            inverseWorld.Dispose();
-            hitBounds.Dispose();
-            clipRects.Dispose();
-            sizes.Dispose();
-            results.Dispose();
+            _cellStart.Dispose();
+            _cellItems.Dispose();
+            _inverseWorld.Dispose();
+            _hitBounds.Dispose();
+            _clipRects.Dispose();
+            _sizes.Dispose();
+            _results.Dispose();
         }
 
         private static int2 ToCell(float2 p, float2 canvasSize)

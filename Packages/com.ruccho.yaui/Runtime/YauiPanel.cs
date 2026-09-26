@@ -57,8 +57,8 @@ namespace Yaui
         /// <summary>World space: the camera pointer events are seen through (the main camera when null).</summary>
         [SerializeField] private Camera eventCamera;
 
-        [NonSerialized] private PanelState state;
-        [NonSerialized] private YauiElement element;
+        [NonSerialized] private PanelState _state;
+        [NonSerialized] private YauiElement _element;
 
         public PanelRenderMode RenderMode
         {
@@ -144,15 +144,15 @@ namespace Yaui
         }
 
         /// <summary>Canvas units per screen pixel is the inverse of this.</summary>
-        public float ScaleFactor => state?.ScaleFactor ?? 1f;
+        public float ScaleFactor => _state?.ScaleFactor ?? 1f;
 
         /// <summary>Size of the panel in canvas units.</summary>
-        public Vector2 CanvasSize => state != null ? (Vector2)state.CanvasSize : Vector2.zero;
+        public Vector2 CanvasSize => _state != null ? (Vector2)_state.CanvasSize : Vector2.zero;
 
-        internal PanelState State => state ??= YauiSystem.CreatePanel(this);
+        internal PanelState State => _state ??= YauiSystem.CreatePanel(this);
 
         /// <summary>The state if the panel is active, without creating it.</summary>
-        internal PanelState CurrentState => state;
+        internal PanelState CurrentState => _state;
 
         /// <summary>
         /// Converts a screen position (pixels, origin at the bottom-left) to canvas space (origin at the top-left,
@@ -170,7 +170,7 @@ namespace Yaui
         public bool TryCanvasToScreen(Vector2 canvas, out Vector2 screenPosition)
         {
             screenPosition = default;
-            if (state == null) return false;
+            if (_state == null) return false;
 
             if (renderMode == PanelRenderMode.World)
             {
@@ -183,8 +183,8 @@ namespace Yaui
                 return screen.z > 0f;
             }
 
-            var scale = state.ScaleFactor;
-            screenPosition = new Vector2(canvas.x * scale, state.CanvasSize.y * scale - canvas.y * scale);
+            var scale = _state.ScaleFactor;
+            screenPosition = new Vector2(canvas.x * scale, _state.CanvasSize.y * scale - canvas.y * scale);
             return true;
         }
 
@@ -194,7 +194,7 @@ namespace Yaui
             canvas = default;
             distance = 0f;
             worldPosition = Vector3.zero;
-            if (state == null) return false;
+            if (_state == null) return false;
 
             if (renderMode == PanelRenderMode.World)
             {
@@ -211,8 +211,8 @@ namespace Yaui
                 return true;
             }
 
-            var screenHeight = state.CanvasSize.y * state.ScaleFactor;
-            canvas = new float2(screenPosition.x, screenHeight - screenPosition.y) / state.ScaleFactor;
+            var screenHeight = _state.CanvasSize.y * _state.ScaleFactor;
+            canvas = new float2(screenPosition.x, screenHeight - screenPosition.y) / _state.ScaleFactor;
             return true;
         }
 
@@ -222,7 +222,7 @@ namespace Yaui
         /// </summary>
         public YauiElement HitTest(Vector2 screenPosition)
         {
-            return state?.HitTest(screenPosition);
+            return _state?.HitTest(screenPosition);
         }
 
         /// <summary>
@@ -235,7 +235,7 @@ namespace Yaui
             YauiSystem.ForceUpdate();
         }
 
-        internal YauiElement Element => element != null ? element : element = GetComponent<YauiElement>();
+        internal YauiElement Element => _element != null ? _element : _element = GetComponent<YauiElement>();
 
         private void OnEnable()
         {
@@ -247,10 +247,10 @@ namespace Yaui
 
         private void OnDisable()
         {
-            if (state == null) return;
+            if (_state == null) return;
 
-            var old = state;
-            state = null;
+            var old = _state;
+            _state = null;
             foreach (var e in GetComponentsInChildren<YauiElement>(true))
                 if (e.IsRegisteredTo(old))
                     e.Unregister();

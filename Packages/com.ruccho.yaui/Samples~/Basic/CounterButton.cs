@@ -15,32 +15,32 @@ namespace Yaui.Samples.Basic
         [SerializeField] Color normal = new(0.35f, 0.4f, 0.95f);
         [SerializeField] Color hover = new(0.45f, 0.5f, 1f);
 
-        YauiElement element;
-        int count;
+        YauiElement _element;
+        int _count;
 
         void Awake()
         {
-            element = GetComponent<YauiElement>();
-            element.BackgroundColor = normal;
+            _element = GetComponent<YauiElement>();
+            _element.BackgroundColor = normal;
         }
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            count++;
-            label.Text = $"Clicked {count} times";
+            _count++;
+            label.Text = $"Clicked {_count} times";
         }
 
-        public void OnPointerEnter(PointerEventData eventData) => element.BackgroundColor = hover;
+        public void OnPointerEnter(PointerEventData eventData) => _element.BackgroundColor = hover;
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            element.BackgroundColor = normal;
-            element.Scale = Vector2.one;
+            _element.BackgroundColor = normal;
+            _element.Scale = Vector2.one;
         }
 
         // A render transform animates without relayout.
-        public void OnPointerDown(PointerEventData eventData) => element.Scale = new Vector2(0.95f, 0.95f);
+        public void OnPointerDown(PointerEventData eventData) => _element.Scale = new Vector2(0.95f, 0.95f);
 
-        public void OnPointerUp(PointerEventData eventData) => element.Scale = Vector2.one;
+        public void OnPointerUp(PointerEventData eventData) => _element.Scale = Vector2.one;
     }
 }

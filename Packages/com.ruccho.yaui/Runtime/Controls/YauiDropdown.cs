@@ -19,8 +19,8 @@ namespace Yaui
         [Serializable]
         public class OptionData
         {
-            public string Text;
-            public Sprite Image;
+            public string text;
+            public Sprite image;
 
             public OptionData()
             {
@@ -28,8 +28,8 @@ namespace Yaui
 
             public OptionData(string text, Sprite image = null)
             {
-                Text = text;
-                Image = image;
+                this.text = text;
+                this.image = image;
             }
         }
 
@@ -55,9 +55,9 @@ namespace Yaui
         [SerializeField] private int value;
         [SerializeField] private DropdownEvent onValueChanged = new();
 
-        [NonSerialized] private GameObject list;
-        [NonSerialized] private GameObject blocker;
-        [NonSerialized] private readonly List<YauiToggle> items = new();
+        [NonSerialized] private GameObject _list;
+        [NonSerialized] private GameObject _blocker;
+        [NonSerialized] private readonly List<YauiToggle> _items = new();
 
         public YauiElement Template
         {
@@ -122,14 +122,14 @@ namespace Yaui
         }
 
         /// <summary>The shown list and its items (tests).</summary>
-        internal GameObject ListObject => list;
+        internal GameObject ListObject => _list;
 
-        internal IReadOnlyList<YauiToggle> Items => items;
+        internal IReadOnlyList<YauiToggle> Items => _items;
 
-        internal GameObject BlockerObject => blocker;
+        internal GameObject BlockerObject => _blocker;
 
         /// <summary>Whether the list is shown.</summary>
-        public bool IsExpanded => list != null;
+        public bool IsExpanded => _list != null;
 
         public void SetValueWithoutNotify(int input)
         {
@@ -188,12 +188,12 @@ namespace Yaui
         public void RefreshShownValue()
         {
             var option = value >= 0 && value < options.Count ? options[value] : null;
-            if (captionText != null) captionText.Text = option?.Text ?? "";
+            if (captionText != null) captionText.Text = option?.text ?? "";
 
             if (captionImage != null)
             {
-                captionImage.Sprite = option?.Image;
-                captionImage.Opacity = option?.Image != null ? 1f : 0f;
+                captionImage.Sprite = option?.image;
+                captionImage.Opacity = option?.image != null ? 1f : 0f;
             }
         }
 
@@ -219,7 +219,7 @@ namespace Yaui
         /// <summary>Shows the list below the dropdown (above it if there is no room below).</summary>
         public void Show()
         {
-            if (list != null || !IsInteractable || template == null || itemText == null ||
+            if (_list != null || !IsInteractable || template == null || itemText == null ||
                 !itemText.transform.IsChildOf(template.transform))
                 return;
 
@@ -231,39 +231,39 @@ namespace Yaui
             var size = Element.LayoutRect.size;
 
             // Behind the list, a blocker takes the presses outside it.
-            blocker = new GameObject("Dropdown Blocker") { hideFlags = HideFlags.HideAndDontSave };
-            blocker.transform.SetParent(root.transform, false);
-            var blockerElement = blocker.AddComponent<DropdownBlocker>();
+            _blocker = new GameObject("Dropdown Blocker") { hideFlags = HideFlags.HideAndDontSave };
+            _blocker.transform.SetParent(root.transform, false);
+            var blockerElement = _blocker.AddComponent<DropdownBlocker>();
             blockerElement.Dropdown = this;
             var blockerLayout = blockerElement.Layout;
-            blockerLayout.Position = PositionType.Absolute;
-            blockerLayout.Inset = new Edges(Length.Points(0f));
+            blockerLayout.position = PositionType.Absolute;
+            blockerLayout.inset = new Edges(Length.Points(0f));
             blockerElement.Layout = blockerLayout;
 
             // The list is a copy of the template at the end of the panel, drawn on top of everything.
-            list = Instantiate(template.gameObject, root.transform, false);
-            list.name = "Dropdown List";
-            list.hideFlags = HideFlags.HideAndDontSave;
-            var listElement = list.GetComponent<YauiElement>();
+            _list = Instantiate(template.gameObject, root.transform, false);
+            _list.name = "Dropdown List";
+            _list.hideFlags = HideFlags.HideAndDontSave;
+            var listElement = _list.GetComponent<YauiElement>();
 
             // Canvas position of the dropdown's bottom-left, in the root's padding box.
-            var border = root.Box.BorderWidth;
+            var border = root.Box.borderWidth;
             var topLeft = (Vector2)world.c2 - new Vector2(border, border);
             var bottom = topLeft.y + ((Vector2)world.c1).y * size.y;
             var layout = listElement.Layout;
-            layout.Position = PositionType.Absolute;
-            if (layout.Width.Unit == LengthUnit.Auto) layout.Width = Length.Points(((Vector2)world.c0).x * size.x);
+            layout.position = PositionType.Absolute;
+            if (layout.width.unit == LengthUnit.Auto) layout.width = Length.Points(((Vector2)world.c0).x * size.x);
 
-            var height = layout.Height.Unit == LengthUnit.Point ? layout.Height.Value : 0f;
+            var height = layout.height.unit == LengthUnit.Point ? layout.height.value : 0f;
             var above = height > 0f && bottom + height > panel.CanvasSize.y && topLeft.y - height >= 0f;
-            layout.Inset = new Edges(Length.Points(topLeft.x), Length.Points(above ? topLeft.y - height : bottom),
+            layout.inset = new Edges(Length.Points(topLeft.x), Length.Points(above ? topLeft.y - height : bottom),
                 Length.Auto, Length.Auto);
             listElement.Layout = layout;
 
             // The item: the toggle around the item text, copied for each option.
-            var itemTextCopy = Corresponding(itemText, template.transform, list.transform);
+            var itemTextCopy = Corresponding(itemText, template.transform, _list.transform);
             var itemImageCopy = itemImage != null && itemImage.transform.IsChildOf(template.transform)
-                ? Corresponding(itemImage, template.transform, list.transform)
+                ? Corresponding(itemImage, template.transform, _list.transform)
                 : null;
             var itemToggle = itemTextCopy != null ? itemTextCopy.GetComponentInParent<YauiToggle>(true) : null;
             if (itemToggle == null)
@@ -277,18 +277,18 @@ namespace Yaui
             for (var i = 0; i < options.Count; i++)
             {
                 var copy = Instantiate(itemObject, itemObject.transform.parent, false);
-                copy.name = $"Item {i}: {options[i].Text}";
+                copy.name = $"Item {i}: {options[i].text}";
                 var toggle = copy.GetComponent<YauiToggle>();
                 var text = Corresponding(itemTextCopy, itemObject.transform, copy.transform);
-                if (text != null) text.Text = options[i].Text;
+                if (text != null) text.Text = options[i].text;
 
                 if (itemImageCopy != null)
                 {
                     var image = Corresponding(itemImageCopy, itemObject.transform, copy.transform);
                     if (image != null)
                     {
-                        image.Sprite = options[i].Image;
-                        image.Opacity = options[i].Image != null ? 1f : 0f;
+                        image.Sprite = options[i].image;
+                        image.Opacity = options[i].image != null ? 1f : 0f;
                     }
                 }
 
@@ -298,26 +298,26 @@ namespace Yaui
                 toggle.OnValueChanged.AddListener(_ => OnItemSelected(index));
                 copy.AddComponent<DropdownItem>().Dropdown = this;
                 copy.SetActive(true);
-                items.Add(toggle);
+                _items.Add(toggle);
             }
 
             itemObject.SetActive(false);
 
             // The keys move through the items, in order.
-            for (var i = 0; i < items.Count; i++)
-                items[i].Navigation = new SelectableNavigation
+            for (var i = 0; i < _items.Count; i++)
+                _items[i].Navigation = new SelectableNavigation
                 {
-                    Mode = NavigationMode.Explicit,
-                    Up = i > 0 ? items[i - 1] : null,
-                    Down = i + 1 < items.Count ? items[i + 1] : null
+                    mode = NavigationMode.Explicit,
+                    up = i > 0 ? _items[i - 1] : null,
+                    down = i + 1 < _items.Count ? _items[i + 1] : null
                 };
 
-            list.SetActive(true);
-            if (value < items.Count)
+            _list.SetActive(true);
+            if (value < _items.Count)
             {
-                var selected = items[value];
+                var selected = _items[value];
                 EventSystem.current?.SetSelectedGameObject(selected.gameObject);
-                var scrollView = list.GetComponentInChildren<YauiScrollView>();
+                var scrollView = _list.GetComponentInChildren<YauiScrollView>();
                 if (scrollView != null) Tickers.Add(new ScrollWhenLaidOut(scrollView, selected.Element));
             }
         }
@@ -325,11 +325,11 @@ namespace Yaui
         /// <summary>Hides the list.</summary>
         public void Hide()
         {
-            items.Clear();
-            DestroyObject(list);
-            DestroyObject(blocker);
-            list = null;
-            blocker = null;
+            _items.Clear();
+            DestroyObject(_list);
+            DestroyObject(_blocker);
+            _list = null;
+            _blocker = null;
         }
 
         private void OnItemSelected(int index)
@@ -380,23 +380,23 @@ namespace Yaui
         /// <summary>Scrolls the list to the selected item once it is laid out.</summary>
         private sealed class ScrollWhenLaidOut : ITicker
         {
-            private readonly YauiScrollView view;
-            private readonly YauiElement target;
-            private int frames;
+            private readonly YauiScrollView _view;
+            private readonly YauiElement _target;
+            private int _frames;
 
             public ScrollWhenLaidOut(YauiScrollView view, YauiElement target)
             {
-                this.view = view;
-                this.target = target;
+                this._view = view;
+                this._target = target;
             }
 
             public bool Tick(float time)
             {
-                if (view == null || target == null || ++frames > 10) return false;
+                if (_view == null || _target == null || ++_frames > 10) return false;
 
-                if (target.LayoutRect.height <= 0f) return true;
+                if (_target.LayoutRect.height <= 0f) return true;
 
-                view.ScrollIntoView(target);
+                _view.ScrollIntoView(_target);
                 return false;
             }
         }

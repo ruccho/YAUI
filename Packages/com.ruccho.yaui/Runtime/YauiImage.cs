@@ -92,9 +92,9 @@ namespace Yaui
         /// <summary>Radial fills: clockwise on screen.</summary>
         [SerializeField] private bool fillClockwise = true;
 
-        [NonSerialized] private Sprite boundSprite;
-        [NonSerialized] private Sprite overrideSprite;
-        [NonSerialized] private YauiSpriteTexture spriteTexture;
+        [NonSerialized] private Sprite _boundSprite;
+        [NonSerialized] private Sprite _overrideSprite;
+        [NonSerialized] private YauiSpriteTexture _spriteTexture;
 
         // The primitives of the image, up to the nine cells of a sliced sprite.
         private static readonly YauiPrimitive[] Buffer = new YauiPrimitive[9];
@@ -115,15 +115,15 @@ namespace Yaui
         /// </summary>
         public Sprite OverrideSprite
         {
-            get => overrideSprite;
+            get => _overrideSprite;
             set
             {
-                overrideSprite = value;
+                _overrideSprite = value;
                 SyncImage();
             }
         }
 
-        private Sprite ActiveSprite => overrideSprite != null ? overrideSprite : sprite;
+        private Sprite ActiveSprite => _overrideSprite != null ? _overrideSprite : sprite;
 
         public Color Color
         {
@@ -219,9 +219,9 @@ namespace Yaui
 
         protected override void OnUnregistering()
         {
-            spriteTexture.Release();
-            boundSprite = null;
-            spriteTexture = default;
+            _spriteTexture.Release();
+            _boundSprite = null;
+            _spriteTexture = default;
         }
 
         protected override void OnLayoutApplied()
@@ -241,15 +241,15 @@ namespace Yaui
 
             SyncHittable();
             var active = ActiveSprite;
-            if (active != boundSprite || (active != null && !spriteTexture.IsValid))
+            if (active != _boundSprite || (active != null && !_spriteTexture.IsValid))
             {
-                spriteTexture.Release();
-                boundSprite = active;
-                spriteTexture = active != null ? YauiSpriteTexture.Acquire(active) : default;
+                _spriteTexture.Release();
+                _boundSprite = active;
+                _spriteTexture = active != null ? YauiSpriteTexture.Acquire(active) : default;
             }
 
             var count = 0;
-            if (active != null && spriteTexture.IsValid)
+            if (active != null && _spriteTexture.IsValid)
                 count = type switch
                 {
                     ImageType.Sliced => WriteSliced(),
@@ -263,14 +263,14 @@ namespace Yaui
         /// <summary>UVs of the sprite: u0 / u1 left and right, v0 / v1 bottom and top (textures are Y up).</summary>
         private float4 SpriteUv()
         {
-            var uv = spriteTexture.Uv;
+            var uv = _spriteTexture.Uv;
             return new float4(uv.xMin, uv.yMin, uv.xMax, uv.yMax);
         }
 
         /// <param name="uvAtMinMax">UVs at the top-left (xy) and at the bottom-right (zw) of the rect.</param>
         private YauiPrimitive Primitive(float4 rect, float4 uvAtMinMax)
         {
-            return YauiPrimitive.Image(new Rect(rect.x, rect.y, rect.z, rect.w), spriteTexture.Texture,
+            return YauiPrimitive.Image(new Rect(rect.x, rect.y, rect.z, rect.w), _spriteTexture.Texture,
                 Rect.MinMaxRect(uvAtMinMax.x, uvAtMinMax.w, uvAtMinMax.z, uvAtMinMax.y), color);
         }
 
@@ -280,7 +280,7 @@ namespace Yaui
 
             // The rect's min corner is the top-left: the top of the sprite (v1).
             Buffer[0] = Primitive(ContentRect(), new float4(uv.x, uv.w, uv.z, uv.y))
-                .WithCornerRadius(Box.CornerRadius);
+                .WithCornerRadius(Box.cornerRadius);
             return 1;
         }
 
@@ -321,7 +321,7 @@ namespace Yaui
                 }
 
                 rect[axis + 2] = filled;
-                Buffer[0] = Primitive(rect, uvRect).WithCornerRadius(Box.CornerRadius);
+                Buffer[0] = Primitive(rect, uvRect).WithCornerRadius(Box.cornerRadius);
             }
             else
             {
@@ -330,7 +330,7 @@ namespace Yaui
                     // A quarter or a half circle filled counter-clockwise starts from the other end of its range.
                     from += range;
 
-                Buffer[0] = Primitive(rect, uvRect).WithCornerRadius(Box.CornerRadius)
+                Buffer[0] = Primitive(rect, uvRect).WithCornerRadius(Box.cornerRadius)
                     .WithRadialFill(center, from, range * amount * (fillClockwise ? 1f : -1f));
             }
 
@@ -388,10 +388,10 @@ namespace Yaui
         {
             var rect = ContentRect();
             var uv = SpriteUv();
-            var textureSize = spriteTexture.TextureSize;
+            var textureSize = _spriteTexture.TextureSize;
 
             // Sprite borders: left, bottom, right, top in pixels.
-            var border = (float4)boundSprite.border;
+            var border = (float4)_boundSprite.border;
             var local = border * borderScale;
 
             // Borders larger than the rect shrink proportionally.

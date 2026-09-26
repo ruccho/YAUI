@@ -35,7 +35,7 @@ namespace Yaui.Layout.Yoga
         {
         }
 
-        private static readonly Unity.Burst.SharedStatic<int> s_generation =
+        private static readonly Unity.Burst.SharedStatic<int> SGeneration =
             Unity.Burst.SharedStatic<int>.GetOrCreate<GenerationKey>();
 
         // ──────────────────────────────────────────────────────────────────────
@@ -48,7 +48,7 @@ namespace Yaui.Layout.Yoga
         public static void CalculateLayout(
             YogaNode node, float availableWidth, float availableHeight, FlexLayoutDirection ownerDirection)
         {
-            var generation = (uint)Interlocked.Increment(ref s_generation.Data);
+            var generation = (uint)Interlocked.Increment(ref SGeneration.Data);
             node.ProcessDimensions();
             var direction = node.ResolveDirection(ownerDirection);
 
@@ -119,7 +119,7 @@ namespace Yaui.Layout.Yoga
                 return;
 
             // Boundaries are laid out in parallel: use the generation this call incremented to.
-            var generation = (uint)Interlocked.Increment(ref s_generation.Data);
+            var generation = (uint)Interlocked.Increment(ref SGeneration.Data);
             var ownerInnerWidth = owner.LayoutWidth - owner.LayoutPaddingLeft - owner.LayoutPaddingRight -
                                   owner.LayoutBorderLeft - owner.LayoutBorderRight;
             var ownerInnerHeight = owner.LayoutHeight - owner.LayoutPaddingTop - owner.LayoutPaddingBottom -
@@ -332,8 +332,8 @@ namespace Yaui.Layout.Yoga
             var flexRowDirection = FlexDirectionHelper.ResolveDirection(FlexDirection.Row, direction);
             var flexColumnDirection = FlexDirectionHelper.ResolveDirection(FlexDirection.Column, direction);
 
-            var startEdge = direction == FlexLayoutDirection.LTR ? YogaPhysicalEdge.Left : YogaPhysicalEdge.Right;
-            var endEdge = direction == FlexLayoutDirection.LTR ? YogaPhysicalEdge.Right : YogaPhysicalEdge.Left;
+            var startEdge = direction == FlexLayoutDirection.Ltr ? YogaPhysicalEdge.Left : YogaPhysicalEdge.Right;
+            var endEdge = direction == FlexLayoutDirection.Ltr ? YogaPhysicalEdge.Right : YogaPhysicalEdge.Left;
 
             var marginRowLeading = node.Style.ComputeInlineStartMargin(flexRowDirection, direction, ownerWidth);
             node.SetLayoutMargin(marginRowLeading, startEdge);

@@ -11,17 +11,17 @@ namespace Yaui.Tests
     /// </summary>
     public class ControlTests
     {
-        private readonly List<Object> created = new();
-        private YauiPanel panel;
-        private EventSystem eventSystem;
+        private readonly List<Object> _created = new();
+        private YauiPanel _panel;
+        private EventSystem _eventSystem;
 
         [SetUp]
         public void SetUp()
         {
             var texture = new RenderTexture(1000, 1000, 0);
-            created.Add(texture);
+            _created.Add(texture);
             var cameraObject = new GameObject("TestCamera");
-            created.Add(cameraObject);
+            _created.Add(cameraObject);
             cameraObject.transform.position = new Vector3(0f, 0f, -10f);
             var camera = cameraObject.AddComponent<Camera>();
             camera.orthographic = true;
@@ -30,33 +30,33 @@ namespace Yaui.Tests
             camera.enabled = false;
 
             var panelObject = new GameObject("TestPanel");
-            created.Add(panelObject);
-            panel = panelObject.AddComponent<YauiPanel>();
-            panel.RenderMode = PanelRenderMode.World;
-            panel.ReferenceResolution = new Vector2(1000f, 1000f);
-            panel.WorldScale = 0.001f;
-            panel.EventCamera = camera;
-            var root = panel.GetComponent<YauiElement>();
+            _created.Add(panelObject);
+            _panel = panelObject.AddComponent<YauiPanel>();
+            _panel.RenderMode = PanelRenderMode.World;
+            _panel.ReferenceResolution = new Vector2(1000f, 1000f);
+            _panel.WorldScale = 0.001f;
+            _panel.EventCamera = camera;
+            var root = _panel.GetComponent<YauiElement>();
             var layout = root.Layout;
-            layout.AlignItems = FlexAlign.FlexStart;
+            layout.alignItems = FlexAlign.FlexStart;
             root.Layout = layout;
 
             var eventSystemObject = new GameObject("TestEventSystem");
-            created.Add(eventSystemObject);
-            eventSystem = eventSystemObject.AddComponent<EventSystem>();
+            _created.Add(eventSystemObject);
+            _eventSystem = eventSystemObject.AddComponent<EventSystem>();
         }
 
         [TearDown]
         public void TearDown()
         {
-            foreach (var o in created)
+            foreach (var o in _created)
                 if (o != null)
                     Object.DestroyImmediate(o);
 
-            created.Clear();
+            _created.Clear();
         }
 
-        private YauiElement Root => panel.GetComponent<YauiElement>();
+        private YauiElement Root => _panel.GetComponent<YauiElement>();
 
         private static T Add<T>(Component parent, float width, float height, string name = null) where T : Component
         {
@@ -68,12 +68,12 @@ namespace Yaui.Tests
                 ? (YauiElement)(Component)go.AddComponent(typeof(T))
                 : go.AddComponent<YauiElement>();
             var layout = element.Layout;
-            layout.Width = width;
-            layout.Height = height;
-            layout.Shrink = 0f;
+            layout.width = width;
+            layout.height = height;
+            layout.shrink = 0f;
             element.Layout = layout;
             var box = element.Box;
-            box.BackgroundColor = Color.gray;
+            box.backgroundColor = Color.gray;
             element.Box = box;
             return isElement ? go.GetComponent<T>() : go.AddComponent<T>();
         }
@@ -81,7 +81,7 @@ namespace Yaui.Tests
         /// <summary>A pointer at a canvas position.</summary>
         private PointerEventData Pointer(float x, float y)
         {
-            return new PointerEventData(eventSystem)
+            return new PointerEventData(_eventSystem)
             {
                 position = new Vector2(x, 1000f - y),
                 button = PointerEventData.InputButton.Left
@@ -93,7 +93,7 @@ namespace Yaui.Tests
         {
             var box = Add<YauiElement>(Root, 200f, 100f);
             var layout = box.Layout;
-            layout.Margin = new Edges(Length.Points(100f), Length.Points(50f), Length.Auto, Length.Auto);
+            layout.margin = new Edges(Length.Points(100f), Length.Points(50f), Length.Auto, Length.Auto);
             box.Layout = layout;
             box.Translate = new Vector2(10f, 20f);
             YauiPanel.ForceUpdate();
@@ -125,9 +125,9 @@ namespace Yaui.Tests
         {
             var button = Add<YauiButton>(Root, 100f, 40f);
             var colors = button.Colors;
-            colors.Highlighted = Color.red;
-            colors.Pressed = Color.green;
-            colors.Disabled = Color.blue;
+            colors.highlighted = Color.red;
+            colors.pressed = Color.green;
+            colors.disabled = Color.blue;
             button.Colors = colors;
             YauiPanel.ForceUpdate();
             Assert.AreEqual(Color.white, button.Element.Tint);
@@ -189,10 +189,10 @@ namespace Yaui.Tests
             var fill = Add<YauiElement>(fillArea, 0f, 0f, "Fill");
             var handleArea = Add<YauiElement>(slider, 200f, 20f, "HandleArea");
             var fillAreaLayout = fillArea.Layout;
-            fillAreaLayout.Position = PositionType.Absolute;
+            fillAreaLayout.position = PositionType.Absolute;
             fillArea.Layout = fillAreaLayout;
             var handleAreaLayout = handleArea.Layout;
-            handleAreaLayout.Position = PositionType.Absolute;
+            handleAreaLayout.position = PositionType.Absolute;
             handleArea.Layout = handleAreaLayout;
             var handle = Add<YauiElement>(handleArea, 20f, 20f, "Handle");
             slider.Fill = fill;
@@ -252,7 +252,7 @@ namespace Yaui.Tests
             view.Viewport.ClipChildren = true;
             var content = Add<YauiElement>(view, 200f, 400f, "Content");
             var contentLayout = content.Layout;
-            contentLayout.Position = PositionType.Absolute;
+            contentLayout.position = PositionType.Absolute;
             content.Layout = contentLayout;
             var bar = Add<YauiScrollbar>(Root, 20f, 100f, "Bar");
             var handle = Add<YauiElement>(bar, 20f, 0f, "Handle");
@@ -288,9 +288,9 @@ namespace Yaui.Tests
         {
             var row = Add<YauiElement>(Root, 600f, 200f, "Row");
             var rowLayout = row.Layout;
-            rowLayout.Direction = FlexDirection.Row;
-            rowLayout.Wrap = FlexWrap.Wrap;
-            rowLayout.AlignContent = FlexAlign.FlexStart;
+            rowLayout.direction = FlexDirection.Row;
+            rowLayout.wrap = FlexWrap.Wrap;
+            rowLayout.alignContent = FlexAlign.FlexStart;
             row.Layout = rowLayout;
             var a = Add<YauiButton>(row, 100f, 50f, "A");
             var b = Add<YauiButton>(row, 100f, 50f, "B");
@@ -307,8 +307,8 @@ namespace Yaui.Tests
             Assert.IsNull(a.FindSelectableOnUp());
 
             var navigation = a.Navigation;
-            navigation.Mode = NavigationMode.Explicit;
-            navigation.Right = c;
+            navigation.mode = NavigationMode.Explicit;
+            navigation.right = c;
             a.Navigation = navigation;
             Assert.AreSame(c, a.FindSelectableOnRight());
             Assert.IsNull(a.FindSelectableOnDown());
@@ -321,7 +321,7 @@ namespace Yaui.Tests
             text = Add<YauiText>(field, 0f, 0f, "Text");
             // A single line as wide as its text, scrolled inside the field.
             var textLayout = LayoutStyle.Default;
-            textLayout.AlignSelf = FlexAlign.FlexStart;
+            textLayout.alignSelf = FlexAlign.FlexStart;
             text.Layout = textLayout;
             text.FontSize = 32f;
             text.Box = BoxStyle.Default;
@@ -413,12 +413,12 @@ namespace Yaui.Tests
 
             var caret = field.CaretElement;
             Assert.IsNotNull(caret);
-            var end = caret.RenderTransform.Translate.x;
+            var end = caret.RenderTransform.translate.x;
             Assert.AreEqual(text.LayoutRect.width, end, 2f, "The caret is at the end of the text.");
-            Assert.Greater(caret.RenderTransform.Scale.y, 20f, "The caret is as tall as the line.");
+            Assert.Greater(caret.RenderTransform.scale.y, 20f, "The caret is as tall as the line.");
 
             Key(field, "home");
-            Assert.AreEqual(0f, caret.RenderTransform.Translate.x, 1f);
+            Assert.AreEqual(0f, caret.RenderTransform.translate.x, 1f);
 
             // A press on the text puts the caret at the nearest character boundary.
             field.OnPointerDown(Pointer(end - 1f, 20f));
@@ -432,7 +432,7 @@ namespace Yaui.Tests
             Type(field, " world, and a much longer text than the field");
             YauiPanel.ForceUpdate();
             Assert.Less(text.Translate.x, 0f);
-            Assert.LessOrEqual(caret.RenderTransform.Translate.x, 300f,
+            Assert.LessOrEqual(caret.RenderTransform.translate.x, 300f,
                 $"text {text.LayoutRect} translate {text.Translate} caret {field.CaretPosition}/{field.Text.Length} rendered {text.RenderedLength}");
         }
 
@@ -442,18 +442,18 @@ namespace Yaui.Tests
             spacer.Box = BoxStyle.Default;
             var dropdown = Add<YauiDropdown>(Root, 200f, 40f);
             var dropdownLayout = dropdown.Element.Layout;
-            dropdownLayout.Margin = new Edges(Length.Points(30f), Length.Points(0f), Length.Auto, Length.Auto);
+            dropdownLayout.margin = new Edges(Length.Points(30f), Length.Points(0f), Length.Auto, Length.Auto);
             dropdown.Element.Layout = dropdownLayout;
             caption = Add<YauiText>(dropdown, 0f, 0f, "Caption");
             caption.Layout = LayoutStyle.Default;
 
             var template = Add<YauiElement>(dropdown, 0f, 0f, "Template");
             var templateLayout = LayoutStyle.Default;
-            templateLayout.Height = 150f;
+            templateLayout.height = 150f;
             template.Layout = templateLayout;
             var item = Add<YauiToggle>(template, 0f, 30f, "Item");
             var itemLayout = item.Element.Layout;
-            itemLayout.Width = Length.Auto;
+            itemLayout.width = Length.Auto;
             item.Element.Layout = itemLayout;
             var itemText = Add<YauiText>(item, 0f, 0f, "ItemText");
             itemText.Layout = LayoutStyle.Default;
@@ -514,7 +514,7 @@ namespace Yaui.Tests
 
         private GameObject HitAt(float x, float y)
         {
-            var element = panel.CurrentState.HitTestCanvas(new Unity.Mathematics.float2(x, y));
+            var element = _panel.CurrentState.HitTestCanvas(new Unity.Mathematics.float2(x, y));
             return element != null ? element.gameObject : null;
         }
 
@@ -525,7 +525,7 @@ namespace Yaui.Tests
             outer.Viewport.ClipChildren = true;
             var outerContent = Add<YauiElement>(outer, 900f, 200f, "OuterContent");
             var outerLayout = outerContent.Layout;
-            outerLayout.Position = PositionType.Absolute;
+            outerLayout.position = PositionType.Absolute;
             outerContent.Layout = outerLayout;
             outer.Content = outerContent;
             outer.Vertical = false;
@@ -533,7 +533,7 @@ namespace Yaui.Tests
             var inner = Add<YauiScrollView>(outerContent, 300f, 200f, "Inner");
             var innerContent = Add<YauiElement>(inner, 300f, 600f, "InnerContent");
             var innerLayout = innerContent.Layout;
-            innerLayout.Position = PositionType.Absolute;
+            innerLayout.position = PositionType.Absolute;
             innerContent.Layout = innerLayout;
             inner.Content = innerContent;
             inner.Horizontal = false;

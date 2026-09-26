@@ -26,9 +26,9 @@ namespace Yaui.Tests.YogaReference
         private readonly bool[] _experimentalFeatures = new bool[2]; // ExperimentalFeature count
         private bool _frozen;
 
-        private static readonly YogaConfig s_default = new() { _frozen = true };
+        private static readonly YogaConfig SDefault = new() { _frozen = true };
 
-        public static YogaConfig Default => s_default;
+        public static YogaConfig Default => SDefault;
 
         /// <summary>
         /// Marks this config as frozen. Mutating a frozen config triggers a Debug.Assert failure.

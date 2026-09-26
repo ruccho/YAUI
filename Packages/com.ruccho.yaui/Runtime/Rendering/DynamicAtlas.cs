@@ -26,16 +26,16 @@ namespace Yaui.Rendering
         private static readonly int DestinationRectId = Shader.PropertyToID("_YauiAtlasDestinationRect");
         private static readonly int InnerRectId = Shader.PropertyToID("_YauiAtlasInnerRect");
 
-        private readonly TextureRegistry registry;
-        private readonly List<Page> pages = new();
-        private readonly List<Entry> entries = new();
-        private readonly CommandBuffer commands = new() { name = "Yaui Atlas" };
-        private readonly MaterialPropertyBlock properties = new();
-        private Material blit;
+        private readonly TextureRegistry _registry;
+        private readonly List<Page> _pages = new();
+        private readonly List<Entry> _entries = new();
+        private readonly CommandBuffer _commands = new() { name = "Yaui Atlas" };
+        private readonly MaterialPropertyBlock _properties = new();
+        private Material _blit;
 
         public DynamicAtlas(TextureRegistry registry)
         {
-            this.registry = registry;
+            this._registry = registry;
         }
 
         public sealed class Page
@@ -70,7 +70,7 @@ namespace Yaui.Rendering
             var filter = texture.filterMode == FilterMode.Point ? FilterMode.Point : FilterMode.Bilinear;
             Page page = null;
             var allocation = default(RectInt);
-            foreach (var p in pages)
+            foreach (var p in _pages)
                 if (p.FilterMode == filter && p.Allocator.TryAllocate(width + Padding * 2, height + Padding * 2,
                         out allocation))
                 {
@@ -92,14 +92,14 @@ namespace Yaui.Rendering
                 Allocation = allocation,
                 Rect = new RectInt(allocation.x + Padding, allocation.y + Padding, width, height)
             };
-            entries.Add(entry);
+            _entries.Add(entry);
             Draw(entry);
             return true;
         }
 
         public void Remove(Entry entry)
         {
-            entries.Remove(entry);
+            _entries.Remove(entry);
             entry.Page.Allocator.Free(entry.Allocation);
         }
 
@@ -132,7 +132,7 @@ namespace Yaui.Rendering
                     ? RenderTextureReadWrite.sRGB
                     : RenderTextureReadWrite.Linear)
             {
-                name = $"Yaui Atlas {pages.Count} ({filter})",
+                name = $"Yaui Atlas {_pages.Count} ({filter})",
                 filterMode = filter,
                 wrapMode = TextureWrapMode.Clamp,
                 useMipMap = false,
@@ -146,47 +146,47 @@ namespace Yaui.Rendering
                 FilterMode = filter,
                 Allocator = new ShelfAllocator(size, size)
             };
-            page.TextureId = registry.Acquire(texture);
-            pages.Add(page);
+            page.TextureId = _registry.Acquire(texture);
+            _pages.Add(page);
             return page;
         }
 
         private void Clear(RenderTexture texture)
         {
-            commands.Clear();
-            commands.SetRenderTarget(texture);
-            commands.ClearRenderTarget(false, true, Color.clear);
-            Graphics.ExecuteCommandBuffer(commands);
+            _commands.Clear();
+            _commands.SetRenderTarget(texture);
+            _commands.ClearRenderTarget(false, true, Color.clear);
+            Graphics.ExecuteCommandBuffer(_commands);
         }
 
         /// <summary>Draws the sprite into its rect, extending its edges into the padding for bilinear filtering.</summary>
         private void Draw(Entry entry)
         {
-            if (blit == null)
-                blit = new Material(Resources.Load<Shader>("Yaui/AtlasBlit")) { hideFlags = HideFlags.HideAndDontSave };
+            if (_blit == null)
+                _blit = new Material(Resources.Load<Shader>("Yaui/AtlasBlit")) { hideFlags = HideFlags.HideAndDontSave };
 
             var texture = entry.Sprite.texture;
             var source = entry.Sprite.textureRect;
             var page = entry.Page.Texture;
-            properties.Clear();
-            properties.SetTexture(SourceId, texture);
-            properties.SetVector(SourceRectId, new Vector4(source.xMin / texture.width, source.yMin / texture.height,
+            _properties.Clear();
+            _properties.SetTexture(SourceId, texture);
+            _properties.SetVector(SourceRectId, new Vector4(source.xMin / texture.width, source.yMin / texture.height,
                 source.xMax / texture.width, source.yMax / texture.height));
 
             // The allocation in normalized device coordinates, and where the sprite's rect lies in it.
             var a = entry.Allocation;
             var r = entry.Rect;
-            properties.SetVector(DestinationRectId, new Vector4(
+            _properties.SetVector(DestinationRectId, new Vector4(
                 (float)a.xMin / page.width, (float)a.yMin / page.height,
                 (float)a.xMax / page.width, (float)a.yMax / page.height));
-            properties.SetVector(InnerRectId, new Vector4(
+            _properties.SetVector(InnerRectId, new Vector4(
                 (float)r.xMin / page.width, (float)r.yMin / page.height,
                 (float)r.xMax / page.width, (float)r.yMax / page.height));
 
-            commands.Clear();
-            commands.SetRenderTarget(page);
-            commands.DrawProcedural(Matrix4x4.identity, blit, 0, MeshTopology.Triangles, 6, 1, properties);
-            Graphics.ExecuteCommandBuffer(commands);
+            _commands.Clear();
+            _commands.SetRenderTarget(page);
+            _commands.DrawProcedural(Matrix4x4.identity, _blit, 0, MeshTopology.Triangles, 6, 1, _properties);
+            Graphics.ExecuteCommandBuffer(_commands);
         }
 
         /// <summary>
@@ -195,13 +195,13 @@ namespace Yaui.Rendering
         /// </summary>
         public void RestoreIfLost()
         {
-            foreach (var page in pages)
+            foreach (var page in _pages)
             {
                 if (page.Texture.IsCreated()) continue;
 
                 page.Texture.Create();
                 Clear(page.Texture);
-                foreach (var entry in entries)
+                foreach (var entry in _entries)
                     if (entry.Page == page && entry.Sprite != null)
                         Draw(entry);
             }
@@ -209,17 +209,17 @@ namespace Yaui.Rendering
 
         public void Dispose()
         {
-            foreach (var page in pages)
+            foreach (var page in _pages)
             {
-                registry.Release(page.TextureId);
+                _registry.Release(page.TextureId);
                 page.Texture.Release();
                 DestroyObject(page.Texture);
             }
 
-            pages.Clear();
-            entries.Clear();
-            commands.Release();
-            DestroyObject(blit);
+            _pages.Clear();
+            _entries.Clear();
+            _commands.Release();
+            DestroyObject(_blit);
         }
 
         private static void DestroyObject(Object o)
@@ -239,10 +239,10 @@ namespace Yaui.Rendering
     /// </summary>
     internal sealed class ShelfAllocator
     {
-        private readonly int width;
-        private readonly int height;
-        private readonly List<Shelf> shelves = new();
-        private int top;
+        private readonly int _width;
+        private readonly int _height;
+        private readonly List<Shelf> _shelves = new();
+        private int _top;
 
         private sealed class Shelf
         {
@@ -255,29 +255,29 @@ namespace Yaui.Rendering
 
         public ShelfAllocator(int width, int height)
         {
-            this.width = width;
-            this.height = height;
+            this._width = width;
+            this._height = height;
         }
 
         public bool TryAllocate(int w, int h, out RectInt rect)
         {
             rect = default;
-            if (w > width || h > height) return false;
+            if (w > _width || h > _height) return false;
 
             var shelfHeight = Mathf.Max(8, Mathf.NextPowerOfTwo(h));
-            foreach (var shelf in shelves)
+            foreach (var shelf in _shelves)
                 if (shelf.Height == shelfHeight && TryTake(shelf, w, out var x))
                 {
                     rect = new RectInt(x, shelf.Y, w, h);
                     return true;
                 }
 
-            if (top + shelfHeight > height) return false;
+            if (_top + shelfHeight > _height) return false;
 
-            var added = new Shelf { Y = top, Height = shelfHeight };
-            added.Free.Add(new Vector2Int(0, width));
-            shelves.Add(added);
-            top += shelfHeight;
+            var added = new Shelf { Y = _top, Height = shelfHeight };
+            added.Free.Add(new Vector2Int(0, _width));
+            _shelves.Add(added);
+            _top += shelfHeight;
             TryTake(added, w, out var first);
             rect = new RectInt(first, added.Y, w, h);
             return true;
@@ -305,7 +305,7 @@ namespace Yaui.Rendering
 
         public void Free(RectInt rect)
         {
-            foreach (var shelf in shelves)
+            foreach (var shelf in _shelves)
             {
                 if (shelf.Y != rect.y) continue;
 
@@ -330,13 +330,13 @@ namespace Yaui.Rendering
                 }
 
                 // An empty topmost shelf can take another height.
-                while (shelves.Count > 0)
+                while (_shelves.Count > 0)
                 {
-                    var last = shelves[^1];
-                    if (last.Free.Count != 1 || last.Free[0].y != width) break;
+                    var last = _shelves[^1];
+                    if (last.Free.Count != 1 || last.Free[0].y != _width) break;
 
-                    top = last.Y;
-                    shelves.RemoveAt(shelves.Count - 1);
+                    _top = last.Y;
+                    _shelves.RemoveAt(_shelves.Count - 1);
                 }
 
                 return;

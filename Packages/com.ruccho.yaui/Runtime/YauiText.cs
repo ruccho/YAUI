@@ -51,36 +51,36 @@ namespace Yaui
         /// <summary>Softness of the shadow's edge in canvas units. Limited like <see cref="outlineWidth"/>.</summary>
         [SerializeField] private float shadowBlur;
 
-        private static Font defaultFont;
+        private static Font _defaultFont;
         private static readonly List<GlyphQuad> Glyphs = new();
 
-        [NonSerialized] private AtgText atg;
-        [NonSerialized] private FallbackText fallback;
-        [NonSerialized] private int atgEpoch;
+        [NonSerialized] private AtgText _atg;
+        [NonSerialized] private FallbackText _fallback;
+        [NonSerialized] private int _atgEpoch;
 
         // The fallback generated at the final width with another size: the next layout must not reuse it.
-        [NonSerialized] private bool forceRelayout;
-        [NonSerialized] private Font fontAssetSource;
-        [NonSerialized] private FontAsset fontAsset;
-        [NonSerialized] private YogaMeasureFunc measure;
-        [NonSerialized] private bool measureDirty;
+        [NonSerialized] private bool _forceRelayout;
+        [NonSerialized] private Font _fontAssetSource;
+        [NonSerialized] private FontAsset _fontAsset;
+        [NonSerialized] private YogaMeasureFunc _measure;
+        [NonSerialized] private bool _measureDirty;
 
         // The generation drawn last: its width and its size rounded as measured.
-        [NonSerialized] private float renderedWidth = float.NaN;
-        [NonSerialized] private float2 renderedSize = float.NaN;
+        [NonSerialized] private float _renderedWidth = float.NaN;
+        [NonSerialized] private float2 _renderedSize = float.NaN;
 
         // The size of the text at the final width, before it was elided.
-        [NonSerialized] private float2 naturalSize;
+        [NonSerialized] private float2 _naturalSize;
 
         // Values of the last preparation, to tell layout changes from look changes.
-        [NonSerialized] private string preparedText;
-        [NonSerialized] private Font preparedFont;
-        [NonSerialized] private float preparedFontSize;
-        [NonSerialized] private TextAlign preparedAlign;
-        [NonSerialized] private bool preparedWordWrap;
-        [NonSerialized] private bool preparedRichText;
-        [NonSerialized] private SpriteAsset preparedSpriteAsset;
-        [NonSerialized] private TextOverflow preparedOverflow;
+        [NonSerialized] private string _preparedText;
+        [NonSerialized] private Font _preparedFont;
+        [NonSerialized] private float _preparedFontSize;
+        [NonSerialized] private TextAlign _preparedAlign;
+        [NonSerialized] private bool _preparedWordWrap;
+        [NonSerialized] private bool _preparedRichText;
+        [NonSerialized] private SpriteAsset _preparedSpriteAsset;
+        [NonSerialized] private TextOverflow _preparedOverflow;
 
         [NonSerialized] internal bool GenerationDirty;
         [NonSerialized] internal bool GenerationInFlight;
@@ -243,16 +243,16 @@ namespace Yaui
 
         private bool HasShadow => shadowColor.a > 0f && (shadowOffset != Vector2.zero || shadowBlur > 0f);
 
-        private bool HasGeneration => atg != null ? atg.IsGenerated : fallback != null && fallback.IsGenerated;
+        private bool HasGeneration => _atg != null ? _atg.IsGenerated : _fallback != null && _fallback.IsGenerated;
 
-        private float GenerationWidth => atg != null ? atg.GeneratedWidth : fallback.GeneratedWidth;
+        private float GenerationWidth => _atg != null ? _atg.GeneratedWidth : _fallback.GeneratedWidth;
 
-        private float2 GenerationSize => atg != null ? atg.Size : fallback.Size;
+        private float2 GenerationSize => _atg != null ? _atg.Size : _fallback.Size;
 
         protected override bool HasVisibleContent => !string.IsNullOrEmpty(text);
 
         private Font EffectiveFont =>
-            font != null ? font : defaultFont ??= Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            font != null ? font : _defaultFont ??= Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
 
         protected override void OnValidate()
         {
@@ -278,14 +278,14 @@ namespace Yaui
             if (GenerationInFlight) TextPipeline.Complete();
 
             TextPipeline.Forget(this);
-            renderedLength = -1;
-            renderedWidth = float.NaN;
-            renderedSize = float.NaN;
-            if (atg != null) Pools.ReturnText(atg);
+            _renderedLength = -1;
+            _renderedWidth = float.NaN;
+            _renderedSize = float.NaN;
+            if (_atg != null) Pools.ReturnText(_atg);
 
-            atg = null;
-            fallback = null;
-            preparedText = null;
+            _atg = null;
+            _fallback = null;
+            _preparedText = null;
         }
 
         /// <summary>Queues generation. A change of anything but the look also re-runs the layout.</summary>
@@ -293,11 +293,11 @@ namespace Yaui
         {
             if (NodeSlot <= 0) return;
 
-            if (text != preparedText || EffectiveFont != preparedFont || fontSize != preparedFontSize ||
-                align != preparedAlign || wordWrap != preparedWordWrap || richText != preparedRichText ||
-                spriteAsset != preparedSpriteAsset)
+            if (text != _preparedText || EffectiveFont != _preparedFont || fontSize != _preparedFontSize ||
+                align != _preparedAlign || wordWrap != _preparedWordWrap || richText != _preparedRichText ||
+                spriteAsset != _preparedSpriteAsset)
             {
-                measureDirty = true;
+                _measureDirty = true;
                 Panel.MarkLayoutDirty(this);
             }
 
@@ -320,11 +320,11 @@ namespace Yaui
             // A change of the text only dirties the measurement, not the style.
             base.PrepareLayout();
             var y = Yoga;
-            if (!y.HasMeasureFunc) y.SetMeasureFunction(measure ??= Measure);
+            if (!y.HasMeasureFunc) y.SetMeasureFunction(_measure ??= Measure);
 
-            if (measureDirty)
+            if (_measureDirty)
             {
-                measureDirty = false;
+                _measureDirty = false;
                 Panel.AddPendingMeasure(this);
             }
         }
@@ -337,17 +337,17 @@ namespace Yaui
         {
             if (NodeSlot <= 0) return false;
 
-            atg?.Dispose();
-            atg = null;
-            fallback ??= new FallbackText();
-            fallback.Prepare(text, EffectiveFont, fontSize, color, align, wordWrap, richText);
-            fallback.Generate(float.IsNaN(renderedWidth) ? ContentWidth() : renderedWidth);
-            preparedText = text;
-            preparedFont = EffectiveFont;
-            preparedFontSize = fontSize;
-            preparedAlign = align;
-            preparedWordWrap = wordWrap;
-            preparedRichText = richText;
+            _atg?.Dispose();
+            _atg = null;
+            _fallback ??= new FallbackText();
+            _fallback.Prepare(text, EffectiveFont, fontSize, color, align, wordWrap, richText);
+            _fallback.Generate(float.IsNaN(_renderedWidth) ? ContentWidth() : _renderedWidth);
+            _preparedText = text;
+            _preparedFont = EffectiveFont;
+            _preparedFontSize = fontSize;
+            _preparedAlign = align;
+            _preparedWordWrap = wordWrap;
+            _preparedRichText = richText;
             return true;
         }
 
@@ -359,30 +359,30 @@ namespace Yaui
             if (NodeSlot <= 0 || !AtgText.IsSupported) return false;
 
             var source = EffectiveFont;
-            if (fontAsset == null || fontAssetSource != source)
+            if (_fontAsset == null || _fontAssetSource != source)
             {
-                fontAsset = AtgText.GetFontAsset(source);
-                fontAssetSource = source;
+                _fontAsset = AtgText.GetFontAsset(source);
+                _fontAssetSource = source;
             }
 
-            if (fontAsset == null) return false;
+            if (_fontAsset == null) return false;
 
             // After a change of font assets the generation info caches stale glyph positions.
-            if (atg != null && atgEpoch != TextPipeline.FontEpoch)
+            if (_atg != null && _atgEpoch != TextPipeline.FontEpoch)
             {
-                atg.Dispose();
-                atg = null;
+                _atg.Dispose();
+                _atg = null;
             }
 
-            if (atg == null)
+            if (_atg == null)
             {
-                atg = Pools.RentText();
-                atgEpoch = TextPipeline.FontEpoch;
+                _atg = Pools.RentText();
+                _atgEpoch = TextPipeline.FontEpoch;
             }
 
-            atg.Prepare((text ?? string.Empty).AsSpan(), new TextRequest
+            _atg.Prepare((text ?? string.Empty).AsSpan(), new TextRequest
             {
-                Font = fontAsset,
+                Font = _fontAsset,
                 FontSize = fontSize,
                 Color = color,
                 Align = align,
@@ -391,19 +391,19 @@ namespace Yaui
                 Ellipsis = overflow == TextOverflow.Ellipsis,
                 SpriteAsset = spriteAsset
             });
-            preparedSpriteAsset = spriteAsset;
-            preparedOverflow = overflow;
-            preparedText = text;
-            preparedFont = EffectiveFont;
-            preparedFontSize = fontSize;
-            preparedAlign = align;
-            preparedWordWrap = wordWrap;
-            preparedRichText = richText;
+            _preparedSpriteAsset = spriteAsset;
+            _preparedOverflow = overflow;
+            _preparedText = text;
+            _preparedFont = EffectiveFont;
+            _preparedFontSize = fontSize;
+            _preparedAlign = align;
+            _preparedWordWrap = wordWrap;
+            _preparedRichText = richText;
 
             // The width of the last drawn generation (valid for the laid-out width) lets the layout job tell if the
             // size changed; before that, the width of the previous layout is the best guess.
-            width = float.IsNaN(renderedWidth) ? ContentWidth() : renderedWidth;
-            generator = atg;
+            width = float.IsNaN(_renderedWidth) ? ContentWidth() : _renderedWidth;
+            generator = _atg;
             return true;
         }
 
@@ -415,14 +415,14 @@ namespace Yaui
         internal void ResolveMeasure()
         {
             var y = Yoga;
-            if (!forceRelayout && HasGeneration && GenerationWidth == renderedWidth &&
-                math.all(math.ceil(GenerationSize) == renderedSize))
+            if (!_forceRelayout && HasGeneration && GenerationWidth == _renderedWidth &&
+                math.all(math.ceil(GenerationSize) == _renderedSize))
             {
                 y.MarkMeasureStale();
             }
             else
             {
-                forceRelayout = false;
+                _forceRelayout = false;
                 y.MarkDirty();
             }
         }
@@ -434,18 +434,18 @@ namespace Yaui
         private YogaSize Measure(YogaNode node, float width, YogaMeasureMode widthMode, float height,
             YogaMeasureMode heightMode)
         {
-            if (fallback != null)
+            if (_fallback != null)
             {
                 // The public generator cannot run here: the last generation it is.
-                if (!fallback.IsGenerated) return new YogaSize(0f, 0f);
+                if (!_fallback.IsGenerated) return new YogaSize(0f, 0f);
             }
-            else if (atg == null || !atg.IsPrepared)
+            else if (_atg == null || !_atg.IsPrepared)
             {
                 return new YogaSize(0f, 0f);
             }
 
             var available = widthMode == YogaMeasureMode.Undefined || float.IsNaN(width) ? -1f : width;
-            if (atg != null && !CanReuse(available, true)) atg.Generate(available);
+            if (_atg != null && !CanReuse(available, true)) _atg.Generate(available);
 
             // Rounded up so that pixel grid rounding of the layout never makes the text wrap.
             var size = math.ceil(GenerationSize);
@@ -472,16 +472,16 @@ namespace Yaui
         private bool CanReuse(float width, bool sizeOnly)
         {
             // An elided generation is not the size of the text.
-            if (!HasGeneration || (atg != null && atg.ElidedHeight >= 0f)) return false;
+            if (!HasGeneration || (_atg != null && _atg.ElidedHeight >= 0f)) return false;
 
             var generated = GenerationWidth;
             if (generated == width) return true;
 
             // Without word wrap the lines never depend on the width; only the alignment does.
-            if (!preparedWordWrap) return sizeOnly || preparedAlign == TextAlign.Left;
+            if (!_preparedWordWrap) return sizeOnly || _preparedAlign == TextAlign.Left;
 
             // The prepared values, since this runs on the layout thread while setters may run.
-            if (!sizeOnly && preparedAlign != TextAlign.Left) return false;
+            if (!sizeOnly && _preparedAlign != TextAlign.Left) return false;
 
             if (width < 0f)
                 // Unconstrained: the same only if it was generated unconstrained.
@@ -515,16 +515,16 @@ namespace Yaui
         internal bool PrepareRender(out AtgText generator)
         {
             generator = null;
-            if (fallback != null)
+            if (_fallback != null)
             {
-                if (NodeSlot > 0 && fallback.IsGenerated && !CanReuse(ContentWidth(), false))
+                if (NodeSlot > 0 && _fallback.IsGenerated && !CanReuse(ContentWidth(), false))
                 {
-                    var before = fallback.Size;
-                    fallback.Generate(ContentWidth());
-                    if (math.any(before != fallback.Size))
+                    var before = _fallback.Size;
+                    _fallback.Generate(ContentWidth());
+                    if (math.any(before != _fallback.Size))
                     {
-                        forceRelayout = true;
-                        measureDirty = true;
+                        _forceRelayout = true;
+                        _measureDirty = true;
                         Panel.MarkLayoutDirty(this);
                     }
                 }
@@ -532,21 +532,21 @@ namespace Yaui
                 return false;
             }
 
-            if (NodeSlot <= 0 || atg == null || !atg.IsPrepared) return false;
+            if (NodeSlot <= 0 || _atg == null || !_atg.IsPrepared) return false;
 
             var width = ContentWidth();
-            if (!CanReuse(width, false)) atg.Generate(width);
+            if (!CanReuse(width, false)) _atg.Generate(width);
 
-            naturalSize = atg.Size;
-            if (preparedOverflow == TextOverflow.Ellipsis && width >= 0f)
+            _naturalSize = _atg.Size;
+            if (_preparedOverflow == TextOverflow.Ellipsis && width >= 0f)
             {
                 // Rounded like the measurement, so that a text that fits is never elided.
                 var height = ContentHeight();
-                var size = math.ceil(naturalSize);
-                if (height >= 0f && (size.x > width + 0.01f || size.y > height + 0.01f)) atg.Generate(width, height);
+                var size = math.ceil(_naturalSize);
+                if (height >= 0f && (size.x > width + 0.01f || size.y > height + 0.01f)) _atg.Generate(width, height);
             }
 
-            generator = atg;
+            generator = _atg;
             return true;
         }
 
@@ -555,13 +555,13 @@ namespace Yaui
         {
             if (NodeSlot <= 0 || !HasGeneration) return;
 
-            if (atg != null)
-                atg.Convert(Glyphs);
+            if (_atg != null)
+                _atg.Convert(Glyphs);
             else
-                fallback.Convert(Glyphs);
+                _fallback.Convert(Glyphs);
 
-            renderedWidth = GenerationWidth;
-            renderedSize = math.ceil(atg != null && atg.ElidedHeight >= 0f ? naturalSize : GenerationSize);
+            _renderedWidth = GenerationWidth;
+            _renderedSize = math.ceil(_atg != null && _atg.ElidedHeight >= 0f ? _naturalSize : GenerationSize);
 
             // A shadow is a copy of each glyph (not of sprites), drawn first.
             var shadowed = HasShadow;
@@ -585,7 +585,7 @@ namespace Yaui
             };
 
             // The quads have this much room around the glyphs already.
-            var padding = atg != null ? AtgText.VertexPadding : 0f;
+            var padding = _atg != null ? AtgText.VertexPadding : 0f;
             var outlined = outlineWidth > 0f && outlineColor.a > 0f;
             var outlinePacked = GpuPacking.Color(outlineColor);
             var shadowPacked = GpuPacking.Color(shadowColor);
@@ -611,7 +611,7 @@ namespace Yaui
                     WriteContent(written++, new PrimitiveData
                     {
                         Rect = rect,
-                        UvRect = GpuPacking.Unorm16x4(g.Uv),
+                        UvRect = GpuPacking.Unorm16X4(g.Uv),
                         Color = GpuPacking.Color(g.Color),
                         Flags = baseFlags,
                         BorderWidthAndSkew = GpuPacking.Half2(0f, g.Skew)
@@ -630,7 +630,7 @@ namespace Yaui
                 WriteContent(written++, new PrimitiveData
                 {
                     Rect = expanded.Rect,
-                    UvRect = GpuPacking.Unorm16x4(expanded.Uv),
+                    UvRect = GpuPacking.Unorm16X4(expanded.Uv),
                     Color = GpuPacking.Color(g.Color),
                     BorderColor = outlinePacked,
                     Flags = flags,
@@ -646,7 +646,7 @@ namespace Yaui
                     WriteContent(shadowWritten++, new PrimitiveData
                     {
                         Rect = shadow.Rect,
-                        UvRect = GpuPacking.Unorm16x4(shadow.Uv),
+                        UvRect = GpuPacking.Unorm16X4(shadow.Uv),
                         Color = shadowPacked,
                         Radii = GpuPacking.Half4(new float4(blur, 0f, 0f, 0f)),
                         Flags = baseFlags | PrimitiveFlags.Shadow,
@@ -655,8 +655,8 @@ namespace Yaui
                 }
             }
 
-            glyphOrigin = origin;
-            renderedLength = preparedText?.Length ?? -1;
+            _glyphOrigin = origin;
+            _renderedLength = _preparedText?.Length ?? -1;
             Rendered?.Invoke();
         }
 
@@ -683,24 +683,24 @@ namespace Yaui
         }
 
         // Where the glyphs of the last written generation start in the element's box, and the length of its text.
-        [NonSerialized] private float2 glyphOrigin;
-        [NonSerialized] private int renderedLength = -1;
+        [NonSerialized] private float2 _glyphOrigin;
+        [NonSerialized] private int _renderedLength = -1;
 
         /// <summary>The length of the text of the last written generation, or -1.</summary>
-        internal int RenderedLength => renderedLength;
+        internal int RenderedLength => _renderedLength;
 
         /// <summary>Main thread: the glyphs of a new generation or layout were written.</summary>
         internal event Action Rendered;
 
         /// <summary>Whether caret and selection queries work: an ATG generation and its selection service.</summary>
-        internal bool SupportsSelection => atg != null && atg.IsGenerated && AtgSelection.Initialize();
+        internal bool SupportsSelection => _atg != null && _atg.IsGenerated && AtgSelection.Initialize();
 
         /// <summary>The height of a line of the font at the font size.</summary>
         internal float LineHeight
         {
             get
             {
-                var asset = fontAsset != null ? fontAsset : AtgText.GetFontAsset(EffectiveFont);
+                var asset = _fontAsset != null ? _fontAsset : AtgText.GetFontAsset(EffectiveFont);
                 if (asset == null || asset.faceInfo.pointSize <= 0f) return fontSize * 1.2f;
 
                 return asset.faceInfo.lineHeight / asset.faceInfo.pointSize * fontSize;
@@ -713,30 +713,30 @@ namespace Yaui
         /// </summary>
         internal void GetCaret(int index, out Vector2 top, out float height)
         {
-            var info = atg.GenerationInfo;
+            var info = _atg.GenerationInfo;
             var bottom = AtgSelection.CursorPosition(info, index);
             height = AtgSelection.CharacterHeight(info, index);
             if (height <= 0f) height = LineHeight;
 
-            top = (Vector2)glyphOrigin + new Vector2(bottom.x, bottom.y - height);
+            top = (Vector2)_glyphOrigin + new Vector2(bottom.x, bottom.y - height);
         }
 
         /// <summary>The caret index nearest to a point in the element's box.</summary>
         internal int IndexAt(Vector2 local)
         {
-            return AtgSelection.IndexFromPosition(atg.GenerationInfo, local - (Vector2)glyphOrigin);
+            return AtgSelection.IndexFromPosition(_atg.GenerationInfo, local - (Vector2)_glyphOrigin);
         }
 
         /// <summary>The rectangles that highlight the text between two caret indices, in the element's box.</summary>
         internal Rect[] SelectionRects(int from, int to)
         {
-            var rects = AtgSelection.HighlightRectangles(atg.GenerationInfo, from, to) ?? Array.Empty<Rect>();
-            for (var i = 0; i < rects.Length; i++) rects[i].position += (Vector2)glyphOrigin;
+            var rects = AtgSelection.HighlightRectangles(_atg.GenerationInfo, from, to) ?? Array.Empty<Rect>();
+            for (var i = 0; i < rects.Length; i++) rects[i].position += (Vector2)_glyphOrigin;
 
             return rects;
         }
 
-        internal IntPtr SelectionInfo => atg.GenerationInfo;
+        internal IntPtr SelectionInfo => _atg.GenerationInfo;
 
     }
 }

@@ -60,7 +60,7 @@ namespace Yaui.Text
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct ATGMeshInfo
+    internal struct AtgMeshInfo
     {
         public IntPtr m_TextElementInfosPtr;
         public int m_TextElementCount;
@@ -96,7 +96,7 @@ namespace Yaui.Text
         private const BindingFlags AnyStatic = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
         private const BindingFlags AnyInstance = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
-        private static bool initialized;
+        private static bool _initialized;
 
         public static bool Available { get; private set; }
 
@@ -121,10 +121,10 @@ namespace Yaui.Text
         /// <summary>A <c>List&lt;NativeTextInfo&gt;</c> for <see cref="ResolveFallbacks"/>.</summary>
         public static object CreateTextInfoList()
         {
-            return Activator.CreateInstance(textInfoListType);
+            return Activator.CreateInstance(_textInfoListType);
         }
 
-        private static Type textInfoListType;
+        private static Type _textInfoListType;
 
         // Typed delegates.
         public static Func<bool, IntPtr> CreateGenerationInfo;
@@ -146,9 +146,9 @@ namespace Yaui.Text
         /// <summary>Main thread: resolves everything once. Returns <see cref="Available"/>.</summary>
         public static bool Initialize()
         {
-            if (initialized) return Available;
+            if (_initialized) return Available;
 
-            initialized = true;
+            _initialized = true;
             try
             {
                 Resolve();
@@ -182,7 +182,7 @@ namespace Yaui.Text
             var errors = new StringBuilder();
             ValidateLayout(typeof(NativeTextGenerationSettings), settingsType, errors);
             ValidateLayout(typeof(NativeTextInfo), textInfoType, errors);
-            ValidateLayout(typeof(ATGMeshInfo), meshInfoType, errors);
+            ValidateLayout(typeof(AtgMeshInfo), meshInfoType, errors);
             ValidateLayout(typeof(NativeTextElementInfo), elementType, errors);
             ValidateLayout(typeof(TextCoreVertex), vertexType, errors);
             if (errors.Length > 0) throw new InvalidOperationException("Layout mismatch:" + errors);
@@ -204,13 +204,13 @@ namespace Yaui.Text
                 Pointer(GetMethod(textLibType, "ProcessMeshInfos", AnyInstance, typeof(void),
                     textInfoType, settingsType, indicesByMesh.MakeByRefType(), typeof(bool)));
 
-            textInfoListType = typeof(List<>).MakeGenericType(textInfoType);
+            _textInfoListType = typeof(List<>).MakeGenericType(textInfoType);
             ResolveFallbacks = (delegate*<object, Dictionary<EntityId, HashSet<uint>>, bool>)Pointer(
-                GetMethod(fallbackType, "Resolve", AnyStatic, typeof(bool), textInfoListType, missingGlyphs));
+                GetMethod(fallbackType, "Resolve", AnyStatic, typeof(bool), _textInfoListType, missingGlyphs));
             TextInfoListAdd = (delegate*<object, NativeTextInfo, void>)Pointer(
-                GetMethod(textInfoListType, "Add", AnyInstance, typeof(void), textInfoType));
+                GetMethod(_textInfoListType, "Add", AnyInstance, typeof(void), textInfoType));
             TextInfoListClear = (delegate*<object, void>)Pointer(
-                GetMethod(textInfoListType, "Clear", AnyInstance, typeof(void)));
+                GetMethod(_textInfoListType, "Clear", AnyInstance, typeof(void)));
 
             var icuData = LoadIcuData();
             var getTextLib = GetMethod(generatorType, "GetTextLib", AnyStatic, textLibType);

@@ -52,8 +52,8 @@ namespace Yaui
     public enum FlexLayoutDirection
     {
         Inherit = 0,
-        LTR = 1,
-        RTL = 2
+        Ltr = 1,
+        Rtl = 2
     }
 
     public enum FlexPositionType

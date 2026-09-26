@@ -36,7 +36,7 @@ namespace Yaui
         [SerializeField] private YauiToggleGroup group;
         [SerializeField] private ToggleEvent onValueChanged = new();
 
-        [NonSerialized] private OpacityFade fade;
+        [NonSerialized] private OpacityFade _fade;
 
         public bool IsOn
         {
@@ -106,7 +106,7 @@ namespace Yaui
         {
             if (group != null) group.Unregister(this);
 
-            fade?.Stop();
+            _fade?.Stop();
             base.OnDisable();
         }
 
@@ -137,13 +137,13 @@ namespace Yaui
             var target = isOn ? 1f : 0f;
             if (instant || !Application.isPlaying)
             {
-                fade?.Stop();
+                _fade?.Stop();
                 graphic.Opacity = target;
                 return;
             }
 
-            fade ??= new OpacityFade();
-            fade.Start(graphic, target, 0.1f);
+            _fade ??= new OpacityFade();
+            _fade.Start(graphic, target, 0.1f);
         }
 
         public virtual void OnPointerClick(PointerEventData eventData)
@@ -164,34 +164,34 @@ namespace Yaui
     /// <summary>Fades the opacity of an element.</summary>
     internal sealed class OpacityFade : ITicker
     {
-        private YauiElement target;
-        private float from;
-        private float to;
-        private float start;
-        private float duration;
+        private YauiElement _target;
+        private float _from;
+        private float _to;
+        private float _start;
+        private float _duration;
 
         public void Start(YauiElement element, float opacity, float seconds)
         {
-            target = element;
-            from = element.Opacity;
-            to = opacity;
-            start = Time.realtimeSinceStartup;
-            duration = Mathf.Max(seconds, 1e-4f);
+            _target = element;
+            _from = element.Opacity;
+            _to = opacity;
+            _start = Time.realtimeSinceStartup;
+            _duration = Mathf.Max(seconds, 1e-4f);
             Tickers.Add(this);
         }
 
         public void Stop()
         {
             Tickers.Remove(this);
-            target = null;
+            _target = null;
         }
 
         public bool Tick(float time)
         {
-            if (target == null) return false;
+            if (_target == null) return false;
 
-            var t = Mathf.Clamp01((time - start) / duration);
-            target.Opacity = Mathf.Lerp(from, to, t);
+            var t = Mathf.Clamp01((time - _start) / _duration);
+            _target.Opacity = Mathf.Lerp(_from, _to, t);
             return t < 1f;
         }
     }

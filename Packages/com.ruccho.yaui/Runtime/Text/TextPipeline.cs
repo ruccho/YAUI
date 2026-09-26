@@ -39,7 +39,7 @@ namespace Yaui.Text
         private static readonly List<Batch> Batches = new();
         private static readonly Stack<Batch> BatchPool = new();
 
-        private static JobHandle handle;
+        private static JobHandle _handle;
 
         private sealed class Batch
         {
@@ -53,10 +53,10 @@ namespace Yaui.Text
         private static readonly HashSet<YauiText> Live = new();
 
         // Set by TextCore's notifications, possibly off the main thread.
-        private static volatile bool fontsChanged;
-        private static Delegate fontPropertyHandler;
-        private static object fontPropertyEvent;
-        private static Action<UnityEngine.Texture, UnityEngine.TextCore.Text.FontAsset> textureChangedHandler;
+        private static volatile bool _fontsChanged;
+        private static Delegate _fontPropertyHandler;
+        private static object _fontPropertyEvent;
+        private static Action<UnityEngine.Texture, UnityEngine.TextCore.Text.FontAsset> _textureChangedHandler;
 
         /// <summary>
         /// Counts changes of font assets. Text generators of an older epoch are replaced: their generation info
@@ -84,22 +84,22 @@ namespace Yaui.Text
             {
                 var assembly = typeof(UnityEngine.TextCore.Text.FontAsset).Assembly;
                 var events = assembly.GetType("UnityEngine.TextCore.Text.TextEventManager");
-                fontPropertyEvent = events?.GetField("FONT_PROPERTY_EVENT",
+                _fontPropertyEvent = events?.GetField("FONT_PROPERTY_EVENT",
                     System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic |
                     System.Reflection.BindingFlags.Static)?.GetValue(null);
-                if (fontPropertyEvent != null)
+                if (_fontPropertyEvent != null)
                 {
-                    fontPropertyHandler = new Action<bool, UnityEngine.Object>(OnFontPropertyChanged);
-                    fontPropertyEvent.GetType().GetMethod("Add", new[] { typeof(Action<bool, UnityEngine.Object>) })
-                        ?.Invoke(fontPropertyEvent, new object[] { fontPropertyHandler });
+                    _fontPropertyHandler = new Action<bool, UnityEngine.Object>(OnFontPropertyChanged);
+                    _fontPropertyEvent.GetType().GetMethod("Add", new[] { typeof(Action<bool, UnityEngine.Object>) })
+                        ?.Invoke(_fontPropertyEvent, new object[] { _fontPropertyHandler });
                 }
 
                 var textureChanged = TextureChangedField;
                 if (textureChanged != null)
                 {
-                    textureChangedHandler = OnFontTextureChanged;
+                    _textureChangedHandler = OnFontTextureChanged;
                     textureChanged.SetValue(null, Delegate.Combine((Delegate)textureChanged.GetValue(null),
-                        textureChangedHandler));
+                        _textureChangedHandler));
                 }
             }
             catch (Exception e)
@@ -112,23 +112,23 @@ namespace Yaui.Text
         {
             try
             {
-                if (fontPropertyEvent != null && fontPropertyHandler != null)
-                    fontPropertyEvent.GetType().GetMethod("Remove", new[] { typeof(Action<bool, UnityEngine.Object>) })
-                        ?.Invoke(fontPropertyEvent, new object[] { fontPropertyHandler });
+                if (_fontPropertyEvent != null && _fontPropertyHandler != null)
+                    _fontPropertyEvent.GetType().GetMethod("Remove", new[] { typeof(Action<bool, UnityEngine.Object>) })
+                        ?.Invoke(_fontPropertyEvent, new object[] { _fontPropertyHandler });
 
                 var textureChanged = TextureChangedField;
-                if (textureChanged != null && textureChangedHandler != null)
+                if (textureChanged != null && _textureChangedHandler != null)
                     textureChanged.SetValue(null, Delegate.Remove((Delegate)textureChanged.GetValue(null),
-                        textureChangedHandler));
+                        _textureChangedHandler));
             }
             catch (Exception)
             {
                 // Unsubscribing is best effort.
             }
 
-            fontPropertyEvent = null;
-            fontPropertyHandler = null;
-            textureChangedHandler = null;
+            _fontPropertyEvent = null;
+            _fontPropertyHandler = null;
+            _textureChangedHandler = null;
             Live.Clear();
         }
 
@@ -149,12 +149,12 @@ namespace Yaui.Text
 
         private static void FontsChanged()
         {
-            fontsChanged = true;
+            _fontsChanged = true;
             YauiSystem.RequestUpdate();
         }
 
         /// <summary>The text jobs of this frame. The layout depends on it.</summary>
-        public static JobHandle Handle => handle;
+        public static JobHandle Handle => _handle;
 
         public static void MarkDirty(YauiText text)
         {
@@ -177,10 +177,10 @@ namespace Yaui.Text
         /// <summary>Main thread: prepares the changed texts and starts generating them on worker threads.</summary>
         public static void Schedule()
         {
-            if (fontsChanged)
+            if (_fontsChanged)
             {
                 // Glyphs of cleared or rebuilt font atlases are gone or moved: every text generates again.
-                fontsChanged = false;
+                _fontsChanged = false;
                 FontEpoch++;
                 Pools.ClearTexts();
                 foreach (var text in Live) MarkDirty(text);
@@ -239,7 +239,7 @@ namespace Yaui.Text
             // ATG serializes generation with an internal lock, so more workers only contend for it. Two let the
             // main thread help while it waits, without much contention.
             var batchSize = Math.Max(1, (batch.Texts.Count + MaxParallelism - 1) / MaxParallelism);
-            handle = JobHandle.CombineDependencies(handle,
+            _handle = JobHandle.CombineDependencies(_handle,
                 job.ScheduleParallel(batch.Texts.Count, batchSize, default));
             JobHandle.ScheduleBatchedJobs();
         }
@@ -247,8 +247,8 @@ namespace Yaui.Text
         /// <summary>Main thread: waits for the text jobs.</summary>
         public static void Complete()
         {
-            handle.Complete();
-            handle = default;
+            _handle.Complete();
+            _handle = default;
             foreach (var text in InFlight) text.GenerationInFlight = false;
 
             InFlight.Clear();

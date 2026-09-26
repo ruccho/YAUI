@@ -11,7 +11,7 @@ namespace Yaui
         /// <summary>Whether clicking the toggle that is on switches it off, leaving none on.</summary>
         [SerializeField] private bool allowSwitchOff;
 
-        private readonly List<YauiToggle> toggles = new();
+        private readonly List<YauiToggle> _toggles = new();
 
         public bool AllowSwitchOff
         {
@@ -20,14 +20,14 @@ namespace Yaui
         }
 
         /// <summary>The enabled toggles of the group.</summary>
-        public IReadOnlyList<YauiToggle> Toggles => toggles;
+        public IReadOnlyList<YauiToggle> Toggles => _toggles;
 
         /// <summary>The first toggle that is on, or null.</summary>
         public YauiToggle ActiveToggle
         {
             get
             {
-                foreach (var toggle in toggles)
+                foreach (var toggle in _toggles)
                     if (toggle.IsOn)
                         return toggle;
 
@@ -45,7 +45,7 @@ namespace Yaui
         {
             var allow = allowSwitchOff;
             allowSwitchOff = true;
-            foreach (var toggle in toggles.ToArray())
+            foreach (var toggle in _toggles.ToArray())
                 if (notify)
                     toggle.IsOn = false;
                 else
@@ -56,17 +56,17 @@ namespace Yaui
 
         internal void Register(YauiToggle toggle)
         {
-            if (!toggles.Contains(toggle)) toggles.Add(toggle);
+            if (!_toggles.Contains(toggle)) _toggles.Add(toggle);
         }
 
         internal void Unregister(YauiToggle toggle)
         {
-            toggles.Remove(toggle);
+            _toggles.Remove(toggle);
         }
 
         internal bool IsOnlyOn(YauiToggle toggle)
         {
-            foreach (var other in toggles)
+            foreach (var other in _toggles)
                 if (other != toggle && other.IsOn)
                     return false;
 
@@ -78,7 +78,7 @@ namespace Yaui
         {
             var allow = allowSwitchOff;
             allowSwitchOff = true;
-            foreach (var other in toggles.ToArray())
+            foreach (var other in _toggles.ToArray())
                 if (other != toggle && other.IsOn)
                     other.IsOn = false;
 

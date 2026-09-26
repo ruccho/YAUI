@@ -67,31 +67,31 @@ namespace Yaui.Text
         private static readonly ProfilerMarker ResolveMissingMarker = new("Yaui.Text.ResolveMissingGlyphs");
         private static readonly ProfilerMarker ConvertMarker = new("Yaui.Text.Convert");
 
-        private static TextSettings textSettings;
+        private static TextSettings _textSettings;
 
         // Text settings whose default sprite asset is the sprite asset of a text: ATG resolves <sprite> through them.
         private static readonly Dictionary<SpriteAsset, TextSettings> SpriteSettings = new();
-        private static object textInfoList;
+        private static object _textInfoList;
         private static readonly List<uint> GlyphBuffer = new();
         private static readonly Dictionary<EntityId, HashSet<uint>> AggregatedMissingGlyphs = new();
 
-        private IntPtr textGenerationInfo;
-        private NativeTextGenerationSettings settings;
-        private NativeTextInfo textInfo;
-        private bool hasMissingGlyphs;
+        private IntPtr _textGenerationInfo;
+        private NativeTextGenerationSettings _settings;
+        private NativeTextInfo _textInfo;
+        private bool _hasMissingGlyphs;
 
         // ProcessMeshInfos maps the UVs in place, so it must run once per native generation: a cached generation
         // (the same text prepared again, e.g. by OnValidate after an undo) already has atlas UVs.
-        private bool uvsAreGenerated;
-        private bool wordWrap;
-        private bool ellipsis;
+        private bool _uvsAreGenerated;
+        private bool _wordWrap;
+        private bool _ellipsis;
 
         // Pinned so that worker threads can pass it to the native generator.
-        private char[] textBuffer;
-        private GCHandle textBufferHandle;
+        private char[] _textBuffer;
+        private GCHandle _textBufferHandle;
 
-        private List<List<List<int>>> textElementIndicesByMesh = new();
-        private Dictionary<EntityId, HashSet<uint>> missingGlyphs = new();
+        private List<List<List<int>>> _textElementIndicesByMesh = new();
+        private Dictionary<EntityId, HashSet<uint>> _missingGlyphs = new();
 
         /// <summary>Uses the public TextGenerator even if the internal APIs match (tests).</summary>
         internal static bool ForceFallback;
@@ -101,12 +101,12 @@ namespace Yaui.Text
 
         public AtgText()
         {
-            textGenerationInfo = AtgInternals.CreateGenerationInfo(true);
+            _textGenerationInfo = AtgInternals.CreateGenerationInfo(true);
             EnsureTextBuffer(32);
         }
 
         /// <summary>The native generation info: <see cref="AtgSelection"/> queries its last generation.</summary>
-        public IntPtr GenerationInfo => textGenerationInfo;
+        public IntPtr GenerationInfo => _textGenerationInfo;
 
         public bool IsPrepared { get; private set; }
 
@@ -129,13 +129,13 @@ namespace Yaui.Text
         {
             get
             {
-                if (textSettings == null)
+                if (_textSettings == null)
                 {
-                    textSettings = ScriptableObject.CreateInstance<TextSettings>();
-                    textSettings.hideFlags = HideFlags.HideAndDontSave;
+                    _textSettings = ScriptableObject.CreateInstance<TextSettings>();
+                    _textSettings.hideFlags = HideFlags.HideAndDontSave;
                 }
 
-                return textSettings;
+                return _textSettings;
             }
         }
 
@@ -170,15 +170,15 @@ namespace Yaui.Text
         public void Prepare(ReadOnlySpan<char> text, in TextRequest request)
         {
             EnsureTextBuffer(text.Length);
-            text.CopyTo(textBuffer);
+            text.CopyTo(_textBuffer);
 
-            settings = BuildNativeSettings(request);
-            settings.textBufferPtr = textBufferHandle.AddrOfPinnedObject();
-            settings.textBufferLength = text.Length;
-            wordWrap = request.WordWrap;
-            ellipsis = request.Ellipsis;
-            if (settings.richTextEnabled && text.Length > 0)
-                AtgInternals.PreloadAssetsFromText(settings.textBufferPtr, text.Length, settings.textSettings);
+            _settings = BuildNativeSettings(request);
+            _settings.textBufferPtr = _textBufferHandle.AddrOfPinnedObject();
+            _settings.textBufferLength = text.Length;
+            _wordWrap = request.WordWrap;
+            _ellipsis = request.Ellipsis;
+            if (_settings.richTextEnabled && text.Length > 0)
+                AtgInternals.PreloadAssetsFromText(_settings.textBufferPtr, text.Length, _settings.textSettings);
 
             IsPrepared = true;
             IsGenerated = false;
@@ -198,25 +198,25 @@ namespace Yaui.Text
         {
             using var _ = GenerateMarker.Auto();
             var constrained = width >= 0f;
-            var elide = ellipsis && constrained && height >= 0f;
-            settings.screenWidth = constrained ? ToFixedPoint(width) : -1;
-            settings.screenHeight = elide ? ToFixedPoint(height) : -1;
-            settings.overflow = elide ? AtgInternals.OverflowEllipsis : AtgInternals.OverflowClip;
-            settings.wordWrapEnabled = wordWrap && constrained;
+            var elide = _ellipsis && constrained && height >= 0f;
+            _settings.screenWidth = constrained ? ToFixedPoint(width) : -1;
+            _settings.screenHeight = elide ? ToFixedPoint(height) : -1;
+            _settings.overflow = elide ? AtgInternals.OverflowEllipsis : AtgInternals.OverflowClip;
+            _settings.wordWrapEnabled = _wordWrap && constrained;
             ElidedHeight = elide ? height : -1f;
 
             var wasCached = false;
-            textInfo = AtgInternals.GenerateText(AtgInternals.TextLib, settings, textGenerationInfo, ref wasCached);
-            if (!wasCached) uvsAreGenerated = false;
+            _textInfo = AtgInternals.GenerateText(AtgInternals.TextLib, _settings, _textGenerationInfo, ref wasCached);
+            if (!wasCached) _uvsAreGenerated = false;
 
-            Size = new float2(textInfo.totalWidth / 64f, textInfo.totalHeight / 64f);
+            Size = new float2(_textInfo.totalWidth / 64f, _textInfo.totalHeight / 64f);
             GeneratedWidth = constrained ? width : -1f;
             IsGenerated = true;
 
-            foreach (var set in missingGlyphs.Values) set.Clear();
+            foreach (var set in _missingGlyphs.Values) set.Clear();
 
-            hasMissingGlyphs = AtgInternals.HasMissingGlyphs(AtgInternals.TextLib, textInfo, ref missingGlyphs);
-            if (!hasMissingGlyphs) ProcessMeshInfos();
+            _hasMissingGlyphs = AtgInternals.HasMissingGlyphs(AtgInternals.TextLib, _textInfo, ref _missingGlyphs);
+            if (!_hasMissingGlyphs) ProcessMeshInfos();
         }
 
         /// <summary>
@@ -231,16 +231,16 @@ namespace Yaui.Text
 
             foreach (var set in AggregatedMissingGlyphs.Values) set.Clear();
 
-            textInfoList ??= AtgInternals.CreateTextInfoList();
-            AtgInternals.TextInfoListClear(textInfoList);
+            _textInfoList ??= AtgInternals.CreateTextInfoList();
+            AtgInternals.TextInfoListClear(_textInfoList);
             var anyMissing = false;
             foreach (var text in texts)
             {
-                if (!text.hasMissingGlyphs) continue;
+                if (!text._hasMissingGlyphs) continue;
 
                 anyMissing = true;
-                AtgInternals.TextInfoListAdd(textInfoList, text.textInfo);
-                foreach (var pair in text.missingGlyphs)
+                AtgInternals.TextInfoListAdd(_textInfoList, text._textInfo);
+                foreach (var pair in text._missingGlyphs)
                 {
                     if (pair.Value.Count == 0) continue;
 
@@ -253,7 +253,7 @@ namespace Yaui.Text
 
             if (!anyMissing) return;
 
-            AtgInternals.ResolveFallbacks(textInfoList, AggregatedMissingGlyphs);
+            AtgInternals.ResolveFallbacks(_textInfoList, AggregatedMissingGlyphs);
             foreach (var entry in AggregatedMissingGlyphs)
             {
                 if (Resources.EntityIdToObject(entry.Key) is not FontAsset fontAsset ||
@@ -268,23 +268,23 @@ namespace Yaui.Text
             AtgInternals.UpdateFontAssetsInUpdateQueue();
 
             foreach (var text in texts)
-                if (text.hasMissingGlyphs)
+                if (text._hasMissingGlyphs)
                 {
                     text.ProcessMeshInfos();
-                    text.hasMissingGlyphs = false;
+                    text._hasMissingGlyphs = false;
                 }
         }
 
         private void ProcessMeshInfos()
         {
-            foreach (var atlases in textElementIndicesByMesh)
+            foreach (var atlases in _textElementIndicesByMesh)
             foreach (var indices in atlases)
                 indices.Clear();
 
             // Rasterizes newly added glyphs and fills the UVs.
-            AtgInternals.ProcessMeshInfos(AtgInternals.TextLib, textInfo, settings, ref textElementIndicesByMesh,
-                uvsAreGenerated);
-            uvsAreGenerated = true;
+            AtgInternals.ProcessMeshInfos(AtgInternals.TextLib, _textInfo, _settings, ref _textElementIndicesByMesh,
+                _uvsAreGenerated);
+            _uvsAreGenerated = true;
         }
 
         /// <summary>Main thread: converts the last generation into glyph quads.</summary>
@@ -293,9 +293,9 @@ namespace Yaui.Text
             using var _ = ConvertMarker.Auto();
             output.Clear();
 
-            var meshInfos = (ATGMeshInfo*)textInfo.m_MeshInfosPtr;
+            var meshInfos = (AtgMeshInfo*)_textInfo.m_MeshInfosPtr;
             var processedMeshIndex = 0;
-            for (var i = 0; i < textInfo.meshInfoCount; i++)
+            for (var i = 0; i < _textInfo.meshInfoCount; i++)
             {
                 var meshInfo = meshInfos[i];
                 var textAsset = Resources.EntityIdToObject(meshInfo.textAssetId);
@@ -315,7 +315,7 @@ namespace Yaui.Text
 
                 var elements = (NativeTextElementInfo*)meshInfo.m_TextElementInfosPtr;
                 var spread = fontAsset.IsBitmap() ? 0f : fontAsset.atlasPadding + 1f;
-                var atlasIndices = textElementIndicesByMesh[processedMeshIndex];
+                var atlasIndices = _textElementIndicesByMesh[processedMeshIndex];
                 for (var atlasIndex = 0; atlasIndex < atlasIndices.Count; atlasIndex++)
                 {
                     var atlas = fontAsset.atlasTextures[atlasIndex];
@@ -350,7 +350,7 @@ namespace Yaui.Text
         }
 
         /// <summary>The sprites of &lt;sprite&gt; tags: colored quads of the sprite sheet.</summary>
-        private static void ConvertSprites(ATGMeshInfo meshInfo, SpriteAsset spriteAsset, List<GlyphQuad> output)
+        private static void ConvertSprites(AtgMeshInfo meshInfo, SpriteAsset spriteAsset, List<GlyphQuad> output)
         {
             var sheet = spriteAsset.spriteSheet;
             if (sheet == null) return;
@@ -380,12 +380,12 @@ namespace Yaui.Text
 
         private void EnsureTextBuffer(int length)
         {
-            if (textBuffer != null && textBuffer.Length >= length) return;
+            if (_textBuffer != null && _textBuffer.Length >= length) return;
 
-            if (textBufferHandle.IsAllocated) textBufferHandle.Free();
+            if (_textBufferHandle.IsAllocated) _textBufferHandle.Free();
 
-            textBuffer = new char[Math.Max(length, (textBuffer?.Length ?? 16) * 2)];
-            textBufferHandle = GCHandle.Alloc(textBuffer, GCHandleType.Pinned);
+            _textBuffer = new char[Math.Max(length, (_textBuffer?.Length ?? 16) * 2)];
+            _textBufferHandle = GCHandle.Alloc(_textBuffer, GCHandleType.Pinned);
         }
 
         private static NativeTextGenerationSettings BuildNativeSettings(in TextRequest request)
@@ -424,13 +424,13 @@ namespace Yaui.Text
 
         public void Dispose()
         {
-            if (textGenerationInfo != IntPtr.Zero)
+            if (_textGenerationInfo != IntPtr.Zero)
             {
-                AtgInternals.DestroyGenerationInfo(textGenerationInfo);
-                textGenerationInfo = IntPtr.Zero;
+                AtgInternals.DestroyGenerationInfo(_textGenerationInfo);
+                _textGenerationInfo = IntPtr.Zero;
             }
 
-            if (textBufferHandle.IsAllocated) textBufferHandle.Free();
+            if (_textBufferHandle.IsAllocated) _textBufferHandle.Free();
         }
     }
 }
