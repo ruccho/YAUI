@@ -27,6 +27,13 @@ YAUI は GameObject によるオーサリングを保ったまま uGUI との互
 
 ボックス・画像・グリフはすべて GPU バッファ上の Quad であり、**パネルごとに 1 ドローコール**で描かれます。角丸・ボーダー・ドロップシャドウ・SDF テキストはすべて 1 つの Uber シェーダーで描かれ、バッチを切りません。テキスト生成とレイアウトは**ワーカースレッド上のジョブ**として実行され、変更のないフレームのコストはほぼゼロです。
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/static/img/benchmark-dark.svg">
+  <img src="docs/static/img/benchmark-light.svg" alt="Pixel 5 での UI によるフレームあたりの時間の増分: YAUI、uGUI、UI Toolkit" width="800">
+</picture>
+
+同じ画面を YAUI、uGUI、UI Toolkit で組み、Pixel 5 で計測した結果です。ほとんどのシナリオで YAUI のメインスレッドのコストが最も小さく、GPU のコストは uGUI より大きくなります。詳しくは[ベンチマーク](https://ruccho.com/YAUI/ja/benchmarks)を参照してください。
+
 ### 高度なレイアウト
 
 Yoga の移植版による **Flexbox** レイアウトを Burst で計算します。サイズが固定のボックスは**レイアウトの境界**となり、変更はそれが影響する部分木だけをレイアウトし直します。

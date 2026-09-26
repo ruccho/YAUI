@@ -28,6 +28,13 @@ YAUI keeps the GameObject authoring model and drops compatibility with uGUI to g
 
 Every box, image and glyph is a quad in a GPU buffer, drawn in **one draw call per panel**. Rounded corners, borders, drop shadows and SDF text are all drawn by one uber shader, without breaking the batch. Text generation and layout run as **jobs on worker threads**, and a frame without changes costs almost nothing.
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/static/img/benchmark-dark.svg">
+  <img src="docs/static/img/benchmark-light.svg" alt="Time added by the UI per frame on a Pixel 5: YAUI, uGUI and UI Toolkit" width="800">
+</picture>
+
+The same screens built with YAUI, uGUI and UI Toolkit, measured on a Pixel 5. YAUI has the lowest main thread cost in most scenarios; its GPU cost is higher than uGUI's. See the [benchmarks](https://ruccho.com/YAUI/benchmarks) for the details.
+
 ### Advanced layouts
 
 **Flexbox** layout with a port of Yoga, computed with Burst. Boxes with a fixed size are **layout boundaries**, so a change only lays out the part of the tree it affects.

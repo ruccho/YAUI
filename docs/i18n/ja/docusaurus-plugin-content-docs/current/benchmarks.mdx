@@ -1,0 +1,111 @@
+---
+title: ベンチマーク
+sidebar_position: 4
+---
+
+import ThemedImage from '@theme/ThemedImage';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+# ベンチマーク
+
+同じ画面を YAUI、uGUI (TextMeshPro)、UI Toolkit で組み、モバイル端末で計測しました。コードとシーンはリポジトリの [`Assets/Benchmarks`](https://github.com/ruccho/YAUI/tree/main/Assets/Benchmarks) にあります。
+
+<ThemedImage
+  alt="UI によって増えるフレームあたりの時間: YAUI、uGUI、UI Toolkit"
+  sources={{
+    light: useBaseUrl('/img/benchmark-light.svg'),
+    dark: useBaseUrl('/img/benchmark-dark.svg'),
+  }}
+/>
+
+## 概要 {#summary}
+
+- **ほとんどのシナリオで YAUI のメインスレッドのコストが最も小さくなります。** 変更のないフレームのコストはゼロで、色の変更・要素の移動・ヒットテストは 0.25 ms 未満です。
+- **テキストの変更**は uGUI の約半分、UI Toolkit の約 1/5 です。
+- **レイアウト**は uGUI の Layout Group の約 7 倍速いものの、**UI Toolkit より遅くなります** (増分 10.7 ms 対 6.5 ms)。
+- **GPU 時間は uGUI より長く** (約 1.7〜2.3 倍)、これは Uber シェーダーのコストです。UI Toolkit と比べると、グリッドでは短く、リストではほぼ同じです。
+
+## 計測環境 {#environment}
+
+- **端末**: Google Pixel 5 (Snapdragon 765G、Adreno 620)、Android 14
+- **グラフィックス API**: Vulkan
+- **画面**: 1080 x 2340、縦。UI はネイティブ解像度で描画
+- **ビルド**: IL2CPP、ARM64、リリースビルド
+- **Unity**: 6000.7.0b2、URP 17.7.0
+- **YAUI**: 0.2.0
+
+各シナリオはウォームアップ 120 フレームのあと 600 フレームを計測します。全シナリオを 3 回実行し、シナリオごとに 3 つのシステムを続けて実行します。発熱の影響が偏らないよう、その順番は回ごとに入れ替えます。値は、フレームの中央値の 3 回分の中央値です。
+
+## シナリオ {#scenarios}
+
+| シナリオ | 内容 |
+|---|---|
+| Grid | 画面を埋める 1,500 セル (30 x 50)。セルは角丸のパネル、丸いアイコン、数字のラベルで、要素は 4,500 個 |
+| Grid: no changes | 変化なし |
+| Grid: 10% change color | 10% のセルの背景色を毎フレーム変更 |
+| Grid: 10% move | 10% のセルを毎フレーム移動 (レイアウトなし) |
+| Grid: 10% change text | 10% のセルのラベルを毎フレーム変更 (桁数は同じ) |
+| Grid: 10 hit tests | 変化なし。毎フレーム 10 回のヒットテスト |
+| List | スクロールビューの中の 500 行 (仮想化なし)。行は角丸のパネル、丸いアイコン、タイトル、値 |
+| List: scroll | 毎フレームスクロール |
+| List: 10% relayout | 10% の行のタイトルを毎フレーム 1 行と 2 行で切り替え、レイアウトをやり直させる |
+
+各システムでは、見た目を揃えたうえで、それぞれの通常の方法で画面を組んでいます。
+
+| | YAUI | uGUI + TextMeshPro | UI Toolkit |
+|---|---|---|---|
+| Grid | 折り返しのある flex の行 | アンカー (Layout Group なし。uGUI で最も速い方法) | 折り返しのある flex の行 |
+| List | `YauiScrollView` の中の flex の列 | `ScrollRect`、`RectMask2D`、Vertical / Horizontal Layout Group | `ScrollView` |
+| 角丸 | ボックスのスタイル | 9 スライスのスプライト (アトラスのように 1 枚のテクスチャから) | `border-radius` |
+| テキスト | `YauiText` | TextMeshPro | `Label` |
+| 最適化 | アイコンとラベルはレイキャストの対象外 | 定番のもの: 変化するセルを子 Canvas に分離、アイコンとラベルはレイキャストの対象外、`isTextObjectScaleStatic` | 変化するセルに Usage Hints、アイコンとラベルはピッキングの対象外 |
+| ヒットテスト | `EventSystem.RaycastAll` | `EventSystem.RaycastAll` | `IPanel.Pick` |
+
+## 結果 {#results}
+
+### CPU {#cpu}
+
+フレームあたりのメインスレッドの時間 (ミリ秒、表示の待ちを除く)。空のシーンからの増分を括弧内に示します。
+
+| シナリオ | YAUI | uGUI + TextMeshPro | UI Toolkit |
+|---|---|---|---|
+| 空のシーン | 2.57 | 2.57 | 2.57 |
+| Grid: no changes | **2.30** (±0) | 3.17 (+0.61) | 2.96 (+0.40) |
+| Grid: 10% change color | **2.62** (+0.06) | 5.62 (+3.05) | 3.77 (+1.21) |
+| Grid: 10% move | **2.78** (+0.21) | 4.42 (+1.85) | 4.37 (+1.80) |
+| Grid: 10% change text | **4.81** (+2.25) | 6.97 (+4.41) | 14.98 (+12.41) |
+| Grid: 10 hit tests | **2.41** (±0) | 7.83 (+5.26) | 4.82 (+2.25) |
+| List: scroll | **3.16** (+0.59) | 6.93 (+4.36) | 3.42 (+0.86) |
+| List: 10% relayout | 13.24 (+10.67) | 76.74 (+74.17) | **9.02** (+6.45) |
+
+空のシーンをわずかに下回る値は誤差の範囲なので、±0 と表記しています。
+
+描画スレッドはどのシナリオでも 0.5〜1.8 ms で、システム間の差は小さくなっています。
+
+### GPU {#gpu}
+
+GPU は負荷に応じてクロックを変えるため、異なるシーンの GPU 時間はそのままでは比べられません。ここでは、重い全画面のパスで GPU を最高クロックに保ち、そのパスだけのときとの差を UI のコストとしています。
+
+| シナリオ | YAUI | uGUI + TextMeshPro | UI Toolkit |
+|---|---|---|---|
+| Grid | +5.20 | **+2.98** | +8.69 |
+| List | +3.31 | **+1.45** | +3.01 |
+
+通常のフレームのようにクロックが低いときは、同じ処理にもっと時間がかかります。
+
+## 注意点 {#notes}
+
+- **テキスト**: テキストの変更にかかる時間は実行ごとにばらつきます (YAUI の合計で 4.5〜7.5 ms)。
+- **レイアウト**: YAUI はメインスレッドでレイアウトのジョブを待ちます。リストの行は高さが内容で決まるため[レイアウトの境界](./manual/layout.mdx#layout-boundaries)にならず、リスト全体がレイアウトし直されます。
+- 「List: 10% relayout」では、2 行でも行の最小の高さに収まるため、行の高さはほぼ変わりません。
+- UI Toolkit のヒットテスト (`Pick`) は最前面の要素だけを返します。ほかの 2 つは、その点にあるすべての要素を返します。
+- 結果は 1 台の端末のものです。端末、グラフィックス API、内容によって変わります。
+
+## ベンチマークの実行 {#running-the-benchmarks}
+
+1. TextMeshPro の Essential Resources をインポートします (**Window > TextMeshPro > Import TMP Essential Resources**)。
+2. `Assets/Benchmarks/Comparison/ComparisonBenchmark.unity` だけを含めて端末向けにビルドします。Development Build では、プロファイラのマーカーによる内訳も記録されます。
+3. アプリは全シナリオを実行し (約 25 分)、結果を表示して、CSV として `Application.persistentDataPath` に書き出します。
+4. `Assets/Benchmarks/Tools~/chart.py` は CSV から表を出力し、グラフを描きます。
+
+このページの計測結果の生データは `Assets/Benchmarks/Results~` にあります。

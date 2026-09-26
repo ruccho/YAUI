@@ -1,0 +1,19 @@
+{
+    "name": "Yaui.Benchmarks.Comparison",
+    "rootNamespace": "Yaui.Benchmarks.Comparison",
+    "references": [
+        "Yaui",
+        "Yaui.Benchmarks",
+        "UnityEngine.UI",
+        "Unity.TextMeshPro"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
