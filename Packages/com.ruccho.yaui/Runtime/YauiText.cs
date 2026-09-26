@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Unity.Collections;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
@@ -64,8 +63,6 @@ namespace Yaui
         [NonSerialized] private Font fontAssetSource;
         [NonSerialized] private FontAsset fontAsset;
         [NonSerialized] private YogaMeasureFunc measure;
-        [NonSerialized] private int glyphStart;
-        [NonSerialized] private int glyphCapacity;
         [NonSerialized] private bool measureDirty;
 
         // The generation drawn last: its width and its size rounded as measured.
@@ -242,7 +239,7 @@ namespace Yaui
             }
         }
 
-        internal override bool AcceptsChildren => false;
+        protected override bool AcceptsChildren => false;
 
         private bool HasShadow => shadowColor.a > 0f && (shadowOffset != Vector2.zero || shadowBlur > 0f);
 
@@ -252,7 +249,7 @@ namespace Yaui
 
         private float2 GenerationSize => atg != null ? atg.Size : fallback.Size;
 
-        private protected override bool HasVisibleContent => !string.IsNullOrEmpty(text);
+        protected override bool HasVisibleContent => !string.IsNullOrEmpty(text);
 
         private Font EffectiveFont =>
             font != null ? font : defaultFont ??= Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
@@ -269,23 +266,18 @@ namespace Yaui
             SyncText();
         }
 
-        private protected override void OnRegistered()
+        protected override void OnRegistered()
         {
             TextPipeline.Register(this);
             SyncText();
         }
 
-        private protected override void OnUnregistering()
+        protected override void OnUnregistering()
         {
             TextPipeline.Unregister(this);
             if (GenerationInFlight) TextPipeline.Complete();
 
             TextPipeline.Forget(this);
-            if (glyphCapacity > 0 && YauiSystem.IsInitialized)
-                YauiSystem.Primitives.FreeRange(glyphStart, glyphCapacity);
-
-            glyphStart = 0;
-            glyphCapacity = 0;
             renderedLength = -1;
             renderedWidth = float.NaN;
             renderedSize = float.NaN;
@@ -514,7 +506,7 @@ namespace Yaui
             return float.IsNaN(height) ? -1f : math.max(height, 0f);
         }
 
-        internal override void OnLayoutApplied()
+        protected override void OnLayoutApplied()
         {
             TextPipeline.MarkRender(this);
         }
@@ -578,17 +570,7 @@ namespace Yaui
                 foreach (var g in Glyphs)
                     shadowCount += g.IsSprite ? 0 : 1;
 
-            var count = Glyphs.Count + shadowCount;
-            var capacity = count == 0 ? 0 : GpuStore<PrimitiveData>.RangeCapacity(count);
-            var primitives = YauiSystem.Primitives;
-            if (capacity != glyphCapacity)
-            {
-                if (glyphCapacity > 0) primitives.FreeRange(glyphStart, glyphCapacity);
-
-                glyphStart = capacity > 0 ? primitives.AllocateRange(capacity) : 0;
-                glyphCapacity = capacity;
-                Panel.OrderDirty = true;
-            }
+            ResizeContent(Glyphs.Count + shadowCount);
 
             var y = Yoga;
             var content = new float2(
@@ -610,7 +592,6 @@ namespace Yaui
             var textures = YauiSystem.Textures;
             var written = shadowCount;
             var shadowWritten = 0;
-            var signature = 0;
             Texture lastAtlas = null;
             var lastId = 0;
             foreach (var g in Glyphs)
@@ -619,7 +600,6 @@ namespace Yaui
                 {
                     lastAtlas = g.Atlas;
                     lastId = textures.GetPermanent(g.Atlas, g.Spread);
-                    signature = signature * 31 + lastId;
                 }
 
                 var baseFlags = PrimitiveTexture.With(g.IsSprite ? PrimitiveFlags.Image : PrimitiveFlags.Text, lastId);
@@ -628,15 +608,14 @@ namespace Yaui
                 var rect = new float4(origin + g.Min, g.Max - g.Min);
                 if (g.IsSprite)
                 {
-                    primitives[glyphStart + written++] = new PrimitiveData
+                    WriteContent(written++, new PrimitiveData
                     {
                         Rect = rect,
                         UvRect = GpuPacking.Unorm16x4(g.Uv),
                         Color = GpuPacking.Color(g.Color),
-                        Node = (uint)NodeSlot,
                         Flags = baseFlags,
                         BorderWidthAndSkew = GpuPacking.Half2(0f, g.Skew)
-                    };
+                    });
                     continue;
                 }
 
@@ -648,16 +627,15 @@ namespace Yaui
 
                 var flags = outline > 0f ? baseFlags | PrimitiveFlags.Border : baseFlags;
                 var expanded = Expand(rect, g.Uv, uvPerUnit, g.Skew, outline + 1f - padding);
-                primitives[glyphStart + written++] = new PrimitiveData
+                WriteContent(written++, new PrimitiveData
                 {
                     Rect = expanded.Rect,
                     UvRect = GpuPacking.Unorm16x4(expanded.Uv),
                     Color = GpuPacking.Color(g.Color),
                     BorderColor = outlinePacked,
-                    Node = (uint)NodeSlot,
                     Flags = flags,
                     BorderWidthAndSkew = GpuPacking.Half2(outline, g.Skew)
-                };
+                });
 
                 if (shadowed)
                 {
@@ -665,26 +643,16 @@ namespace Yaui
                     var blur = math.clamp(shadowBlur, 0f, math.max((reach - outline) * 2f, 0f));
                     var shadow = Expand(rect, g.Uv, uvPerUnit, g.Skew, outline + blur * 0.5f + 1f - padding);
                     shadow.Rect.xy += (float2)shadowOffset;
-                    primitives[glyphStart + shadowWritten++] = new PrimitiveData
+                    WriteContent(shadowWritten++, new PrimitiveData
                     {
                         Rect = shadow.Rect,
                         UvRect = GpuPacking.Unorm16x4(shadow.Uv),
                         Color = shadowPacked,
                         Radii = GpuPacking.Half4(new float4(blur, 0f, 0f, 0f)),
-                        Node = (uint)NodeSlot,
                         Flags = baseFlags | PrimitiveFlags.Shadow,
                         BorderWidthAndSkew = GpuPacking.Half2(outline, g.Skew)
-                    };
+                    });
                 }
-            }
-
-            for (var i = written; i < glyphCapacity; i++) primitives[glyphStart + i] = default;
-
-            // Draws are split by the textures they use: other atlas pages need a new draw order.
-            if (signature != textureSignature)
-            {
-                textureSignature = signature;
-                Panel.OrderDirty = true;
             }
 
             glyphOrigin = origin;
@@ -713,8 +681,6 @@ namespace Yaui
                 Uv = new float4(uv.xy - amount * uvPerUnit + shift, uv.zw + amount * uvPerUnit + shift)
             };
         }
-
-        [NonSerialized] private int textureSignature;
 
         // Where the glyphs of the last written generation start in the element's box, and the length of its text.
         [NonSerialized] private float2 glyphOrigin;
@@ -772,13 +738,5 @@ namespace Yaui
 
         internal IntPtr SelectionInfo => atg.GenerationInfo;
 
-        /// <summary>The range of the glyph primitives (tests).</summary>
-        internal (int Start, int Capacity) GlyphRange => (glyphStart, glyphCapacity);
-
-        internal override void AppendDrawOrder(NativeList<uint> order)
-        {
-            base.AppendDrawOrder(order);
-            for (var i = 0; i < glyphCapacity; i++) order.Add((uint)(glyphStart + i));
-        }
     }
 }

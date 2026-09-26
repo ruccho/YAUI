@@ -485,7 +485,7 @@ namespace Yaui.Tests
         private static List<PrimitiveData> DrawnGlyphs(YauiText text)
         {
             var result = new List<PrimitiveData>();
-            var (start, capacity) = text.GlyphRange;
+            var (start, capacity) = text.ContentRange;
             for (var i = 0; i < capacity; i++)
             {
                 var p = Core.YauiSystem.Primitives[start + i];
@@ -585,14 +585,14 @@ namespace Yaui.Tests
                 image.FillAmount = 0.25f;
                 YauiPanel.ForceUpdate();
 
-                var p = Core.YauiSystem.Primitives[image.PrimitiveRange.Start];
+                var p = Core.YauiSystem.Primitives[image.ContentRange.Start];
                 Assert.AreEqual(75f, p.Rect.x, 1e-3f);
                 Assert.AreEqual(25f, p.Rect.z, 1e-3f);
                 Assert.AreEqual(50f, p.Rect.w, 1e-3f);
 
                 image.FillMethod = FillMethod.Radial360;
                 YauiPanel.ForceUpdate();
-                p = Core.YauiSystem.Primitives[image.PrimitiveRange.Start];
+                p = Core.YauiSystem.Primitives[image.ContentRange.Start];
                 Assert.IsTrue((p.Flags & PrimitiveFlags.RadialFill) != 0);
                 Assert.AreEqual(100f, p.Rect.z, 1e-3f, "A radial fill covers the whole rect.");
             }
@@ -617,14 +617,14 @@ namespace Yaui.Tests
                 image.Texture = texture;
                 YauiPanel.ForceUpdate();
 
-                var p = Core.YauiSystem.Primitives[image.PrimitiveSlot];
+                var p = Core.YauiSystem.Primitives[image.ContentRange.Start];
                 Assert.AreEqual(new float4(0f, 0f, 40f, 30f), p.Rect);
                 Assert.AreSame(texture, Core.YauiSystem.Textures.Get(PrimitiveTexture.IdOf(p.Flags)));
                 Assert.AreSame(image, HitTest(panel, 20f, 15f), "Hit without a visible box.");
 
                 image.Texture = null;
                 YauiPanel.ForceUpdate();
-                Assert.AreEqual(0, image.PrimitiveSlot);
+                Assert.AreEqual(0, image.ContentRange.Capacity);
             }
             finally
             {

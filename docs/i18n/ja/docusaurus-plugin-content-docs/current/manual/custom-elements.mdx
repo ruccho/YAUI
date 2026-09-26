@@ -1,0 +1,164 @@
+---
+title: カスタム要素
+sidebar_position: 9.7
+---
+
+# カスタム要素
+
+要素は、ボックスの上に独自の内容を、ほかの要素と同じドローコールで描けます。`YauiElement` を継承し、**プリミティブ**を与えます。プリミティブは Uber シェーダーが描く Quad 1 つで、`YauiText` のグリフや `YauiImage` の画像も同じ仕組みで作られています。テキストのように、内容から自分の大きさを決めることもできます。テキストレンダラー、アイコンフォント、チャートなどをパッケージの外で書けます。
+
+プリミティブは Uber シェーダーの形状を使います。角丸とボーダーのある矩形、画像、符号付き距離場 (SDF) のグリフです。ほかのシェーダーは[カスタムシェーダー](./custom-shaders.mdx)、メッシュは[パーティクルとメッシュ](./particles-and-meshes.mdx)を参照してください。
+
+## プリミティブ {#primitives}
+
+`YauiPrimitive` は静的メソッドで作り、`With*` メソッドは変更したコピーを返します。
+
+| メソッド | 描くもの |
+|---|---|
+| `Rectangle(rect, color)` | 塗りつぶした矩形 |
+| `Image(rect, texture, uv, color)` | テクスチャに色を掛けたもの |
+| `DistanceField(rect, texture, uv, color)` | SDF アトラスのグリフ |
+| `DistanceFieldShadow(rect, texture, uv, color, dilate, softness)` | グリフの影。太らせてぼかした単色 |
+| `WithCornerRadius(radii)` | 矩形や画像の角丸 (左上、右上、右下、左下) |
+| `WithBorder(width, color)` | 矩形や画像の内側のボーダー、またはグリフのアウトライン |
+| `WithRadialFill(center, start, sweep)` | 矩形や画像の扇形の部分だけ。`YauiImage` の放射状の塗りと同じ |
+| `WithSkew(skew)` | 斜体のような水平方向の傾き |
+| `WithBold()` | 太らせたグリフ |
+
+矩形は要素のボックスのローカル空間 (キャンバス単位、原点は左上、Y は下向き) です。`ContentBox` はパディングとボーダーの内側のボックスです。UV の矩形はテクスチャの空間で、原点は左下です。
+
+内容は要素の変形・不透明度・Tint・[クリップとマスク](./clipping-and-masks.mdx)に従います。要素のボックスの後、子の前に、プリミティブの順で描かれます。
+
+## 内容を書く {#writing-the-content}
+
+内容は、依存するものが変わったときに、次のメソッドの中で `SetContent` で書きます。
+
+| メソッド | 呼ばれるとき |
+|---|---|
+| `OnRegistered` | 要素がパネルに加わったとき。それ以前に書いた内容は消えています。 |
+| `OnLayoutApplied` | 描画の直前に 1 フレーム 1 回、要素のレイアウトが変わったとき。ここで書いた内容はこのフレームに描かれます。 |
+| `OnBoxChanged` | 角丸などのボックスのスタイルが変わったとき。 |
+| `OnUnregistering` | 要素がパネルから外れるとき。テクスチャはここで解放します。 |
+
+`IsRegistered` が false の間、`SetContent` は何もしません。`SetContent(index, primitive)` はプリミティブを 1 つ置き換え、`ClearContent` はすべて取り除きます。見えるボックスがなくてもポインターのイベントを受けるには `HasVisibleContent` をオーバーライドし、値が変わったら `SyncHittable` を呼びます。
+
+## テクスチャ {#textures}
+
+テクスチャはプリミティブで使う前に登録し、使い終わったら解放します。
+
+- 画像には `YauiTexture.Acquire(texture)`。テクスチャはアトラスにまとめられません。
+- SDF アトラスには `YauiTexture.AcquireDistanceField(texture, spread)`。アルファチャネルがアウトラインまでの距離で、アウトライン上で 0.5 です。`spread` は距離場が届く範囲 (テクセル) です。テクスチャの大きさが変わったら登録し直します。
+- スプライトには `YauiSpriteTexture.Acquire(sprite)`。小さなスプライトは動的アトラスを共有します。`Uv` は `Texture` の中のスプライトの矩形です。
+
+登録ごとに `Release` が必要です。1 つのドローコールで使えるテクスチャは 8 枚までで、それを超えると描画が分割されます。
+
+## 内容を計測する {#measuring-the-content}
+
+内容から大きさが決まる要素は、`MeasuresContent` をオーバーライドして true を返し、`MeasureContent` でレイアウトの制約の中での内容の大きさを返します。
+
+| モード | 意味 |
+|---|---|
+| `Undefined` | 制約なし。本来の大きさ |
+| `Exactly` | 大きさはその値 |
+| `AtMost` | 大きさはその値以下 |
+
+`MeasureContent` はレイアウトの途中で、**ワーカースレッドで**呼ばれます。制約を変えて何度も呼ばれることがあり、ほかの要素と同時に呼ばれることもあります。Unity のオブジェクトには触れず、`OnPrepareMeasure` で取っておいた状態だけを読んでください。`OnPrepareMeasure` は、内容を計測し直すレイアウトの前にメインスレッドで呼ばれます。内容の大きさが変わりうるときは `MarkMeasureDirty` を呼びます。内容を計測する要素は子を持ちません。
+
+## 例 {#example}
+
+16 × 16 のセルの SDF アトラスから文字を描き、使える幅で折り返す等幅のラベルです。
+
+```csharp
+using System;
+using UnityEngine;
+using Yaui;
+
+public class MonospaceLabel : YauiElement
+{
+    const float Advance = 10f;
+    const float LineHeight = 20f;
+
+    [SerializeField] private string text = "";
+    [SerializeField] private Texture2D atlas;
+    [SerializeField] private Color color = Color.black;
+
+    private YauiTexture atlasTexture;
+    private YauiPrimitive[] buffer = Array.Empty<YauiPrimitive>();
+    private int measuredLength;
+
+    public string Text
+    {
+        get => text;
+        set
+        {
+            text = value ?? "";
+            MarkMeasureDirty();
+            Rebuild();
+        }
+    }
+
+    protected override bool MeasuresContent => true;
+    protected override bool HasVisibleContent => text.Length > 0;
+
+    // メインスレッド: レイアウトのスレッドが読むもの
+    protected override void OnPrepareMeasure() => measuredLength = text.Length;
+
+    // ワーカースレッド
+    protected override Vector2 MeasureContent(float width, YauiMeasureMode widthMode, float height,
+        YauiMeasureMode heightMode)
+    {
+        var columns = Columns(measuredLength, widthMode == YauiMeasureMode.Undefined ? float.PositiveInfinity : width);
+        var lines = (measuredLength + columns - 1) / columns;
+        var size = new Vector2(Math.Min(measuredLength, columns) * Advance, lines * LineHeight);
+        if (widthMode == YauiMeasureMode.Exactly) size.x = width;
+        if (heightMode == YauiMeasureMode.Exactly) size.y = height;
+        return size;
+    }
+
+    protected override void OnRegistered() => Rebuild();
+    protected override void OnLayoutApplied() => Rebuild();
+
+    protected override void OnUnregistering()
+    {
+        atlasTexture.Release();
+        atlasTexture = default;
+    }
+
+    private void Rebuild()
+    {
+        if (!IsRegistered) return;
+
+        SyncHittable();
+        if (atlas != atlasTexture.Texture)
+        {
+            atlasTexture.Release();
+            atlasTexture = atlas != null ? YauiTexture.AcquireDistanceField(atlas, 4f) : default;
+        }
+
+        if (atlas == null || text.Length == 0)
+        {
+            ClearContent();
+            return;
+        }
+
+        var box = ContentBox;
+        var columns = Columns(text.Length, box.width);
+        if (buffer.Length < text.Length) buffer = new YauiPrimitive[text.Length];
+
+        for (var i = 0; i < text.Length; i++)
+        {
+            var rect = new Rect(box.x + i % columns * Advance, box.y + i / columns * LineHeight, Advance, LineHeight);
+            var cell = text[i] & 0xff;
+            var uv = new Rect(cell % 16 / 16f, cell / 16 / 16f, 1f / 16f, 1f / 16f);
+            buffer[i] = YauiPrimitive.DistanceField(rect, atlasTexture, uv, color);
+        }
+
+        SetContent(buffer.AsSpan(0, text.Length));
+    }
+
+    private static int Columns(int length, float width) =>
+        Math.Max(1, float.IsInfinity(width) ? length : (int)(width / Advance));
+}
+```
+
+パッケージのテストでは、YAUI の内部にアクセスできないアセンブリ (`Tests/External`) でこの要素を作っています。

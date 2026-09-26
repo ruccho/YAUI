@@ -69,6 +69,13 @@ namespace Yaui.Rendering
             return id;
         }
 
+        /// <summary>Marks a texture as a distance field atlas and updates its size (after a resize).</summary>
+        public void SetDistanceField(int id, float spread)
+        {
+            var texture = textures[id];
+            parameters[id] = new Vector4(texture.width, spread, texture.height, 0f);
+        }
+
         /// <summary>Registers a texture, or adds a reference to it. Released with <see cref="Release"/>.</summary>
         public int Acquire(Texture texture)
         {

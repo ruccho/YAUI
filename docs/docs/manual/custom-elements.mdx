@@ -1,0 +1,164 @@
+---
+title: Custom Elements
+sidebar_position: 9.7
+---
+
+# Custom Elements
+
+An element can draw content of its own on top of its box, in the same draw call as the other elements: derive from `YauiElement` and give it **primitives**. Each primitive is a quad drawn by the uber shader, like the glyphs of `YauiText` and the images of `YauiImage`, which are built the same way. An element can also size itself from its content, like a text. This is enough to write a text renderer, an icon font or a chart outside the package.
+
+Primitives use the shapes of the uber shader: rectangles with rounded corners and borders, images, and signed distance field glyphs. For other shaders, see [Custom Shaders](./custom-shaders.mdx), and for meshes, [Particles and Meshes](./particles-and-meshes.mdx).
+
+## Primitives
+
+`YauiPrimitive` is built by static methods, and its `With*` methods return a modified copy:
+
+| Method | Draws |
+|---|---|
+| `Rectangle(rect, color)` | A filled rectangle |
+| `Image(rect, texture, uv, color)` | A texture multiplied by the color |
+| `DistanceField(rect, texture, uv, color)` | A glyph of a signed distance field atlas |
+| `DistanceFieldShadow(rect, texture, uv, color, dilate, softness)` | The shadow of a glyph: dilated, softened, in one color |
+| `WithCornerRadius(radii)` | Rounded corners of a rectangle or an image (top-left, top-right, bottom-right, bottom-left) |
+| `WithBorder(width, color)` | A border inside a rectangle or an image, or an outline around a glyph |
+| `WithRadialFill(center, start, sweep)` | Only a sector of a rectangle or an image, like the radial fills of `YauiImage` |
+| `WithSkew(skew)` | A horizontal slant, like italics |
+| `WithBold()` | A dilated glyph |
+
+Rects are in the local space of the element's box: canvas units, origin at the top-left, Y down. `ContentBox` is the box inside the padding and the border. UV rects are in the texture's space, with the origin at the bottom-left.
+
+The content follows the element's transform, opacity, tint, [clips and masks](./clipping-and-masks.mdx). It is drawn after the element's box and before its children, in the order of the primitives.
+
+## Writing the content
+
+Write the content with `SetContent` in these methods, when what it depends on changes:
+
+| Method | Called |
+|---|---|
+| `OnRegistered` | When the element joins a panel. Content written before is gone. |
+| `OnLayoutApplied` | Once a frame right before rendering, when the layout of the element changed. Content written here is drawn in this frame. |
+| `OnBoxChanged` | When the box style changed, like its corner radii. |
+| `OnUnregistering` | When the element leaves the panel. Release the textures here. |
+
+`SetContent` does nothing while `IsRegistered` is false. `SetContent(index, primitive)` replaces one primitive, and `ClearContent` removes them all. Override `HasVisibleContent` so that the element receives pointer events without a visible box, and call `SyncHittable` when it changes.
+
+## Textures
+
+Register textures before using them in primitives, and release them when you are done:
+
+- `YauiTexture.Acquire(texture)` for images. Textures are never atlased.
+- `YauiTexture.AcquireDistanceField(texture, spread)` for signed distance field atlases. The alpha channel is the distance to the outline, 0.5 on it, and `spread` is how far the field reaches in texels. Acquire it again after the texture is resized.
+- `YauiSpriteTexture.Acquire(sprite)` for sprites. Small sprites share a dynamic atlas; `Uv` is the sprite's rect in `Texture`.
+
+Every acquisition needs a `Release`. A draw call binds up to 8 textures; more split the draw.
+
+## Measuring the content
+
+An element whose size comes from its content overrides `MeasuresContent` to return true, and `MeasureContent` to return the size of the content within the constraints of the layout:
+
+| Mode | Meaning |
+|---|---|
+| `Undefined` | No constraint: the natural size |
+| `Exactly` | The size is the value |
+| `AtMost` | The size is at most the value |
+
+`MeasureContent` runs during the layout, **on a worker thread**. It may be called several times with different constraints, and at the same time as other elements. Do not touch Unity objects, and read only state captured in `OnPrepareMeasure`, which is called on the main thread before a layout that measures the content again. Call `MarkMeasureDirty` when the size of the content may have changed. An element that measures its content has no children.
+
+## Example
+
+A label that draws each character from a distance field atlas of 16 × 16 cells, in a monospace grid that wraps at the available width:
+
+```csharp
+using System;
+using UnityEngine;
+using Yaui;
+
+public class MonospaceLabel : YauiElement
+{
+    const float Advance = 10f;
+    const float LineHeight = 20f;
+
+    [SerializeField] private string text = "";
+    [SerializeField] private Texture2D atlas;
+    [SerializeField] private Color color = Color.black;
+
+    private YauiTexture atlasTexture;
+    private YauiPrimitive[] buffer = Array.Empty<YauiPrimitive>();
+    private int measuredLength;
+
+    public string Text
+    {
+        get => text;
+        set
+        {
+            text = value ?? "";
+            MarkMeasureDirty();
+            Rebuild();
+        }
+    }
+
+    protected override bool MeasuresContent => true;
+    protected override bool HasVisibleContent => text.Length > 0;
+
+    // Main thread: what the layout thread reads.
+    protected override void OnPrepareMeasure() => measuredLength = text.Length;
+
+    // Worker thread.
+    protected override Vector2 MeasureContent(float width, YauiMeasureMode widthMode, float height,
+        YauiMeasureMode heightMode)
+    {
+        var columns = Columns(measuredLength, widthMode == YauiMeasureMode.Undefined ? float.PositiveInfinity : width);
+        var lines = (measuredLength + columns - 1) / columns;
+        var size = new Vector2(Math.Min(measuredLength, columns) * Advance, lines * LineHeight);
+        if (widthMode == YauiMeasureMode.Exactly) size.x = width;
+        if (heightMode == YauiMeasureMode.Exactly) size.y = height;
+        return size;
+    }
+
+    protected override void OnRegistered() => Rebuild();
+    protected override void OnLayoutApplied() => Rebuild();
+
+    protected override void OnUnregistering()
+    {
+        atlasTexture.Release();
+        atlasTexture = default;
+    }
+
+    private void Rebuild()
+    {
+        if (!IsRegistered) return;
+
+        SyncHittable();
+        if (atlas != atlasTexture.Texture)
+        {
+            atlasTexture.Release();
+            atlasTexture = atlas != null ? YauiTexture.AcquireDistanceField(atlas, 4f) : default;
+        }
+
+        if (atlas == null || text.Length == 0)
+        {
+            ClearContent();
+            return;
+        }
+
+        var box = ContentBox;
+        var columns = Columns(text.Length, box.width);
+        if (buffer.Length < text.Length) buffer = new YauiPrimitive[text.Length];
+
+        for (var i = 0; i < text.Length; i++)
+        {
+            var rect = new Rect(box.x + i % columns * Advance, box.y + i / columns * LineHeight, Advance, LineHeight);
+            var cell = text[i] & 0xff;
+            var uv = new Rect(cell % 16 / 16f, cell / 16 / 16f, 1f / 16f, 1f / 16f);
+            buffer[i] = YauiPrimitive.DistanceField(rect, atlasTexture, uv, color);
+        }
+
+        SetContent(buffer.AsSpan(0, text.Length));
+    }
+
+    private static int Columns(int length, float width) =>
+        Math.Max(1, float.IsInfinity(width) ? length : (int)(width / Advance));
+}
+```
+
+The package's tests build this element in an assembly without access to the internals of YAUI (`Tests/External`).

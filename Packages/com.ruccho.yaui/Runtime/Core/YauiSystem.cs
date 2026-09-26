@@ -46,6 +46,9 @@ namespace Yaui.Core
 
         public static bool IsInitialized => initialized;
 
+        /// <summary>Counts the initializations, so that handles from before a shutdown are recognized as stale.</summary>
+        public static int Generation { get; private set; }
+
         public static NodeStore Nodes { get; private set; }
         public static GpuStore<PrimitiveData> Primitives { get; private set; }
         public static GpuStore<PrimitiveExt> Exts { get; private set; }
@@ -63,6 +66,7 @@ namespace Yaui.Core
             if (initialized) return;
 
             initialized = true;
+            Generation++;
             Nodes = new NodeStore(1024);
             Primitives = new GpuStore<PrimitiveData>(1024, 1);
             Exts = new GpuStore<PrimitiveExt>(64, 1);

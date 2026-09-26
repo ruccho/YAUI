@@ -1,9 +1,5 @@
 using System;
-using Unity.Collections;
-using Unity.Mathematics;
 using UnityEngine;
-using Yaui.Core;
-using Yaui.Rendering;
 
 namespace Yaui
 {
@@ -21,9 +17,7 @@ namespace Yaui
         /// <summary>The part of the texture drawn, in UVs within 0..1 (Y up). Textures do not repeat.</summary>
         [SerializeField] private Rect uvRect = new(0f, 0f, 1f, 1f);
 
-        [NonSerialized] private int slot;
-        [NonSerialized] private Texture boundTexture;
-        [NonSerialized] private int textureId;
+        [NonSerialized] private YauiTexture boundTexture;
 
         public Texture Texture
         {
@@ -55,7 +49,9 @@ namespace Yaui
             }
         }
 
-        private protected override bool HasVisibleContent => texture != null;
+        protected override bool HasVisibleContent => texture != null;
+
+        protected override bool ContentIsMaskShape => true;
 
         protected override void OnValidate()
         {
@@ -69,103 +65,49 @@ namespace Yaui
             SyncImage();
         }
 
-        private protected override void OnRegistered()
+        protected override void OnRegistered()
         {
             SyncImage();
         }
 
-        private protected override void OnUnregistering()
+        protected override void OnUnregistering()
         {
-            if (YauiSystem.IsInitialized)
-            {
-                if (slot > 0) YauiSystem.Primitives.Free(slot);
-
-                YauiSystem.Textures.Release(textureId);
-            }
-
-            slot = 0;
-            boundTexture = null;
-            textureId = 0;
+            boundTexture.Release();
+            boundTexture = default;
         }
 
-        internal override void OnLayoutApplied()
+        protected override void OnLayoutApplied()
         {
             SyncImage();
         }
 
-        private protected override void OnBoxChanged()
+        protected override void OnBoxChanged()
         {
             SyncImage();
         }
 
-        /// <summary>With a texture, a mask on the image takes the shape of the texture's alpha.</summary>
-        internal override void AppendMaskShape(NativeList<uint> order)
-        {
-            if (slot == 0)
-            {
-                base.AppendMaskShape(order);
-                return;
-            }
-
-            order.Add((uint)slot);
-        }
-
-        internal override void AppendDrawOrder(NativeList<uint> order)
-        {
-            base.AppendDrawOrder(order);
-            if (slot > 0) order.Add((uint)slot);
-        }
-
-        /// <summary>The image primitive, or 0 (tests).</summary>
-        internal int PrimitiveSlot => slot;
-
+        /// <summary>Writes the image primitive from the texture and the laid-out content box.</summary>
         private void SyncImage()
         {
-            if (NodeSlot <= 0) return;
+            if (!IsRegistered) return;
 
             SyncHittable();
-            if (texture != boundTexture)
+            if (texture != boundTexture.Texture)
             {
-                var previousId = textureId;
-                boundTexture = texture;
-                textureId = texture != null ? YauiSystem.Textures.Acquire(texture) : 0;
-                YauiSystem.Textures.Release(previousId);
-
-                // Draws are split by the textures they use.
-                if (textureId != previousId) Panel.OrderDirty = true;
+                boundTexture.Release();
+                boundTexture = texture != null ? YauiTexture.Acquire(texture) : default;
             }
 
-            var primitives = YauiSystem.Primitives;
             if (texture == null)
             {
-                if (slot > 0)
-                {
-                    primitives.Free(slot);
-                    slot = 0;
-                    Panel.OrderDirty = true;
-                }
-
-                YauiSystem.RequestUpdate();
+                ClearContent();
                 return;
             }
 
-            if (slot == 0)
-            {
-                slot = primitives.Allocate();
-                Panel.OrderDirty = true;
-            }
-
-            // The rect's min corner is the top-left: the top of the UV rect.
-            primitives[slot] = new PrimitiveData
-            {
-                Rect = ContentRect(),
-                UvRect = GpuPacking.Unorm16x4(new float4(uvRect.xMin, uvRect.yMax, uvRect.xMax, uvRect.yMin)),
-                Color = GpuPacking.Color(color),
-                Radii = GpuPacking.Half4(Box.CornerRadius),
-                Node = (uint)NodeSlot,
-                Flags = PrimitiveTexture.With(PrimitiveFlags.Image, textureId)
-            };
-            YauiSystem.RequestUpdate();
+            Span<YauiPrimitive> primitive = stackalloc YauiPrimitive[1];
+            primitive[0] = YauiPrimitive.Image(ContentBox, boundTexture, uvRect, color)
+                .WithCornerRadius(Box.CornerRadius);
+            SetContent(primitive);
         }
     }
 }

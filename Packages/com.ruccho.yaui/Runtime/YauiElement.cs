@@ -63,6 +63,14 @@ namespace Yaui
         [NonSerialized] internal bool LayoutDirty;
         [NonSerialized] private bool styleDirty;
 
+        // The content primitives: a block of the primitive store, drawn after the box.
+        [NonSerialized] private int contentStart;
+        [NonSerialized] private int contentCapacity;
+        [NonSerialized] private int contentCount;
+
+        [NonSerialized] private YogaMeasureFunc contentMeasure;
+        [NonSerialized] private bool contentMeasureDirty;
+
         /// <summary>Child elements in sibling order, read from the Transform when <see cref="ChildrenDirty"/>.</summary>
         [NonSerialized] internal readonly List<YauiElement> CachedChildren = new();
 
@@ -81,8 +89,16 @@ namespace Yaui
         /// <summary>The state of the panel the element is registered to, or null.</summary>
         internal PanelState PanelState => NodeSlot > 0 ? panel : null;
 
-        /// <summary>Whether child elements are laid out and drawn. Leaves with measured content return false.</summary>
-        internal virtual bool AcceptsChildren => true;
+        /// <summary>
+        /// Whether child elements are laid out and drawn. Elements that measure their content
+        /// (<see cref="MeasuresContent"/>) never have children.
+        /// </summary>
+        protected virtual bool AcceptsChildren => true;
+
+        internal bool LaysOutChildren => AcceptsChildren && !MeasuresContent;
+
+        /// <summary>Whether the element is in an enabled panel: it has its slots, and content can be written.</summary>
+        protected bool IsRegistered => NodeSlot > 0;
 
         internal bool IsRegisteredTo(PanelState state)
         {
@@ -323,17 +339,21 @@ namespace Yaui
             nodeSlot = YauiSystem.Nodes.Allocate();
             boxSlot = YauiSystem.Primitives.Allocate();
             layoutApplied = false;
+            contentMeasureDirty = true;
             MarkParentChildrenDirty();
             panel.MarkStructureDirty();
             SyncAll();
             OnRegistered();
         }
 
-        /// <summary>Whether the element draws content besides its box (it is then hittable).</summary>
-        private protected virtual bool HasVisibleContent => false;
+        /// <summary>
+        /// Whether the element draws content besides its box: it is then hittable. Call <see cref="SyncHittable"/>
+        /// when the value changes.
+        /// </summary>
+        protected virtual bool HasVisibleContent => false;
 
         /// <summary>Updates whether the box receives hits, after the box, the content or the flag changed.</summary>
-        private protected void SyncHittable()
+        protected void SyncHittable()
         {
             if (NodeSlot <= 0) return;
 
@@ -347,17 +367,23 @@ namespace Yaui
         }
 
         /// <summary>Called after the box style was written (e.g. content that uses its corner radii).</summary>
-        private protected virtual void OnBoxChanged()
+        protected virtual void OnBoxChanged()
         {
         }
 
-        /// <summary>Called after the element got its slots in a panel.</summary>
-        private protected virtual void OnRegistered()
+        /// <summary>
+        /// Called after the element got its slots in a panel (when enabled, or moved to another panel): write the
+        /// content here. Content written before is gone.
+        /// </summary>
+        protected virtual void OnRegistered()
         {
         }
 
-        /// <summary>Called before the element releases its slots. The stores may already be shut down.</summary>
-        private protected virtual void OnUnregistering()
+        /// <summary>
+        /// Called before the element releases its slots, including its content. The stores may already be shut down
+        /// (domain reload).
+        /// </summary>
+        protected virtual void OnUnregistering()
         {
         }
 
@@ -410,18 +436,165 @@ namespace Yaui
             YauiSystem.RequestUpdate();
         }
 
-        /// <summary>Main thread: appends the primitives of this element in draw order.</summary>
-        internal virtual void AppendDrawOrder(NativeList<uint> order)
+        /// <summary>Main thread: appends the primitives of this element in draw order: the box, then the content.</summary>
+        internal void AppendDrawOrder(NativeList<uint> order)
         {
             // Invisible boxes are not drawn (a mask still uses their shape).
             if (boxSlot > 0 && box.IsVisible) order.Add((uint)boxSlot);
+
+            AppendContent(order);
         }
 
         /// <summary>Main thread: appends the primitives that form the shape of this element's mask.</summary>
-        internal virtual void AppendMaskShape(NativeList<uint> order)
+        internal void AppendMaskShape(NativeList<uint> order)
         {
-            if (boxSlot > 0) order.Add((uint)boxSlot);
+            if (ContentIsMaskShape && contentCapacity > 0)
+                AppendContent(order);
+            else if (boxSlot > 0) order.Add((uint)boxSlot);
         }
+
+        private void AppendContent(NativeList<uint> order)
+        {
+            // Unused slots of the block are empty quads: a smaller count keeps the order.
+            for (var i = 0; i < contentCapacity; i++) order.Add((uint)(contentStart + i));
+        }
+
+        #region Content
+
+        /// <summary>
+        /// Whether a <see cref="YauiMask"/> on this element takes the shape of the content (the alpha of its images)
+        /// instead of the box's, while there is content.
+        /// </summary>
+        protected virtual bool ContentIsMaskShape => false;
+
+        /// <summary>The number of content primitives.</summary>
+        protected int ContentCount => contentCount;
+
+        /// <summary>
+        /// Replaces the content: primitives drawn on top of the box and under the children, in the order given.
+        /// They follow the element's transform, opacity, tint and clips. Does nothing unless
+        /// <see cref="IsRegistered"/>; write the content in <see cref="OnRegistered"/>.
+        /// </summary>
+        protected void SetContent(ReadOnlySpan<YauiPrimitive> primitives)
+        {
+            if (NodeSlot <= 0) return;
+
+            ResizeContent(primitives.Length);
+            for (var i = 0; i < primitives.Length; i++) WriteContent(i, primitives[i].Data);
+        }
+
+        /// <summary>Replaces one content primitive, below <see cref="ContentCount"/>.</summary>
+        protected void SetContent(int index, in YauiPrimitive primitive)
+        {
+            if (NodeSlot <= 0) return;
+
+            if ((uint)index >= (uint)contentCount) throw new ArgumentOutOfRangeException(nameof(index));
+
+            WriteContent(index, primitive.Data);
+            YauiSystem.RequestUpdate();
+        }
+
+        /// <summary>Removes the content.</summary>
+        protected void ClearContent()
+        {
+            if (NodeSlot > 0) ResizeContent(0);
+        }
+
+        /// <summary>
+        /// Sets the number of content primitives. Primitives below the count keep their values unless the block
+        /// moves (the capacity changes); the caller writes them all.
+        /// </summary>
+        internal void ResizeContent(int count)
+        {
+            var primitives = YauiSystem.Primitives;
+            var capacity = count == 0 ? 0 : GpuStore<PrimitiveData>.RangeCapacity(count);
+            if (capacity != contentCapacity)
+            {
+                if (contentCapacity > 0) primitives.FreeRange(contentStart, contentCapacity);
+
+                contentStart = capacity > 0 ? primitives.AllocateRange(capacity) : 0;
+                contentCapacity = capacity;
+                panel.OrderDirty = true;
+            }
+            else
+            {
+                for (var i = count; i < contentCount; i++) WriteContent(i, default);
+            }
+
+            contentCount = count;
+            YauiSystem.RequestUpdate();
+        }
+
+        /// <summary>Writes a content primitive of this element's node, below the count.</summary>
+        internal void WriteContent(int index, in PrimitiveData data)
+        {
+            ref var p = ref YauiSystem.Primitives[contentStart + index];
+
+            // Draws are split by the textures they use.
+            if (PrimitiveTexture.IdOf(p.Flags) != PrimitiveTexture.IdOf(data.Flags)) panel.OrderDirty = true;
+
+            p = data;
+            p.Node = (uint)NodeSlot;
+        }
+
+        /// <summary>The block of the content primitives (tests).</summary>
+        internal (int Start, int Capacity) ContentRange => (contentStart, contentCapacity);
+
+        #endregion
+
+        #region Measurement
+
+        /// <summary>
+        /// Whether the size of the element comes from <see cref="MeasureContent"/>, like a text. Such an element has
+        /// no children. Must not change while the element is enabled.
+        /// </summary>
+        protected virtual bool MeasuresContent => false;
+
+        /// <summary>
+        /// The size of the content (inside the padding and the border) within the given constraints. Called during
+        /// the layout, on a worker thread, possibly several times with different constraints and concurrently with
+        /// other elements: read only state captured in <see cref="OnPrepareMeasure"/>, and no Unity objects.
+        /// </summary>
+        protected virtual Vector2 MeasureContent(float width, YauiMeasureMode widthMode, float height,
+            YauiMeasureMode heightMode)
+        {
+            return Vector2.zero;
+        }
+
+        /// <summary>
+        /// Main thread, before a layout that measures the content again: capture what <see cref="MeasureContent"/>
+        /// reads. The layout may run until rendering, while the main thread goes on.
+        /// </summary>
+        protected virtual void OnPrepareMeasure()
+        {
+        }
+
+        /// <summary>The size of the content changed: measures it again at the next layout.</summary>
+        protected void MarkMeasureDirty()
+        {
+            if (NodeSlot <= 0) return;
+
+            contentMeasureDirty = true;
+            panel.MarkLayoutDirty(this);
+        }
+
+        private YogaSize InvokeMeasureContent(YogaNode node, float width, YogaMeasureMode widthMode, float height,
+            YogaMeasureMode heightMode)
+        {
+            try
+            {
+                var size = MeasureContent(width, (YauiMeasureMode)widthMode, height, (YauiMeasureMode)heightMode);
+                return new YogaSize(size.x, size.y);
+            }
+            catch (Exception e)
+            {
+                // It must not unwind through the layout job.
+                Debug.LogException(e);
+                return default;
+            }
+        }
+
+        #endregion
 
         /// <summary>
         /// Converts a screen position (pixels, origin at the bottom-left, like <c>PointerEventData.position</c>)
@@ -440,8 +613,11 @@ namespace Yaui
             return true;
         }
 
-        /// <summary>The content box from the last layout, in the element's box.</summary>
-        internal Rect ContentBox
+        /// <summary>
+        /// The content box (inside the border and the padding) from the last layout, in the local space of the
+        /// element's box.
+        /// </summary>
+        public Rect ContentBox
         {
             get
             {
@@ -477,9 +653,17 @@ namespace Yaui
             return float.IsNaN(size.x) || float.IsNaN(size.y) ? float4.zero : new float4(min, math.max(size, 0f));
         }
 
-        /// <summary>Main thread, at collection: the layout of this element changed.</summary>
-        internal virtual void OnLayoutApplied()
+        /// <summary>
+        /// Main thread, once a frame right before rendering: the layout of this element changed
+        /// (<see cref="LayoutRect"/>, <see cref="ContentBox"/>). Content written here is drawn in this frame.
+        /// </summary>
+        protected virtual void OnLayoutApplied()
         {
+        }
+
+        internal void NotifyLayoutApplied()
+        {
+            OnLayoutApplied();
         }
 
         /// <summary>Registers again to the panel above, for example after the panel was re-enabled.</summary>
@@ -504,6 +688,8 @@ namespace Yaui
 
                 if (clipSlot > 0) YauiSystem.Clips.Free(clipSlot);
 
+                if (contentCapacity > 0) YauiSystem.Primitives.FreeRange(contentStart, contentCapacity);
+
                 YauiSystem.Primitives.Free(boxSlot);
                 YauiSystem.Nodes.Free(nodeSlot);
                 MarkParentChildrenDirty();
@@ -512,6 +698,9 @@ namespace Yaui
 
             extSlot = 0;
             clipSlot = 0;
+            contentStart = 0;
+            contentCapacity = 0;
+            contentCount = 0;
             boxSlot = 0;
             nodeSlot = 0;
             DfsIndex = -1;
@@ -627,7 +816,6 @@ namespace Yaui
             panel.MarkTransformDirty(this);
         }
 
-        /// <summary>Main thread, at submission: copies the layout style into the Yoga node.</summary>
         /// <summary>Main thread, at submission: updates the Yoga node for the changes since the last submission.</summary>
         internal virtual void PrepareLayout()
         {
@@ -635,6 +823,22 @@ namespace Yaui
             {
                 styleDirty = false;
                 ApplyLayoutStyle();
+            }
+
+            if (!MeasuresContent) return;
+
+            var y = Yoga;
+            if (!y.HasMeasureFunc)
+            {
+                y.SetMeasureFunction(contentMeasure ??= InvokeMeasureContent);
+                contentMeasureDirty = true;
+            }
+
+            if (contentMeasureDirty)
+            {
+                contentMeasureDirty = false;
+                OnPrepareMeasure();
+                y.MarkDirty();
             }
         }
 

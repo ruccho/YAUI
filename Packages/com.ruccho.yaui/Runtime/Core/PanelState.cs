@@ -403,7 +403,7 @@ namespace Yaui.Core
                     childBuffer.Add(child);
 
             var end = childBuffer.Count;
-            if (!element.AcceptsChildren)
+            if (!element.LaysOutChildren)
             {
                 childBuffer.RemoveRange(start, end - start);
                 return;
@@ -523,7 +523,7 @@ namespace Yaui.Core
                 }
 
                 MarkTransformDirty(element);
-                element.OnLayoutApplied();
+                element.NotifyLayoutApplied();
             }
         }
 

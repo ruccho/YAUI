@@ -11,7 +11,7 @@ namespace Yaui
     {
         [NonSerialized] public YauiDropdown Dropdown;
 
-        private protected override bool HasVisibleContent => true;
+        protected override bool HasVisibleContent => true;
 
         public void OnPointerClick(PointerEventData eventData)
         {

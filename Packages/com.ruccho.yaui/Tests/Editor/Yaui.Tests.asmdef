@@ -3,6 +3,7 @@
     "rootNamespace": "Yaui.Tests",
     "references": [
         "Yaui",
+        "Yaui.Tests.External",
         "Unity.Mathematics",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
