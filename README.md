@@ -22,6 +22,8 @@ Unity's uGUI works with Prefabs, Animator and the Inspector, but is slow: meshes
 
 YAUI keeps the GameObject authoring model and drops compatibility with uGUI to get the performance of a modern UI engine.
 
+<img src="docs/static/img/screenshot.png" width="800">
+
 ### Fast
 
 Every box, image and glyph is a quad in a GPU buffer, drawn in **one draw call per panel**. Rounded corners, borders, drop shadows and SDF text are all drawn by one uber shader, without breaking the batch. Text generation and layout run as **jobs on worker threads**, and a frame without changes costs almost nothing.
