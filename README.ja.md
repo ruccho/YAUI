@@ -47,7 +47,7 @@ Yoga の移植版による **Flexbox** レイアウトを Burst で計算しま�
 
 ## 要件
 
-- Unity 6000.7 (Unity 6.7) 以降
+- Unity 6000.3 (Unity 6.3) 以降
 - Universal Render Pipeline (URP)
 - Vulkan、Metal、Direct3D 11 / 12 (OpenGL ES はサポートしません)
 

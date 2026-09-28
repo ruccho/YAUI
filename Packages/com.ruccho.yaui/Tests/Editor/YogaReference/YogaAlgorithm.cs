@@ -43,7 +43,7 @@ namespace Yaui.Tests.YogaReference
         {
             // netstandard2.1 has no uint overload of Interlocked.Increment; wrap-around semantics are the same.
             Interlocked.Increment(
-                ref System.Runtime.CompilerServices.Unsafe.As<uint, int>(ref _sCurrentGenerationCount));
+                ref Unity.Collections.LowLevel.Unsafe.UnsafeUtility.As<uint, int>(ref _sCurrentGenerationCount));
             node.ProcessDimensions();
             var direction = node.ResolveDirection(ownerDirection);
 
@@ -115,7 +115,7 @@ namespace Yaui.Tests.YogaReference
 
             // Boundaries are laid out in parallel: use the generation this call incremented to.
             var generation = (uint)Interlocked.Increment(
-                ref System.Runtime.CompilerServices.Unsafe.As<uint, int>(ref _sCurrentGenerationCount));
+                ref Unity.Collections.LowLevel.Unsafe.UnsafeUtility.As<uint, int>(ref _sCurrentGenerationCount));
             var ownerInnerWidth = owner.LayoutWidth - owner.LayoutPaddingLeft - owner.LayoutPaddingRight -
                                   owner.LayoutBorderLeft - owner.LayoutBorderRight;
             var ownerInnerHeight = owner.LayoutHeight - owner.LayoutPaddingTop - owner.LayoutPaddingBottom -

@@ -5,6 +5,12 @@ using Unity.Mathematics;
 using Unity.Profiling;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
+#if UNITY_6000_4_OR_NEWER
+using TextAssetId = UnityEngine.EntityId;
+
+#else
+using TextAssetId = System.Int32;
+#endif
 
 namespace Yaui.Text
 {
@@ -73,10 +79,10 @@ namespace Yaui.Text
         private static readonly Dictionary<SpriteAsset, TextSettings> SpriteSettings = new();
         private static object _textInfoList;
         private static readonly List<uint> GlyphBuffer = new();
-        private static readonly Dictionary<EntityId, HashSet<uint>> AggregatedMissingGlyphs = new();
+        private static readonly Dictionary<TextAssetId, HashSet<uint>> AggregatedMissingGlyphs = new();
 
         private IntPtr _textGenerationInfo;
-        private NativeTextGenerationSettings _settings;
+        private AtgSettings _settings;
         private NativeTextInfo _textInfo;
         private bool _hasMissingGlyphs;
 
@@ -91,7 +97,8 @@ namespace Yaui.Text
         private GCHandle _textBufferHandle;
 
         private List<List<List<int>>> _textElementIndicesByMesh = new();
-        private Dictionary<EntityId, HashSet<uint>> _missingGlyphs = new();
+        private List<bool> _colorsByMesh;
+        private Dictionary<TextAssetId, HashSet<uint>> _missingGlyphs = new();
 
         /// <summary>Uses the public TextGenerator even if the internal APIs match (tests).</summary>
         internal static bool ForceFallback;
@@ -157,7 +164,7 @@ namespace Yaui.Text
         /// <summary>Main thread: the dynamic SDF font asset of a font, shared like UI Toolkit does.</summary>
         public static FontAsset GetFontAsset(Font font)
         {
-            return IsSupported ? AtgInternals.GetCachedFontAsset(TextSettings, font, false) : null;
+            return IsSupported ? AtgInternals.GetCachedFontAsset(TextSettings, font) : null;
         }
 
         /// <summary>Main thread: must be called before <see cref="Generate"/> runs on worker threads.</summary>
@@ -172,13 +179,32 @@ namespace Yaui.Text
             EnsureTextBuffer(text.Length);
             text.CopyTo(_textBuffer);
 
-            _settings = BuildNativeSettings(request);
-            _settings.textBufferPtr = _textBufferHandle.AddrOfPinnedObject();
-            _settings.textBufferLength = text.Length;
+            var textSettings = SettingsFor(request.SpriteAsset);
+            _settings = BuildNativeSettings(request, textSettings);
             _wordWrap = request.WordWrap;
             _ellipsis = request.Ellipsis;
-            if (_settings.richTextEnabled && text.Length > 0)
-                AtgInternals.PreloadAssetsFromText(_settings.textBufferPtr, text.Length, _settings.textSettings);
+            var usesTextBuffer = AtgInternals.Backend.UsesTextBuffer;
+            if (usesTextBuffer)
+            {
+                _settings.textBufferPtr = _textBufferHandle.AddrOfPinnedObject();
+                _settings.textBufferLength = text.Length;
+            }
+            else
+            {
+                // Before 6000.6 the text is a string.
+                _settings.text = text.ToString();
+            }
+
+            if (request.RichText && text.Length > 0) AtgInternals.PreloadAssets(_settings, textSettings);
+
+            if (!usesTextBuffer)
+            {
+                // Before 6000.6 rich text is parsed here rather than natively: the text loses its tags.
+                if (_settings.richTextEnabled && MayHaveTags(text))
+                    AtgInternals.Backend.ParseRichText(ref _settings, textSettings);
+
+                _settings.richTextEnabled = false;
+            }
 
             IsPrepared = true;
             IsGenerated = false;
@@ -206,7 +232,8 @@ namespace Yaui.Text
             ElidedHeight = elide ? height : -1f;
 
             var wasCached = false;
-            _textInfo = AtgInternals.GenerateText(AtgInternals.TextLib, _settings, _textGenerationInfo, ref wasCached);
+            _textInfo = AtgInternals.Backend.GenerateText(AtgInternals.TextLib, _settings, _textGenerationInfo,
+                ref wasCached);
             if (!wasCached) _uvsAreGenerated = false;
 
             Size = new float2(_textInfo.totalWidth / 64f, _textInfo.totalHeight / 64f);
@@ -231,15 +258,21 @@ namespace Yaui.Text
 
             foreach (var set in AggregatedMissingGlyphs.Values) set.Clear();
 
-            _textInfoList ??= AtgInternals.CreateTextInfoList();
-            AtgInternals.TextInfoListClear(_textInfoList);
+            // 6000.7 and later resolve OS font fallbacks here; earlier versions have them in the text settings.
+            var resolveFallbacks = AtgInternals.ResolveFallbacks != null;
+            if (resolveFallbacks)
+            {
+                _textInfoList ??= AtgInternals.CreateTextInfoList();
+                AtgInternals.TextInfoListClear(_textInfoList);
+            }
+
             var anyMissing = false;
             foreach (var text in texts)
             {
                 if (!text._hasMissingGlyphs) continue;
 
                 anyMissing = true;
-                AtgInternals.TextInfoListAdd(_textInfoList, text._textInfo);
+                if (resolveFallbacks) AtgInternals.TextInfoListAdd(_textInfoList, text._textInfo);
                 foreach (var pair in text._missingGlyphs)
                 {
                     if (pair.Value.Count == 0) continue;
@@ -253,15 +286,15 @@ namespace Yaui.Text
 
             if (!anyMissing) return;
 
-            AtgInternals.ResolveFallbacks(_textInfoList, AggregatedMissingGlyphs);
+            if (resolveFallbacks) AtgInternals.ResolveFallbacks(_textInfoList, AggregatedMissingGlyphs);
             foreach (var entry in AggregatedMissingGlyphs)
             {
-                if (Resources.EntityIdToObject(entry.Key) is not FontAsset fontAsset ||
+                if (AtgInternals.FindTextAsset(entry.Key) is not FontAsset fontAsset ||
                     entry.Value.Count == 0) continue;
 
                 GlyphBuffer.Clear();
                 GlyphBuffer.AddRange(entry.Value);
-                AtgInternals.TryAddGlyphs(fontAsset, GlyphBuffer, false);
+                AtgInternals.TryAddGlyphs(fontAsset, GlyphBuffer);
             }
 
             AtgInternals.CreateHbFaceIfNeeded();
@@ -282,8 +315,8 @@ namespace Yaui.Text
                 indices.Clear();
 
             // Rasterizes newly added glyphs and fills the UVs.
-            AtgInternals.ProcessMeshInfos(AtgInternals.TextLib, _textInfo, _settings, ref _textElementIndicesByMesh,
-                _uvsAreGenerated);
+            AtgInternals.Backend.ProcessMeshInfos(AtgInternals.TextLib, _textInfo, _settings,
+                ref _textElementIndicesByMesh, ref _colorsByMesh, _uvsAreGenerated);
             _uvsAreGenerated = true;
         }
 
@@ -294,14 +327,15 @@ namespace Yaui.Text
             output.Clear();
 
             var meshInfos = (AtgMeshInfo*)_textInfo.m_MeshInfosPtr;
+            var ySign = AtgInternals.Backend.FlipsY ? -1f : 1f;
             var processedMeshIndex = 0;
             for (var i = 0; i < _textInfo.meshInfoCount; i++)
             {
                 var meshInfo = meshInfos[i];
-                var textAsset = Resources.EntityIdToObject(meshInfo.textAssetId);
+                var textAsset = AtgInternals.FindTextAsset(meshInfo.textAssetId);
                 if (textAsset is SpriteAsset spriteAsset)
                 {
-                    ConvertSprites(meshInfo, spriteAsset, output);
+                    ConvertSprites(meshInfo, spriteAsset, ySign, output);
                     processedMeshIndex++;
                     continue;
                 }
@@ -314,7 +348,7 @@ namespace Yaui.Text
                 }
 
                 var elements = (NativeTextElementInfo*)meshInfo.m_TextElementInfosPtr;
-                var spread = fontAsset.IsBitmap() ? 0f : fontAsset.atlasPadding + 1f;
+                var spread = IsBitmap(fontAsset) ? 0f : fontAsset.atlasPadding + 1f;
                 var atlasIndices = _textElementIndicesByMesh[processedMeshIndex];
                 for (var atlasIndex = 0; atlasIndex < atlasIndices.Count; atlasIndex++)
                 {
@@ -325,9 +359,9 @@ namespace Yaui.Text
                         var glyph = AtgInternals.GetGlyphInCache(fontAsset, (uint)e.glyphID);
                         if (glyph != null && (glyph.metrics.width <= 0f || glyph.metrics.height <= 0f)) continue;
 
-                        // ATG lays out with Y up from the top-left (flipYAxis), so Y is negated.
-                        var top = -e.topLeft.position.y;
-                        var bottom = -e.bottomLeft.position.y;
+                        // With flipYAxis (6000.7) ATG lays out with Y up from the top-left, so Y is negated.
+                        var top = ySign * e.topLeft.position.y;
+                        var bottom = ySign * e.bottomLeft.position.y;
                         var left = e.bottomLeft.position.x;
                         var right = e.bottomRight.position.x;
                         output.Add(new GlyphQuad
@@ -350,7 +384,8 @@ namespace Yaui.Text
         }
 
         /// <summary>The sprites of &lt;sprite&gt; tags: colored quads of the sprite sheet.</summary>
-        private static void ConvertSprites(AtgMeshInfo meshInfo, SpriteAsset spriteAsset, List<GlyphQuad> output)
+        private static void ConvertSprites(AtgMeshInfo meshInfo, SpriteAsset spriteAsset, float ySign,
+            List<GlyphQuad> output)
         {
             var sheet = spriteAsset.spriteSheet;
             if (sheet == null) return;
@@ -359,8 +394,8 @@ namespace Yaui.Text
             for (var i = 0; i < meshInfo.m_TextElementCount; i++)
             {
                 ref var e = ref elements[i];
-                var top = -e.topLeft.position.y;
-                var bottom = -e.bottomLeft.position.y;
+                var top = ySign * e.topLeft.position.y;
+                var bottom = ySign * e.bottomLeft.position.y;
                 var left = e.bottomLeft.position.x;
                 var right = e.bottomRight.position.x;
                 if (right <= left || bottom <= top) continue;
@@ -388,11 +423,31 @@ namespace Yaui.Text
             _textBufferHandle = GCHandle.Alloc(_textBuffer, GCHandleType.Pinned);
         }
 
-        private static NativeTextGenerationSettings BuildNativeSettings(in TextRequest request)
+        /// <summary>
+        /// Whether the atlas of a font asset is a bitmap rather than a distance field: <c>FontAsset.IsBitmap</c>,
+        /// public from 6000.7.
+        /// </summary>
+        private static bool IsBitmap(FontAsset fontAsset)
         {
-            var s = AtgInternals.GetDefaultSettings();
+            // GlyphRasterModes.RASTER_MODE_BITMAP and RASTER_MODE_COLOR.
+            const int bitmap = 0x10, color = 0x10000;
+            var mode = (int)fontAsset.atlasRenderMode;
+            return (mode & bitmap) != 0 && (mode & color) == 0;
+        }
+
+        /// <summary>Whether a text may have rich text tags: a '&lt;' followed by a '&gt;'.</summary>
+        private static bool MayHaveTags(ReadOnlySpan<char> text)
+        {
+            var open = text.IndexOf('<');
+            return open >= 0 && text[(open + 1)..].IndexOf('>') >= 0;
+        }
+
+        private static AtgSettings BuildNativeSettings(in TextRequest request, TextSettings textSettings)
+        {
+            // The defaults of NativeTextGenerationSettings.
+            var s = new AtgSettings { hoveredTag = -1, pixelsPerPointFixed64 = 64 };
             s.fontAsset = AtgInternals.GetNativeFontAsset(request.Font);
-            s.textSettings = AtgInternals.GetNativeTextSettings(SettingsFor(request.SpriteAsset));
+            s.textSettings = AtgInternals.GetNativeTextSettings(textSettings);
             s.fontSize = ToFixedPoint(request.FontSize);
             s.color = request.Color;
             s.fontStyle = AtgInternals.FontStyleNormal;

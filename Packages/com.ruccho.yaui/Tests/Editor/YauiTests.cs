@@ -125,6 +125,8 @@ namespace Yaui.Tests
         [Test]
         public void FallbackTextIsMeasured()
         {
+            if (!Text.FallbackText.IsAvailable) Assert.Ignore("The public TextGenerator needs Unity 6000.7.");
+
             Text.AtgText.ForceFallback = true;
             try
             {
@@ -480,6 +482,104 @@ namespace Yaui.Tests
                 Assert.AreEqual(first[i].Uv, again[i].Uv, $"The UVs of glyph {i}.");
                 Assert.Greater(first[i].Uv.z - first[i].Uv.x, 0f);
             }
+        }
+
+        private static Text.TextRequest AtgRequest()
+        {
+#pragma warning disable 618
+            var font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+#pragma warning restore 618
+            return new Text.TextRequest
+            {
+                Font = Text.AtgText.GetFontAsset(font),
+                FontSize = 32f,
+                Color = Color.white
+            };
+        }
+
+        private static List<Text.GlyphQuad> GenerateGlyphs(Text.AtgText atg, string value, Text.TextRequest request)
+        {
+            var glyphs = new List<Text.GlyphQuad>();
+            atg.Prepare(System.MemoryExtensions.AsSpan(value), request);
+            atg.Generate(-1f);
+            Text.AtgText.ResolveMissingGlyphs(new List<Text.AtgText> { atg });
+            atg.Convert(glyphs);
+            return glyphs;
+        }
+
+        [Test]
+        public void GlyphsAreYDownFromTheTopOfTheText()
+        {
+            if (!Text.AtgText.IsSupported) Assert.Ignore("The ATG internals do not match this Unity version.");
+
+            using var atg = new Text.AtgText();
+            var glyphs = GenerateGlyphs(atg, "A\nB", AtgRequest());
+            Assert.AreEqual(2, glyphs.Count);
+            foreach (var glyph in glyphs)
+            {
+                Assert.Greater(glyph.Max.y, glyph.Min.y);
+                Assert.GreaterOrEqual(glyph.Min.y, -Text.AtgText.VertexPadding - 0.5f);
+                Assert.LessOrEqual(glyph.Max.y, atg.Size.y + Text.AtgText.VertexPadding + 0.5f);
+            }
+
+            Assert.Greater(glyphs[1].Min.y, glyphs[0].Max.y - Text.AtgText.VertexPadding * 2f,
+                "The second line is below the first.");
+        }
+
+        [Test]
+        public void RichTextTagsAreParsed()
+        {
+            if (!Text.AtgText.IsSupported) Assert.Ignore("The ATG internals do not match this Unity version.");
+
+            using var atg = new Text.AtgText();
+            var request = AtgRequest();
+            request.RichText = true;
+            var glyphs = GenerateGlyphs(atg, "<color=#FF0000>A</color>B", request);
+            Assert.AreEqual(2, glyphs.Count, "The tags are not drawn.");
+            Assert.AreEqual(new Color32(255, 0, 0, 255), glyphs[0].Color);
+            Assert.AreEqual(new Color32(255, 255, 255, 255), glyphs[1].Color);
+
+            request.RichText = false;
+            Assert.Greater(GenerateGlyphs(atg, "<b>A</b>", request).Count, 2, "Without rich text the tags are drawn.");
+        }
+
+        [Test]
+        public void CharactersMissingFromTheFontFallBackToOsFonts()
+        {
+            if (!Text.AtgText.IsSupported) Assert.Ignore("The ATG internals do not match this Unity version.");
+
+            // The built-in font has no Japanese.
+            using var atg = new Text.AtgText();
+            var glyphs = GenerateGlyphs(atg, "日本語", AtgRequest());
+            Assert.AreEqual(3, glyphs.Count);
+            foreach (var glyph in glyphs)
+            {
+                Assert.IsNotNull(glyph.Atlas);
+                Assert.Greater(glyph.Uv.z - glyph.Uv.x, 0f);
+            }
+        }
+
+        [Test]
+        public void TextDataReferencesTheIcuData()
+        {
+            // Players load the ICU data through this reference to a built-in resource of the editor.
+            var data = Resources.Load<Text.YauiTextData>(Text.YauiTextData.ResourcePath);
+            Assert.IsNotNull(data);
+            Assert.IsNotNull(data.IcuData);
+            Assert.AreEqual(Text.YauiTextData.IcuDataName, data.IcuData.name);
+        }
+
+        [Test]
+        public void WordBoundsSelectTheWordAtAnIndex()
+        {
+            if (!Text.AtgText.IsSupported || !Text.AtgSelection.Initialize())
+                Assert.Ignore("The ATG internals do not match this Unity version.");
+
+            using var atg = new Text.AtgText();
+            GenerateGlyphs(atg, "hello world", AtgRequest());
+            Text.AtgSelection.WordBounds(atg.GenerationInfo, 8, out var start, out var end);
+            Assert.AreEqual(6, start);
+            Assert.AreEqual(11, end);
         }
 
         private static List<PrimitiveData> DrawnGlyphs(YauiText text)

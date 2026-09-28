@@ -11,6 +11,9 @@ namespace Yaui.Text
     {
         public const string ResourcePath = "Yaui/TextData";
 
+        /// <summary>The name of the ICU data among the editor's built-in resources.</summary>
+        public const string IcuDataName = "icudt73l";
+
         [SerializeField] private TextAsset icuData;
 
         public TextAsset IcuData

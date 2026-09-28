@@ -48,7 +48,7 @@ Elements are components on GameObjects: use **Prefabs, Animator, Timeline and th
 
 ## Requirements
 
-- Unity 6000.7 (Unity 6.7) or later
+- Unity 6000.3 (Unity 6.3) or later
 - Universal Render Pipeline (URP)
 - Vulkan, Metal or Direct3D 11 / 12 (OpenGL ES is not supported)
 

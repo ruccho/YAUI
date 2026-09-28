@@ -15,6 +15,8 @@ namespace Yaui.Text
     {
         public delegate void WordBoundsFunc(IntPtr info, int index, out int start, out int end);
 
+        private delegate void SelectWordFunc(IntPtr info, int index, ref int start, ref int end);
+
         private static bool _initialized;
 
         public static bool Available { get; private set; }
@@ -54,7 +56,18 @@ namespace Yaui.Text
                 FirstIndexOnLine = Delegate<Func<IntPtr, int, int>>(type, "GetFirstCharacterIndexOnLine");
                 LastIndexOnLine = Delegate<Func<IntPtr, int, int>>(type, "GetLastCharacterIndexOnLine");
                 LineNumber = Delegate<Func<IntPtr, int, int>>(type, "GetLineNumber");
-                WordBounds = Delegate<WordBoundsFunc>(type, "ComputeWordBounds");
+                WordBounds = TryDelegate<WordBoundsFunc>(type, "ComputeWordBounds");
+                if (WordBounds == null)
+                {
+                    // Before 6000.6.
+                    var selectWord = Delegate<SelectWordFunc>(type, "SelectCurrentWord");
+                    WordBounds = (IntPtr info, int index, out int start, out int end) =>
+                    {
+                        start = end = index;
+                        selectWord(info, index, ref start, ref end);
+                    };
+                }
+
                 Available = true;
             }
             catch (Exception e)
@@ -68,12 +81,16 @@ namespace Yaui.Text
 
         private static T Delegate<T>(Type type, string name) where T : Delegate
         {
+            return TryDelegate<T>(type, name) ?? throw new MissingMethodException(type.FullName, name);
+        }
+
+        private static T TryDelegate<T>(Type type, string name) where T : Delegate
+        {
             var invoke = typeof(T).GetMethod("Invoke")!;
             var parameters = Array.ConvertAll(invoke.GetParameters(), p => p.ParameterType);
             var method = type.GetMethod(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static,
-                null, parameters, null) ?? throw new MissingMethodException(type.FullName, name);
-            if (method.ReturnType != invoke.ReturnType)
-                throw new MissingMethodException($"{type.FullName}.{name} returns {method.ReturnType}.");
+                null, parameters, null);
+            if (method == null || method.ReturnType != invoke.ReturnType) return null;
 
             return (T)System.Delegate.CreateDelegate(typeof(T), method);
         }

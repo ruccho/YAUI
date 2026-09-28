@@ -10,6 +10,7 @@
         <type fullname="UnityEngine.TextCore.Text.TextGenerationInfo" preserve="all"/>
         <type fullname="UnityEngine.TextCore.Text.OSFontFallbackResolver" preserve="all"/>
         <type fullname="UnityEngine.TextCore.NativeRichTextAssetRegistry" preserve="all"/>
+        <type fullname="UnityEngine.TextCore.RichTextTagParser" preserve="all"/>
         <type fullname="UnityEngine.TextCore.Generation.TextGenerator" preserve="all"/>
         <type fullname="UnityEngine.TextCore.Text.FontAsset" preserve="all"/>
         <type fullname="UnityEngine.TextCore.Text.TextSettings" preserve="all"/>

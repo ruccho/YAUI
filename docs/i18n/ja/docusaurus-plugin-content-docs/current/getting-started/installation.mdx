@@ -9,8 +9,8 @@ sidebar_position: 1
 
 | | |
 |---|---|
-| Unity | **6000.7** (Unity 6.7) 以降 |
-| レンダーパイプライン | Universal Render Pipeline (URP) 17.7 以降 |
+| Unity | **6000.3** (Unity 6.3) 以降 |
+| レンダーパイプライン | Universal Render Pipeline (URP) 17.3 以降 |
 | グラフィックス API | Vulkan、Metal、Direct3D 11 / 12。OpenGL ES はサポートしていません。 |
 
 以下の依存パッケージは、YAUI と一緒に Package Manager がインストールします。
@@ -21,7 +21,9 @@ sidebar_position: 1
 - Unity UI (`com.unity.ugui`)。EventSystem のために使います
 
 :::info
-YAUI はテキストに Advanced Text Generator (ATG) を使います。その公開 API は Unity 6.7 で追加されたため、それより前のバージョンはサポートしていません。
+YAUI はテキストに Advanced Text Generator (ATG) を、Unity のバージョンごとに変わる内部 API を通じて使います。YAUI は起動時にそれを照合し、Unity 6.3 から 6.7 をサポートしています。Unity 6.3 から 6.5 では、テキストを変更するたびにアロケーションが起きます (テキストを文字列で渡し、リッチテキストをマネージドコードで解析するため)。
+
+内部 API が一致しない Unity のバージョンでは、Unity 6.7 以降は機能の少ない公開のテキスト生成 API に切り替えます。それより前のバージョンには公開 API がないため、テキストは表示されません。
 :::
 
 ## パッケージのインストール {#install-the-package}

@@ -9,8 +9,8 @@ sidebar_position: 1
 
 | | |
 |---|---|
-| Unity | **6000.7** (Unity 6.7) or later |
-| Render pipeline | Universal Render Pipeline (URP) 17.7 or later |
+| Unity | **6000.3** (Unity 6.3) or later |
+| Render pipeline | Universal Render Pipeline (URP) 17.3 or later |
 | Graphics API | Vulkan, Metal, Direct3D 11 / 12. OpenGL ES is not supported. |
 
 The Package Manager installs these dependencies with YAUI:
@@ -21,7 +21,9 @@ The Package Manager installs these dependencies with YAUI:
 - Unity UI (`com.unity.ugui`), for the EventSystem
 
 :::info
-YAUI uses the Advanced Text Generator (ATG) for text. Its public API was added in Unity 6.7, so earlier versions are not supported.
+YAUI uses the Advanced Text Generator (ATG) for text, through internal APIs that change between Unity versions. YAUI checks them at startup and supports Unity 6.3 to 6.7. On Unity 6.3 to 6.5, changing a text allocates: the text is passed as a string, and rich text is parsed in managed code.
+
+If the internal APIs of a Unity version do not match, Unity 6.7 and later fall back to the public text generator, which has fewer features. Earlier versions have no public text generator and show no text.
 :::
 
 ## Install the package

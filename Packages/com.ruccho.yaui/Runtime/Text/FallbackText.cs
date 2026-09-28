@@ -2,18 +2,24 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.TextCore;
+#if UNITY_6000_7_OR_NEWER
 using TextGenerationSettings = UnityEngine.TextCore.Generation.TextGenerationSettings;
 using TextGenerator = UnityEngine.TextCore.Generation.TextGenerator;
+#endif
 
 namespace Yaui.Text
 {
     /// <summary>
-    /// Text through the public <see cref="TextGenerator"/>, when the internal ATG APIs do not match this Unity
-    /// version (<see cref="AtgText.IsSupported"/>). Main thread only and synchronous: the layout measures the last
-    /// generation, so wrapped text settles one frame later.
+    /// Text through the public <c>UnityEngine.TextCore.Generation.TextGenerator</c> (6000.7 and later), when the
+    /// internal ATG APIs do not match this Unity version (<see cref="AtgText.IsSupported"/>). Main thread only and
+    /// synchronous: the layout measures the last generation, so wrapped text settles one frame later. Earlier
+    /// versions have no public generator: texts are then empty.
     /// </summary>
     internal sealed class FallbackText
     {
+#if UNITY_6000_7_OR_NEWER
+        public static bool IsAvailable => true;
+
         private static readonly List<Vector3> Vertices = new();
         private static readonly List<Vector2> Uvs = new();
         private static readonly List<Color32> Colors = new();
@@ -107,5 +113,32 @@ namespace Yaui.Text
                 }
             }
         }
+#else
+        public static bool IsAvailable => false;
+
+        public bool IsGenerated { get; private set; }
+
+        /// <summary>The width of the last generation, or a negative value if unconstrained.</summary>
+        public float GeneratedWidth { get; private set; } = -1f;
+
+        public float2 Size => float2.zero;
+
+        public void Prepare(string value, Font font, float fontSize, Color color, TextAlign align, bool wordWrap,
+            bool richText)
+        {
+            IsGenerated = false;
+        }
+
+        public void Generate(float width)
+        {
+            GeneratedWidth = width >= 0f ? width : -1f;
+            IsGenerated = true;
+        }
+
+        public void Convert(List<GlyphQuad> output)
+        {
+            output.Clear();
+        }
+#endif
     }
 }

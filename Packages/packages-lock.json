@@ -5,10 +5,10 @@
       "depth": 0,
       "source": "embedded",
       "dependencies": {
-        "com.unity.burst": "2.0.0",
-        "com.unity.collections": "6.7.0",
-        "com.unity.render-pipelines.universal": "17.7.0",
-        "com.unity.ugui": "2.7.0"
+        "com.unity.burst": "1.8.29",
+        "com.unity.collections": "2.6.5",
+        "com.unity.render-pipelines.universal": "17.3.0",
+        "com.unity.ugui": "2.0.0"
       }
     },
     "com.unity.ai.navigation": {
