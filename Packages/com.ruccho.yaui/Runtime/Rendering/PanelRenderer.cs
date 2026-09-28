@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.Profiling;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering;
 using UnityEngine.Rendering;
@@ -52,6 +53,8 @@ namespace Yaui.Rendering
 
         private readonly Vector4[] _atlasParams = new Vector4[TextureRegistry.SlotCount];
 
+        private static readonly ProfilerMarker PrepareOverlayMarker = new("Yaui.Render.Prepare");
+        private static readonly ProfilerMarker RecordOverlayMarker = new("Yaui.Render.Record");
         private static readonly int StencilRefId = Shader.PropertyToID("_YauiStencilRef");
         private static readonly int StencilCompId = Shader.PropertyToID("_YauiStencilComp");
         private static readonly int StencilPassId = Shader.PropertyToID("_YauiStencilPass");
@@ -446,6 +449,7 @@ namespace Yaui.Rendering
 
         private void PrepareOverlayDraws(Camera camera)
         {
+            using var _ = PrepareOverlayMarker.Auto();
             _sorted.Clear();
             foreach (var panel in YauiSystem.AllPanels)
                 if (panel.HasDraws && panel.OrderBuffer != null &&
@@ -738,9 +742,19 @@ namespace Yaui.Rendering
                 data.Indices = _renderer._indices;
                 builder.SetRenderFunc(static (PassData d, RasterGraphContext context) =>
                 {
+                    using var _ = RecordOverlayMarker.Auto();
+                    var projection = default(Matrix4x4);
+                    var first = true;
                     foreach (var draw in d.Draws)
                     {
-                        context.cmd.SetViewProjectionMatrices(Matrix4x4.identity, draw.Projection);
+                        // Once per panel.
+                        if (first || draw.Projection != projection)
+                        {
+                            context.cmd.SetViewProjectionMatrices(Matrix4x4.identity, draw.Projection);
+                            projection = draw.Projection;
+                            first = false;
+                        }
+
                         if (draw.Mesh != null)
                             context.cmd.DrawMesh(draw.Mesh, draw.Model, draw.Material, draw.Submesh, draw.Pass,
                                 draw.Properties);
