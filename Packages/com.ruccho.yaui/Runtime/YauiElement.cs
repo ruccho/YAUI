@@ -535,6 +535,9 @@ namespace Yaui
             if (ShaderFeaturesExtensions.Of(p.Flags) != ShaderFeaturesExtensions.Of(data.Flags))
                 _panel.FeaturesDirty = true;
 
+            // Draws are reordered by the bounds of their primitives.
+            _panel.ReorderDirty = true;
+
             p = data;
             p.Node = (uint)NodeSlot;
         }
@@ -755,8 +758,13 @@ namespace Yaui
             }
 
             ref var p = ref YauiSystem.Primitives[BoxSlot];
-            if (_panel != null && ShaderFeaturesExtensions.Of(p.Flags) != ShaderFeaturesExtensions.Of(flags))
-                _panel.FeaturesDirty = true;
+            if (_panel != null)
+            {
+                if (ShaderFeaturesExtensions.Of(p.Flags) != ShaderFeaturesExtensions.Of(flags))
+                    _panel.FeaturesDirty = true;
+
+                _panel.ReorderDirty = true;
+            }
 
             p.Node = (uint)NodeSlot;
             p.Flags = flags;
@@ -777,6 +785,7 @@ namespace Yaui
             var size = YauiSystem.Nodes[NodeSlot].LayoutSize;
             YauiSystem.Primitives[BoxSlot].Rect =
                 box.IsVisible || _mask != null ? new float4(0f, 0f, size) : float4.zero;
+            if (_panel != null) _panel.ReorderDirty = true;
             if (_boxDrawn != box.IsVisible)
             {
                 _boxDrawn = box.IsVisible;

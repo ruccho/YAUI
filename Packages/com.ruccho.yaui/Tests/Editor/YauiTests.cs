@@ -428,6 +428,164 @@ namespace Yaui.Tests
             Assert.AreEqual(ShaderFeatures.Text | ShaderFeatures.Border, panel.CurrentState.Segments[0].Features);
         }
 
+        private static List<Material> SegmentMaterials(YauiPanel panel)
+        {
+            var materials = new List<Material>();
+            foreach (var segment in panel.CurrentState.Segments) materials.Add(segment.Material);
+
+            return materials;
+        }
+
+        private static YauiElement PlacedBox(Component parent, float x, float y, Material material)
+        {
+            var box = Box(parent, 100f, 100f);
+            var layout = box.Layout;
+            layout.position = PositionType.Absolute;
+            layout.inset = new Edges(x, y, Length.Auto, Length.Auto);
+            box.Layout = layout;
+            box.Material = material;
+            return box;
+        }
+
+        [Test]
+        public void DrawsOfTheSameMaterialMergeWhereNothingOverlaps()
+        {
+            var panel = CreatePanel();
+            var root = panel.GetComponent<YauiElement>();
+            var custom = new Material(Resources.Load<Shader>("Yaui/Uber"));
+            for (var i = 0; i < 4; i++) PlacedBox(root, i * 200f, 0f, i % 2 == 0 ? null : custom);
+
+            YauiPanel.ForceUpdate();
+            CollectionAssert.AreEqual(new[] { null, custom }, SegmentMaterials(panel));
+            Object.DestroyImmediate(custom);
+        }
+
+        /// <summary>The canvas bounds of a primitive as the reordering sees them (axis-aligned nodes, no shadows).</summary>
+        private static Rect CanvasBounds(PrimitiveData p)
+        {
+            if (p.Rect.z <= 0f || p.Rect.w <= 0f) return Rect.zero;
+
+            var node = Core.YauiSystem.Nodes.Gpu.AsArray()[(int)p.Node];
+            var min = new Vector2(p.Rect.x * node.Matrix.x, p.Rect.y * node.Matrix.w) + (Vector2)node.Translation;
+            return new Rect(min, new Vector2(p.Rect.z * node.Matrix.x, p.Rect.w * node.Matrix.w));
+        }
+
+        [Test]
+        public void ReorderedGridKeepsOverlappingPairsInOrder()
+        {
+            // The grid of the benchmark on a Pixel 5, whose labels overflow into the next cells.
+            var panel = CreatePanel(978f, 2120f);
+            var root = panel.GetComponent<YauiElement>();
+            var rootLayout = LayoutStyle.Default;
+            rootLayout.direction = FlexDirection.Row;
+            rootLayout.wrap = FlexWrap.Wrap;
+            rootLayout.alignContent = FlexAlign.FlexStart;
+            root.Layout = rootLayout;
+            var boxes = new Material(Resources.Load<Shader>("Yaui/Uber"));
+            var labels = new Material(Resources.Load<Shader>("Yaui/Uber"));
+            for (var i = 0; i < 300; i++)
+            {
+                var cell = Box(root, 28f, 38f);
+                var cellLayout = cell.Layout;
+                cellLayout.margin = new Edges(2f);
+                cellLayout.direction = FlexDirection.Row;
+                cellLayout.alignItems = FlexAlign.Center;
+                cellLayout.shrink = 0f;
+                cell.Layout = cellLayout;
+                cell.Material = boxes;
+                var icon = Box(cell, 9.6f, 29.4f);
+                var iconLayout = icon.Layout;
+                iconLayout.margin = new Edges(1.6f, 0f, 1.6f, 0f);
+                icon.Layout = iconLayout;
+                icon.Material = boxes;
+                var label = Create<YauiText>(cell);
+                var labelLayout = LayoutStyle.Default;
+                labelLayout.grow = 1f;
+                label.Layout = labelLayout;
+                label.FontSize = 11.52f;
+                label.WordWrap = false;
+                label.Text = (i * 7).ToString();
+                label.Material = labels;
+            }
+
+            YauiPanel.ForceUpdate();
+            var state = panel.CurrentState;
+            var painter = state.PainterOrder.ToArray();
+            var drawn = state.DrawOrder.ToArray();
+            var primitives = Core.YauiSystem.Primitives.AsArray();
+            var position = new Dictionary<uint, int>();
+            for (var i = 0; i < drawn.Length; i++) position[drawn[i]] = i;
+
+            var bounds = new Rect[painter.Length];
+            for (var i = 0; i < painter.Length; i++) bounds[i] = CanvasBounds(primitives[(int)painter[i]]);
+
+            // Every overlapping pair is drawn in the painter's order.
+            for (var i = 0; i < painter.Length; i++)
+            for (var j = i + 1; j < painter.Length; j++)
+                if (bounds[i].Overlaps(bounds[j]) && bounds[i].width > 0f && bounds[j].width > 0f)
+                    Assert.Less(position[painter[i]], position[painter[j]], $"{i} and {j} were swapped");
+
+            // The draws of the same rule computed by brute force.
+            var key = new Dictionary<uint, int>();
+            foreach (var segment in state.Segments)
+                for (var i = segment.Start; i < segment.Start + segment.Count; i++)
+                    key[drawn[i]] = segment.Material == boxes ? 0 : 1;
+
+            var layers = new int[painter.Length];
+            var sorted = new List<(int Layer, int Key, int Index)>();
+            var last = new int[2];
+            for (var i = 0; i < painter.Length; i++)
+            {
+                var k = key[painter[i]];
+                var layer = bounds[i].width > 0f ? 0 : last[k];
+                if (bounds[i].width > 0f)
+                    for (var j = 0; j < i; j++)
+                        if (bounds[j].width > 0f && bounds[i].Overlaps(bounds[j]))
+                            layer = Mathf.Max(layer, layers[j] + (key[painter[j]] != k ? 1 : 0));
+
+                layers[i] = layer;
+                last[k] = layer;
+                sorted.Add((layer, k, i));
+            }
+
+            sorted.Sort();
+            var best = 0;
+            for (var i = 0; i < sorted.Count; i++)
+                if (i == 0 || sorted[i].Key != sorted[i - 1].Key)
+                    best++;
+
+            Assert.AreEqual(best, state.Segments.Count);
+            Object.DestroyImmediate(boxes);
+            Object.DestroyImmediate(labels);
+        }
+
+        [Test]
+        public void OverlappingDrawsKeepTheirOrder()
+        {
+            var panel = CreatePanel();
+            var root = panel.GetComponent<YauiElement>();
+            var custom = new Material(Resources.Load<Shader>("Yaui/Uber"));
+            var boxes = new List<YauiElement>
+            {
+                PlacedBox(root, 0f, 0f, null),
+                PlacedBox(root, 50f, 50f, custom),
+                PlacedBox(root, 100f, 0f, null),
+                PlacedBox(root, 500f, 500f, custom)
+            };
+
+            // The third box covers the second: it must stay after it, in a draw of its own.
+            YauiPanel.ForceUpdate();
+            CollectionAssert.AreEqual(new[] { null, custom, null }, SegmentMaterials(panel));
+
+            // Apart, they merge.
+            var layout = boxes[2].Layout;
+            layout.inset = new Edges(300f, 0f, Length.Auto, Length.Auto);
+            boxes[2].Layout = layout;
+            YauiPanel.ForceUpdate();
+            CollectionAssert.AreEqual(new[] { null, custom }, SegmentMaterials(panel));
+            Object.DestroyImmediate(custom);
+        }
+
         [Test]
         public void SmallSpritesShareAnAtlasAndDrawsSplitAtNineTextures()
         {

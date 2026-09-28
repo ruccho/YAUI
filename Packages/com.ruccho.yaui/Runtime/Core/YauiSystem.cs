@@ -31,6 +31,7 @@ namespace Yaui.Core
         private static readonly ProfilerMarker EarlySubmitMarker = new("Yaui.EarlySubmit");
         private static readonly ProfilerMarker CollectMarker = new("Yaui.Collect");
         private static readonly ProfilerMarker FeaturesMarker = new("Yaui.Collect.Features");
+        private static readonly ProfilerMarker ReorderMarker = new("Yaui.Collect.Reorder");
         private static readonly ProfilerMarker LayoutMarker = new("Yaui.Layout");
 
         private static bool _initialized;
@@ -340,8 +341,9 @@ namespace Yaui.Core
             {
                 if (panel.OrderDirty) panel.RebuildOrder();
 
+                var transformsChanged = panel.UpdateTransforms();
+                using (ReorderMarker.Auto()) panel.Reorder(transformsChanged);
                 using (FeaturesMarker.Auto()) panel.UpdateFeatures();
-                panel.UpdateTransforms();
             }
 
             // After the transforms: custom draws place their meshes on the nodes as rendered.
