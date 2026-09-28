@@ -15,6 +15,8 @@ Shader "Hidden/Yaui/Mask"
     #pragma target 4.5
     // Per-pixel clips (rotated quads, rounded clips), only for panels that need them.
     #pragma multi_compile_local _ YAUI_PIXEL_CLIP
+    // A mask's shape has no border or shadow (FragMaskImpl).
+    #define YAUI_FEATURES (YAUI_FEATURE_TEXT + YAUI_FEATURE_IMAGE + YAUI_FEATURE_RADIAL_FILL)
     #include "Packages/com.ruccho.yaui/Runtime/Shaders/Yaui.hlsl"
     ENDHLSL
 

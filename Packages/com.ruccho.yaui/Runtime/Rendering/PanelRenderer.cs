@@ -56,10 +56,11 @@ namespace Yaui.Rendering
         private static readonly int StencilCompId = Shader.PropertyToID("_YauiStencilComp");
         private static readonly int StencilPassId = Shader.PropertyToID("_YauiStencilPass");
 
-        private readonly Material _material;
+        private readonly Shader _uberShader;
 
-        // The uber shader with per-pixel clipping, for panels that have rotated nodes or rounded clips.
-        private readonly Material _pixelClipMaterial;
+        // Variants of the uber shader, created when first used: by the features of the draw (ShaderFeatures), then
+        // twice as many with per-pixel clipping, for panels that have rotated nodes or rounded clips.
+        private readonly Material[] _uberMaterials = new Material[ShaderFeaturesExtensions.Count * 2];
 
         // The shapes of masks, with and without per-pixel clipping.
         private readonly Material _maskMaterial;
@@ -118,10 +119,7 @@ namespace Yaui.Rendering
 
         public PanelRenderer()
         {
-            var shader = Resources.Load<Shader>("Yaui/Uber");
-            _material = new Material(shader) { hideFlags = HideFlags.HideAndDontSave, renderQueue = 3000 };
-            _pixelClipMaterial = new Material(_material) { hideFlags = HideFlags.HideAndDontSave };
-            _pixelClipMaterial.EnableKeyword("YAUI_PIXEL_CLIP");
+            _uberShader = Resources.Load<Shader>("Yaui/Uber");
             _maskMaterial = new Material(Resources.Load<Shader>("Yaui/Mask"))
             {
                 hideFlags = HideFlags.HideAndDontSave, renderQueue = 3000
@@ -508,9 +506,26 @@ namespace Yaui.Rendering
             else if (segment.Material != null)
                 baseMaterial = segment.Material;
             else
-                baseMaterial = panel.NeedsPixelClip ? _pixelClipMaterial : _material;
+                baseMaterial = UberMaterial(segment.Features, panel.NeedsPixelClip);
 
             return WithStencil(baseMaterial, segment.Kind, segment.StencilDepth, segment.Material != null);
+        }
+
+        /// <summary>The variant of the uber shader with <paramref name="features"/>.</summary>
+        private Material UberMaterial(ShaderFeatures features, bool pixelClip)
+        {
+            var index = (int)features + (pixelClip ? ShaderFeaturesExtensions.Count : 0);
+            var material = _uberMaterials[index];
+            if (material != null) return material;
+
+            material = new Material(_uberShader) { hideFlags = HideFlags.HideAndDontSave, renderQueue = 3000 };
+            if (pixelClip) material.EnableKeyword("YAUI_PIXEL_CLIP");
+            if ((features & ShaderFeatures.Text) != 0) material.EnableKeyword("YAUI_TEXT");
+            if ((features & ShaderFeatures.Image) != 0) material.EnableKeyword("YAUI_IMAGE");
+            if ((features & ShaderFeatures.Border) != 0) material.EnableKeyword("YAUI_BORDER");
+            if ((features & ShaderFeatures.Shadow) != 0) material.EnableKeyword("YAUI_SHADOW");
+            _uberMaterials[index] = material;
+            return material;
         }
 
         /// <summary>
@@ -570,8 +585,7 @@ namespace Yaui.Rendering
             RenderPipelineManager.beginCameraRendering -= OnBeginCameraRendering;
             _indices?.Dispose();
             _indices = null;
-            DestroyMaterial(_material);
-            DestroyMaterial(_pixelClipMaterial);
+            foreach (var material in _uberMaterials) DestroyMaterial(material);
             DestroyMaterial(_maskMaterial);
             DestroyMaterial(_pixelClipMaskMaterial);
             foreach (var derived in _stencilMaterials.Values) DestroyMaterial(derived);

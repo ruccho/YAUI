@@ -396,6 +396,39 @@ namespace Yaui.Tests
         }
 
         [Test]
+        public void DrawsUseTheShaderFeaturesOfTheirPrimitives()
+        {
+            var panel = CreatePanel();
+            var root = panel.GetComponent<YauiElement>();
+            var box = Box(root, 100f, 50f);
+            YauiPanel.ForceUpdate();
+            Assert.AreEqual(ShaderFeatures.None, panel.CurrentState.Segments[0].Features);
+
+            // A style change writes the primitive without rebuilding the draw order.
+            var style = box.Box;
+            style.shadowColor = Color.black;
+            style.shadowBlur = 4f;
+            style.borderWidth = 2f;
+            box.Box = style;
+            YauiPanel.ForceUpdate();
+            Assert.AreEqual(ShaderFeatures.Shadow | ShaderFeatures.Border, panel.CurrentState.Segments[0].Features);
+
+            var text = Create<YauiText>(root);
+            text.Text = "A";
+            style.shadowColor = Color.clear;
+            style.borderWidth = 0f;
+            box.Box = style;
+            YauiPanel.ForceUpdate();
+            Assert.AreEqual(ShaderFeatures.Text, panel.CurrentState.Segments[0].Features);
+
+            // Rewrites the glyphs in place.
+            text.OutlineWidth = 1f;
+            text.OutlineColor = Color.black;
+            YauiPanel.ForceUpdate();
+            Assert.AreEqual(ShaderFeatures.Text | ShaderFeatures.Border, panel.CurrentState.Segments[0].Features);
+        }
+
+        [Test]
         public void SmallSpritesShareAnAtlasAndDrawsSplitAtNineTextures()
         {
             var panel = CreatePanel();

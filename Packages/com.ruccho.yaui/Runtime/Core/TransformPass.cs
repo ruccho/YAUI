@@ -34,6 +34,31 @@ namespace Yaui.Core
         }
     }
 
+    /// <summary>The shader features each draw segment uses: the union over the flags of its primitives.</summary>
+    [BurstCompile]
+    internal struct FeatureScan : IJob
+    {
+        [ReadOnly] public NativeArray<uint> Order;
+        [ReadOnly] public NativeArray<PrimitiveData> Primitives;
+
+        /// <summary>Draw positions of the segments (x: start, y: count).</summary>
+        [ReadOnly] public NativeArray<int2> Segments;
+
+        public NativeArray<ShaderFeatures> Result;
+
+        public void Execute()
+        {
+            for (var s = 0; s < Segments.Length; s++)
+            {
+                var flags = PrimitiveFlags.None;
+                var range = Segments[s];
+                for (var i = range.x; i < range.x + range.y; i++) flags |= Primitives[(int)Order[i]].Flags;
+
+                Result[s] = ShaderFeaturesExtensions.Of(flags);
+            }
+        }
+    }
+
     /// <summary>
     /// Propagates world transforms, opacity and clips from the root of a panel to its leaves, in depth-first order
     /// (parents before children), and writes the node and clip records. Only the given ranges of depth-first

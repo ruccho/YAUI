@@ -30,6 +30,7 @@ namespace Yaui.Core
         private static readonly ProfilerMarker SubmitMarker = new("Yaui.Submit");
         private static readonly ProfilerMarker EarlySubmitMarker = new("Yaui.EarlySubmit");
         private static readonly ProfilerMarker CollectMarker = new("Yaui.Collect");
+        private static readonly ProfilerMarker FeaturesMarker = new("Yaui.Collect.Features");
         private static readonly ProfilerMarker LayoutMarker = new("Yaui.Layout");
 
         private static bool _initialized;
@@ -339,6 +340,7 @@ namespace Yaui.Core
             {
                 if (panel.OrderDirty) panel.RebuildOrder();
 
+                using (FeaturesMarker.Auto()) panel.UpdateFeatures();
                 panel.UpdateTransforms();
             }
 

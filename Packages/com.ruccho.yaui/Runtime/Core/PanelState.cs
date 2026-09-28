@@ -45,6 +45,9 @@ namespace Yaui.Core
         public int TextureStart;
 
         public int TextureCount;
+
+        /// <summary>The features of the uber shader the primitives use (<see cref="PanelState.UpdateFeatures"/>).</summary>
+        public ShaderFeatures Features;
     }
 
     /// <summary>
@@ -94,6 +97,16 @@ namespace Yaui.Core
         public bool NeedsPixelClip;
 
         private NativeArray<int> _scanResult;
+
+        // Scratch of the feature scan, per segment.
+        private NativeList<int2> _featureRanges;
+        private NativeList<ShaderFeatures> _features;
+
+        /// <summary>
+        /// The segments, or the shader features of a primitive (<see cref="ShaderFeaturesExtensions.Of"/>), changed
+        /// since the features of the segments were last scanned.
+        /// </summary>
+        public bool FeaturesDirty = true;
 
         /// <summary>The primitives of an element changed (e.g. a text needs more glyph slots).</summary>
         public bool OrderDirty;
@@ -232,6 +245,7 @@ namespace Yaui.Core
         public void RebuildOrder()
         {
             OrderDirty = false;
+            FeaturesDirty = true;
             _order.Clear();
             Segments.Clear();
             SegmentTextures.Clear();
@@ -527,6 +541,38 @@ namespace Yaui.Core
             }
         }
 
+        /// <summary>Main thread, at collection: the shader features of each draw segment, if they may have changed.</summary>
+        public void UpdateFeatures()
+        {
+            if (!FeaturesDirty) return;
+
+            FeaturesDirty = false;
+            if (!_featureRanges.IsCreated)
+            {
+                _featureRanges = new NativeList<int2>(8, Allocator.Persistent);
+                _features = new NativeList<ShaderFeatures>(8, Allocator.Persistent);
+            }
+
+            _featureRanges.Clear();
+            foreach (var segment in Segments) _featureRanges.Add(new int2(segment.Start, segment.Count));
+
+            _features.ResizeUninitialized(Segments.Count);
+            new FeatureScan
+            {
+                Order = _order.AsArray(),
+                Primitives = YauiSystem.Primitives.AsArray(),
+                Segments = _featureRanges.AsArray(),
+                Result = _features.AsArray()
+            }.Run();
+
+            for (var i = 0; i < Segments.Count; i++)
+            {
+                var segment = Segments[i];
+                segment.Features = _features[i];
+                Segments[i] = segment;
+            }
+        }
+
         /// <summary>Main thread, at collection: propagates transforms if anything changed.</summary>
         public void UpdateTransforms()
         {
@@ -685,6 +731,11 @@ namespace Yaui.Core
         {
             _hitTest.Dispose();
             if (_scanResult.IsCreated) _scanResult.Dispose();
+            if (_featureRanges.IsCreated)
+            {
+                _featureRanges.Dispose();
+                _features.Dispose();
+            }
 
             _orderBuffer?.Dispose();
             _orderBuffer = null;

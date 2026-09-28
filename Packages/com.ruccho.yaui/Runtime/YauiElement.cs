@@ -530,8 +530,10 @@ namespace Yaui
         {
             ref var p = ref YauiSystem.Primitives[_contentStart + index];
 
-            // Draws are split by the textures they use.
+            // Draws are split by the textures they use, and use the shader variant of their features.
             if (PrimitiveTexture.IdOf(p.Flags) != PrimitiveTexture.IdOf(data.Flags)) _panel.OrderDirty = true;
+            if (ShaderFeaturesExtensions.Of(p.Flags) != ShaderFeaturesExtensions.Of(data.Flags))
+                _panel.FeaturesDirty = true;
 
             p = data;
             p.Node = (uint)NodeSlot;
@@ -753,6 +755,9 @@ namespace Yaui
             }
 
             ref var p = ref YauiSystem.Primitives[BoxSlot];
+            if (_panel != null && ShaderFeaturesExtensions.Of(p.Flags) != ShaderFeaturesExtensions.Of(flags))
+                _panel.FeaturesDirty = true;
+
             p.Node = (uint)NodeSlot;
             p.Flags = flags;
             p.Color = GpuPacking.Color(box.backgroundColor);

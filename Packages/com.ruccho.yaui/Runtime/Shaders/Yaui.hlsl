@@ -26,12 +26,39 @@
 
 // The features compiled into the shader (the flags above, without the u suffix for the preprocessor). A shader that
 // defines YAUI_FEATURES before the include leaves out the others, with their varyings; primitives that use them are
-// drawn without them.
+// drawn without them. A shader that defines YAUI_FEATURE_KEYWORDS instead takes them from the keywords YAUI_TEXT,
+// YAUI_IMAGE, YAUI_BORDER (with radial fills) and YAUI_SHADOW, like Uber.shader, whose variants the renderer picks
+// per draw from the flags of its primitives (Yaui.Rendering.ShaderFeatures). Otherwise every feature is compiled.
 #define YAUI_FEATURE_TEXT 1
 #define YAUI_FEATURE_BORDER 2
 #define YAUI_FEATURE_SHADOW 4
 #define YAUI_FEATURE_IMAGE 32
 #define YAUI_FEATURE_RADIAL_FILL 64
+#if !defined(YAUI_FEATURES) && defined(YAUI_FEATURE_KEYWORDS)
+    #if defined(YAUI_TEXT)
+        #define YAUI_KEYWORD_TEXT 1
+    #else
+        #define YAUI_KEYWORD_TEXT 0
+    #endif
+    #if defined(YAUI_IMAGE)
+        #define YAUI_KEYWORD_IMAGE 1
+    #else
+        #define YAUI_KEYWORD_IMAGE 0
+    #endif
+    #if defined(YAUI_BORDER)
+        #define YAUI_KEYWORD_BORDER 1
+    #else
+        #define YAUI_KEYWORD_BORDER 0
+    #endif
+    #if defined(YAUI_SHADOW)
+        #define YAUI_KEYWORD_SHADOW 1
+    #else
+        #define YAUI_KEYWORD_SHADOW 0
+    #endif
+    #define YAUI_FEATURES (YAUI_KEYWORD_TEXT * YAUI_FEATURE_TEXT + YAUI_KEYWORD_IMAGE * YAUI_FEATURE_IMAGE + \
+        YAUI_KEYWORD_BORDER * (YAUI_FEATURE_BORDER + YAUI_FEATURE_RADIAL_FILL) + \
+        YAUI_KEYWORD_SHADOW * YAUI_FEATURE_SHADOW)
+#endif
 #ifndef YAUI_FEATURES
 #define YAUI_FEATURES 127
 #endif

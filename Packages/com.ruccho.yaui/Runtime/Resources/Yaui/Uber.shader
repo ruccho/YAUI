@@ -15,6 +15,13 @@ Shader "Hidden/Yaui/Uber"
     #pragma target 4.5
     // Per-pixel clips (rotated quads, rounded clips), only for panels that need them.
     #pragma multi_compile_local _ YAUI_PIXEL_CLIP
+    // Features, only for the draws whose primitives use them: the unused ones cost registers and varyings even when
+    // no pixel takes their branches (planning/shader-variants.md).
+    #pragma multi_compile_local _ YAUI_TEXT
+    #pragma multi_compile_local _ YAUI_IMAGE
+    #pragma multi_compile_local _ YAUI_BORDER
+    #pragma multi_compile_local _ YAUI_SHADOW
+    #define YAUI_FEATURE_KEYWORDS
     #include "Packages/com.ruccho.yaui/Runtime/Shaders/Yaui.hlsl"
     ENDHLSL
 

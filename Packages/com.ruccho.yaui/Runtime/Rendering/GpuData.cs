@@ -36,6 +36,39 @@ namespace Yaui.Rendering
         RadialFill = 1 << 6
     }
 
+    /// <summary>
+    /// The features of the uber shader a draw compiles in, one keyword each (YAUI_TEXT, YAUI_IMAGE, YAUI_BORDER,
+    /// YAUI_SHADOW in Yaui.hlsl). A draw uses the variant with the features of its primitives only.
+    /// </summary>
+    [Flags]
+    internal enum ShaderFeatures
+    {
+        None = 0,
+        Text = 1 << 0,
+        Image = 1 << 1,
+
+        /// <summary>Borders and radial fills (both read the border color).</summary>
+        Border = 1 << 2,
+
+        Shadow = 1 << 3,
+        All = Text | Image | Border | Shadow
+    }
+
+    internal static class ShaderFeaturesExtensions
+    {
+        public const int Count = 16;
+
+        public static ShaderFeatures Of(PrimitiveFlags flags)
+        {
+            var features = ShaderFeatures.None;
+            if ((flags & PrimitiveFlags.Text) != 0) features |= ShaderFeatures.Text;
+            if ((flags & PrimitiveFlags.Image) != 0) features |= ShaderFeatures.Image;
+            if ((flags & (PrimitiveFlags.Border | PrimitiveFlags.RadialFill)) != 0) features |= ShaderFeatures.Border;
+            if ((flags & PrimitiveFlags.Shadow) != 0) features |= ShaderFeatures.Shadow;
+            return features;
+        }
+    }
+
     internal static class PrimitiveTexture
     {
         /// <summary>The flags of a primitive sampling the texture of <paramref name="textureId"/> (TextureRegistry).</summary>
