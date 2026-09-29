@@ -1,0 +1,639 @@
+# suite,comparison
+# unity,6000.7.0b2
+# device,Google Pixel 5
+# os,Android OS 14 / API-34 (UP1A.231105.001.B2/11260668)
+# cpu,ARM64 FP ASIMD AES
+# gpu,Adreno (TM) 620,Vulkan
+# screen,1080x2340
+# development,False
+scenario,metric,count,mean,median,p95,max
+Empty#1,CPU Main (ms),600,2.614,2.548,2.783,18.379
+Empty#1,CPU Main Present Wait (ms),600,8.495,8.525,9.429,10.647
+Empty#1,CPU Render (ms),600,0.502,0.494,0.584,0.945
+Empty#1,GPU (ms),600,2.631,2.635,2.669,2.809
+Empty#1,SetPass Calls Count,600,1.997,2,2,2
+Empty#1,Vertices Count,600,5034.595,5043,5043,5043
+Empty#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.008,0.008,0.009,0.072
+GridNone.YAUI#1,CPU Main (ms),600,2.584,2.585,2.739,4.805
+GridNone.YAUI#1,CPU Main Present Wait (ms),600,8.525,8.508,9.343,9.722
+GridNone.YAUI#1,CPU Render (ms),600,0.548,0.531,0.634,0.768
+GridNone.YAUI#1,GPU (ms),600,8.247,8.246,8.283,8.43
+GridNone.YAUI#1,SetPass Calls Count,600,2.995,3,3,3
+GridNone.YAUI#1,Vertices Count,600,58944.595,59043,59043,59043
+GridNone.YAUI#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.008,0.008,0.01,0.057
+GridNone.uGUI#1,CPU Main (ms),600,3.206,3.205,3.67,4.284
+GridNone.uGUI#1,CPU Main Present Wait (ms),600,7.936,7.927,9.067,13.463
+GridNone.uGUI#1,CPU Render (ms),600,1.268,1.323,1.487,1.948
+GridNone.uGUI#1,GPU (ms),600,7.833,7.845,7.903,7.986
+GridNone.uGUI#1,SetPass Calls Count,600,62,62,62,124
+GridNone.uGUI#1,Vertices Count,600,60603,60603,60603,121206
+GridNone.uGUI#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.205,0.195,0.271,0.365
+GridNone.UITK#1,CPU Main (ms),600,3.014,2.957,3.318,5.258
+GridNone.UITK#1,CPU Main Present Wait (ms),600,8.105,8.136,8.863,9.504
+GridNone.UITK#1,CPU Render (ms),600,0.651,0.643,0.749,0.995
+GridNone.UITK#1,GPU (ms),600,9.814,9.808,9.863,9.988
+GridNone.UITK#1,SetPass Calls Count,600,2.995,3,3,3
+GridNone.UITK#1,Vertices Count,600,158737.995,159003,159003,159003
+GridNone.UITK#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.02,0.019,0.023,0.097
+GridColor10.YAUI#1,CPU Main (ms),600,3.047,3.106,3.298,4.761
+GridColor10.YAUI#1,CPU Main Present Wait (ms),600,8.066,8.07,8.853,9.717
+GridColor10.YAUI#1,CPU Render (ms),600,0.706,0.687,0.806,1.246
+GridColor10.YAUI#1,GPU (ms),600,7.543,6.586,10.08,10.229
+GridColor10.YAUI#1,SetPass Calls Count,600,2.995,3,3,3
+GridColor10.YAUI#1,Vertices Count,600,58944.595,59043,59043,59043
+GridColor10.YAUI#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.025,0.025,0.03,0.086
+GridColor10.uGUI#1,CPU Main (ms),600,5.515,5.49,5.802,6.492
+GridColor10.uGUI#1,CPU Main Present Wait (ms),600,5.625,5.619,6.539,7.365
+GridColor10.uGUI#1,CPU Render (ms),600,0.78,0.768,0.881,1.062
+GridColor10.uGUI#1,GPU (ms),600,8.582,8.578,8.654,8.762
+GridColor10.uGUI#1,SetPass Calls Count,600,22,22,22,22
+GridColor10.uGUI#1,Vertices Count,600,60603,60603,60603,60603
+GridColor10.uGUI#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,3.093,3.099,3.241,3.785
+GridColor10.UITK#1,CPU Main (ms),600,3.725,3.765,3.977,4.604
+GridColor10.UITK#1,CPU Main Present Wait (ms),600,7.394,7.405,8.13,9.14
+GridColor10.UITK#1,CPU Render (ms),600,0.612,0.613,0.719,0.93
+GridColor10.UITK#1,GPU (ms),600,9.822,9.817,9.859,9.995
+GridColor10.UITK#1,SetPass Calls Count,600,2.995,3,3,3
+GridColor10.UITK#1,Vertices Count,600,158737.995,159003,159003,159003
+GridColor10.UITK#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.019,0.019,0.022,0.087
+GridMove10.YAUI#1,CPU Main (ms),600,2.885,2.897,3.069,3.997
+GridMove10.YAUI#1,CPU Main Present Wait (ms),600,8.251,8.249,9.118,9.987
+GridMove10.YAUI#1,CPU Render (ms),600,0.762,0.755,0.871,1.123
+GridMove10.YAUI#1,GPU (ms),600,8.575,8.889,10.027,10.113
+GridMove10.YAUI#1,SetPass Calls Count,600,3,3,3,3
+GridMove10.YAUI#1,Vertices Count,600,59043,59043,59043,59043
+GridMove10.YAUI#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.023,0.022,0.028,0.068
+GridMove10.uGUI#1,CPU Main (ms),600,3.388,3.277,4.252,5.2
+GridMove10.uGUI#1,CPU Main Present Wait (ms),600,7.748,7.808,8.578,9.841
+GridMove10.uGUI#1,CPU Render (ms),600,0.661,0.642,0.774,1.71
+GridMove10.uGUI#1,GPU (ms),600,8.405,8.399,8.453,8.592
+GridMove10.uGUI#1,SetPass Calls Count,600,22,22,22,22
+GridMove10.uGUI#1,Vertices Count,600,60603,60603,60603,60603
+GridMove10.uGUI#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.922,0.883,1.163,1.989
+GridMove10.UITK#1,CPU Main (ms),600,4.276,4.224,4.632,5.581
+GridMove10.UITK#1,CPU Main Present Wait (ms),600,6.863,6.838,7.747,8.455
+GridMove10.UITK#1,CPU Render (ms),600,0.666,0.656,0.839,1.058
+GridMove10.UITK#1,GPU (ms),600,9.919,9.918,9.976,10.116
+GridMove10.UITK#1,SetPass Calls Count,600,3,3,3,3
+GridMove10.UITK#1,Vertices Count,600,159003,159003,159003,159003
+GridMove10.UITK#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.018,0.017,0.022,0.07
+GridText10.YAUI#1,CPU Main (ms),600,4.303,3.846,6.492,9.354
+GridText10.YAUI#1,CPU Main Present Wait (ms),600,6.838,7.173,8.336,10.783
+GridText10.YAUI#1,CPU Render (ms),600,0.636,0.628,0.742,1.007
+GridText10.YAUI#1,GPU (ms),600,8.788,8.782,8.864,8.922
+GridText10.YAUI#1,SetPass Calls Count,600,3,3,3,3
+GridText10.YAUI#1,Vertices Count,600,59043,59043,59043,59043
+GridText10.YAUI#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.016,0.015,0.02,0.054
+GridText10.uGUI#1,CPU Main (ms),600,7.393,7.388,8.146,9.059
+GridText10.uGUI#1,CPU Main Present Wait (ms),600,3.747,3.742,4.708,5.526
+GridText10.uGUI#1,CPU Render (ms),600,0.743,0.749,0.882,1.092
+GridText10.uGUI#1,GPU (ms),600,8.509,8.515,8.574,8.807
+GridText10.uGUI#1,SetPass Calls Count,600,22,22,22,22
+GridText10.uGUI#1,Vertices Count,600,60807,60807,60807,60807
+GridText10.uGUI#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,4.615,4.613,4.984,5.456
+GridText10.UITK#1,CPU Main (ms),600,15.157,15.122,15.585,17.222
+GridText10.UITK#1,CPU Main Present Wait (ms),600,3.521,3.556,4.665,6.054
+GridText10.UITK#1,CPU Render (ms),600,1.839,1.832,2.13,3.872
+GridText10.UITK#1,GPU (ms),600,18.678,18.677,18.838,18.942
+GridText10.UITK#1,SetPass Calls Count,600,3,3,3,3
+GridText10.UITK#1,Vertices Count,600,159383.053,159391,159447,159447
+GridText10.UITK#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.014,0.013,0.017,0.042
+GridHitTest.YAUI#1,CPU Main (ms),600,2.761,2.78,2.937,5.565
+GridHitTest.YAUI#1,CPU Main Present Wait (ms),600,8.35,8.33,9.188,10.029
+GridHitTest.YAUI#1,CPU Render (ms),600,0.556,0.542,0.627,0.978
+GridHitTest.YAUI#1,GPU (ms),600,9.367,9.728,9.865,12.392
+GridHitTest.YAUI#1,SetPass Calls Count,600,2.995,3,3,3
+GridHitTest.YAUI#1,Vertices Count,600,58944.595,59043,59043,59043
+GridHitTest.YAUI#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.026,0.025,0.03,0.099
+GridHitTest.uGUI#1,CPU Main (ms),600,8.389,8.398,8.891,9.493
+GridHitTest.uGUI#1,CPU Main Present Wait (ms),600,2.758,2.722,4.026,9.308
+GridHitTest.uGUI#1,CPU Render (ms),600,1.173,1.15,1.468,1.629
+GridHitTest.uGUI#1,GPU (ms),600,8.545,8.516,8.657,8.796
+GridHitTest.uGUI#1,SetPass Calls Count,600,62,62,62,62
+GridHitTest.uGUI#1,Vertices Count,600,60603,60603,60603,60603
+GridHitTest.uGUI#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.1,0.096,0.127,0.288
+GridHitTest.UITK#1,CPU Main (ms),600,5.44,5.442,6.066,7.342
+GridHitTest.UITK#1,CPU Main Present Wait (ms),600,5.681,5.693,6.561,7.834
+GridHitTest.UITK#1,CPU Render (ms),600,0.629,0.624,0.711,1.074
+GridHitTest.UITK#1,GPU (ms),600,9.814,9.807,9.881,10.113
+GridHitTest.UITK#1,SetPass Calls Count,600,2.995,3,3,3
+GridHitTest.UITK#1,Vertices Count,600,158737.995,159003,159003,159003
+GridHitTest.UITK#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.019,0.019,0.022,0.079
+ListScroll.YAUI#1,CPU Main (ms),600,3.123,3.152,3.292,4.849
+ListScroll.YAUI#1,CPU Main Present Wait (ms),600,7.985,7.947,8.804,10.949
+ListScroll.YAUI#1,CPU Render (ms),600,0.622,0.613,0.692,2.138
+ListScroll.YAUI#1,GPU (ms),600,7.267,7.266,7.308,7.709
+ListScroll.YAUI#1,SetPass Calls Count,600,3,3,3,3
+ListScroll.YAUI#1,Vertices Count,600,47043,47043,47043,47043
+ListScroll.YAUI#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.026,0.025,0.03,0.159
+ListScroll.uGUI#1,CPU Main (ms),600,7.133,7.156,7.505,8.222
+ListScroll.uGUI#1,CPU Main Present Wait (ms),600,3.992,3.991,4.837,7.117
+ListScroll.uGUI#1,CPU Render (ms),600,0.49,0.489,0.565,2.36
+ListScroll.uGUI#1,GPU (ms),600,5.7,5.727,5.742,5.878
+ListScroll.uGUI#1,SetPass Calls Count,600,3.993,4,4,4
+ListScroll.uGUI#1,Vertices Count,600,6507.942,6527,6575,6579
+ListScroll.uGUI#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,5.209,5.227,5.499,5.979
+ListScroll.UITK#1,CPU Main (ms),600,3.956,3.965,4.174,5.041
+ListScroll.UITK#1,CPU Main Present Wait (ms),600,7.175,7.134,8.04,9.398
+ListScroll.UITK#1,CPU Render (ms),600,0.889,0.891,0.994,1.157
+ListScroll.UITK#1,GPU (ms),600,8.694,8.699,8.773,8.944
+ListScroll.UITK#1,SetPass Calls Count,600,3,3,3,3
+ListScroll.UITK#1,Vertices Count,600,86415,86415,86415,86415
+ListScroll.UITK#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.025,0.022,0.035,0.104
+ListResize10.YAUI#1,CPU Main (ms),600,13.486,13.85,16.393,19.806
+ListResize10.YAUI#1,CPU Main Present Wait (ms),600,0.433,0.396,0.911,5.687
+ListResize10.YAUI#1,CPU Render (ms),600,0.685,0.664,0.817,1.243
+ListResize10.YAUI#1,GPU (ms),600,7.426,7.442,7.462,7.491
+ListResize10.YAUI#1,SetPass Calls Count,600,3,3,3,3
+ListResize10.YAUI#1,Vertices Count,600,55443,55443,55443,55443
+ListResize10.YAUI#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.016,0.014,0.026,0.081
+ListResize10.uGUI#1,CPU Main (ms),600,76.695,76.69,77.065,77.365
+ListResize10.uGUI#1,CPU Main Present Wait (ms),600,0.019,0.02,0.021,0.06
+ListResize10.uGUI#1,CPU Render (ms),600,0.642,0.617,0.82,1.352
+ListResize10.uGUI#1,GPU (ms),600,5.728,5.726,5.738,5.874
+ListResize10.uGUI#1,SetPass Calls Count,600,4,4,4,4
+ListResize10.uGUI#1,Vertices Count,600,6875,6875,6875,6875
+ListResize10.uGUI#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,75.042,75.042,75.375,75.675
+ListResize10.UITK#1,CPU Main (ms),600,8.999,8.916,9.936,11.968
+ListResize10.UITK#1,CPU Main Present Wait (ms),600,2.127,2.179,3.206,4.817
+ListResize10.UITK#1,CPU Render (ms),600,0.518,0.462,0.712,0.879
+ListResize10.UITK#1,GPU (ms),600,8.051,8.214,8.348,8.459
+ListResize10.UITK#1,SetPass Calls Count,600,2.995,3,3,3
+ListResize10.UITK#1,Vertices Count,600,90807.402,90959,90959,90959
+ListResize10.UITK#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.014,0.013,0.017,0.062
+Empty+Ballast#1,CPU Main (ms),600,2.104,2.086,2.361,2.927
+Empty+Ballast#1,CPU Main Present Wait (ms),600,25.162,25.184,25.888,27.415
+Empty+Ballast#1,CPU Render (ms),600,0.594,0.572,0.707,0.963
+Empty+Ballast#1,GPU (ms),600,27.271,27.271,27.274,27.422
+Empty+Ballast#1,SetPass Calls Count,600,3,3,3,6
+Empty+Ballast#1,Vertices Count,600,5046,5046,5046,10092
+Empty+Ballast#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.02,0.02,0.022,0.097
+GridNone+Ballast.YAUI#1,CPU Main (ms),600,2.341,2.296,2.641,3.907
+GridNone+Ballast.YAUI#1,CPU Main Present Wait (ms),600,27.904,27.955,28.622,54.68
+GridNone+Ballast.YAUI#1,CPU Render (ms),600,0.639,0.617,0.755,1.164
+GridNone+Ballast.YAUI#1,GPU (ms),600,30.199,30.248,30.263,30.368
+GridNone+Ballast.YAUI#1,SetPass Calls Count,600,4,4,4,4
+GridNone+Ballast.YAUI#1,Vertices Count,600,59046,59046,59046,59046
+GridNone+Ballast.YAUI#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.02,0.02,0.023,0.063
+GridNone+Ballast.uGUI#1,CPU Main (ms),600,3.047,3.015,3.372,4.541
+GridNone+Ballast.uGUI#1,CPU Main Present Wait (ms),600,27.201,27.235,27.843,30.576
+GridNone+Ballast.uGUI#1,CPU Render (ms),600,1.261,1.242,1.4,2.183
+GridNone+Ballast.uGUI#1,GPU (ms),600,30.25,30.249,30.271,30.4
+GridNone+Ballast.uGUI#1,SetPass Calls Count,600,63,63,63,126
+GridNone+Ballast.uGUI#1,Vertices Count,600,60606,60606,60606,121212
+GridNone+Ballast.uGUI#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.191,0.187,0.226,0.316
+GridNone+Ballast.UITK#1,CPU Main (ms),600,3.308,3.293,3.428,4.207
+GridNone+Ballast.UITK#1,CPU Main Present Wait (ms),600,32.62,32.57,65.583,66.459
+GridNone+Ballast.UITK#1,CPU Render (ms),600,0.747,0.734,0.86,1.112
+GridNone+Ballast.UITK#1,GPU (ms),600,31.69,35.94,35.976,36.028
+GridNone+Ballast.UITK#1,SetPass Calls Count,600,3.993,4,4,4
+GridNone+Ballast.UITK#1,Vertices Count,600,158740.99,159006,159006,159006
+GridNone+Ballast.UITK#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.02,0.02,0.022,0.068
+ListScroll+Ballast.YAUI#1,CPU Main (ms),600,2.652,2.626,2.763,3.908
+ListScroll+Ballast.YAUI#1,CPU Main Present Wait (ms),600,26.833,26.866,27.542,28.169
+ListScroll+Ballast.YAUI#1,CPU Render (ms),600,0.756,0.751,0.847,1.426
+ListScroll+Ballast.YAUI#1,GPU (ms),600,29.489,29.49,29.503,29.525
+ListScroll+Ballast.YAUI#1,SetPass Calls Count,600,4,4,4,4
+ListScroll+Ballast.YAUI#1,Vertices Count,600,47046,47046,47046,47046
+ListScroll+Ballast.YAUI#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.02,0.02,0.021,0.081
+ListScroll+Ballast.uGUI#1,CPU Main (ms),600,10.445,10.006,11.659,12.741
+ListScroll+Ballast.uGUI#1,CPU Main Present Wait (ms),600,18.256,18.386,19.733,25.286
+ListScroll+Ballast.uGUI#1,CPU Render (ms),600,0.738,0.691,1.03,1.74
+ListScroll+Ballast.uGUI#1,GPU (ms),600,28.704,28.704,28.718,28.878
+ListScroll+Ballast.uGUI#1,SetPass Calls Count,600,5,5,5,5
+ListScroll+Ballast.uGUI#1,Vertices Count,600,6523.527,6530,6578,6582
+ListScroll+Ballast.uGUI#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,7.798,7.461,8.727,9.185
+ListScroll+Ballast.UITK#1,CPU Main (ms),600,3.386,3.311,3.769,11.963
+ListScroll+Ballast.UITK#1,CPU Main Present Wait (ms),600,26.907,26.987,27.781,55.299
+ListScroll+Ballast.UITK#1,CPU Render (ms),600,0.748,0.72,0.906,1.819
+ListScroll+Ballast.UITK#1,GPU (ms),600,29.439,30.299,30.33,30.375
+ListScroll+Ballast.UITK#1,SetPass Calls Count,600,4,4,4,8
+ListScroll+Ballast.UITK#1,Vertices Count,600,86418,86418,86418,172836
+ListScroll+Ballast.UITK#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.02,0.019,0.022,0.065
+Empty+Ballast2#1,CPU Main (ms),600,2.102,2.084,2.311,2.855
+Empty+Ballast2#1,CPU Main Present Wait (ms),600,25.163,25.176,25.949,26.487
+Empty+Ballast2#1,CPU Render (ms),600,0.593,0.571,0.698,1.11
+Empty+Ballast2#1,GPU (ms),600,27.271,27.27,27.274,27.426
+Empty+Ballast2#1,SetPass Calls Count,600,3,3,3,6
+Empty+Ballast2#1,Vertices Count,600,5046,5046,5046,10092
+Empty+Ballast2#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.02,0.02,0.022,0.077
+Empty#2,CPU Main (ms),600,2.55,2.541,2.788,3.708
+Empty#2,CPU Main Present Wait (ms),600,8.556,8.58,9.272,9.77
+Empty#2,CPU Render (ms),600,0.506,0.503,0.576,1.293
+Empty#2,GPU (ms),600,3.445,3.392,4.015,4.197
+Empty#2,SetPass Calls Count,600,1.997,2,2,2
+Empty#2,Vertices Count,600,5034.595,5043,5043,5043
+Empty#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.027,0.026,0.028,0.148
+GridNone.uGUI#2,CPU Main (ms),600,3.47,3.444,3.865,4.778
+GridNone.uGUI#2,CPU Main Present Wait (ms),600,7.666,7.628,8.704,11.278
+GridNone.uGUI#2,CPU Render (ms),600,1.368,1.381,1.541,1.783
+GridNone.uGUI#2,GPU (ms),600,8.623,8.62,8.672,8.781
+GridNone.uGUI#2,SetPass Calls Count,600,62,62,62,124
+GridNone.uGUI#2,Vertices Count,600,60603,60603,60603,121206
+GridNone.uGUI#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.212,0.196,0.27,0.388
+GridNone.UITK#2,CPU Main (ms),600,3.381,3.38,3.501,4.176
+GridNone.UITK#2,CPU Main Present Wait (ms),600,7.755,7.758,8.617,8.996
+GridNone.UITK#2,CPU Render (ms),600,0.736,0.718,0.891,0.99
+GridNone.UITK#2,GPU (ms),600,9.876,9.87,9.943,10.079
+GridNone.UITK#2,SetPass Calls Count,600,3,3,3,3
+GridNone.UITK#2,Vertices Count,600,159003,159003,159003,159003
+GridNone.UITK#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.02,0.019,0.023,0.078
+GridNone.YAUI#2,CPU Main (ms),600,2.657,2.656,2.805,3.684
+GridNone.YAUI#2,CPU Main Present Wait (ms),600,8.452,8.448,9.241,10.416
+GridNone.YAUI#2,CPU Render (ms),600,0.563,0.548,0.634,0.855
+GridNone.YAUI#2,GPU (ms),600,9.694,9.702,9.795,9.946
+GridNone.YAUI#2,SetPass Calls Count,600,2.995,3,3,3
+GridNone.YAUI#2,Vertices Count,600,58944.595,59043,59043,59043
+GridNone.YAUI#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.027,0.026,0.032,0.087
+GridColor10.uGUI#2,CPU Main (ms),600,5.306,5.151,6.142,6.864
+GridColor10.uGUI#2,CPU Main Present Wait (ms),600,5.819,5.896,6.626,7.226
+GridColor10.uGUI#2,CPU Render (ms),600,1.103,0.689,2.354,2.524
+GridColor10.uGUI#2,GPU (ms),600,8.344,8.308,8.429,8.514
+GridColor10.uGUI#2,SetPass Calls Count,600,21.963,22,22,22
+GridColor10.uGUI#2,Vertices Count,600,60501.995,60603,60603,60603
+GridColor10.uGUI#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,2.955,2.893,3.517,3.862
+GridColor10.UITK#2,CPU Main (ms),600,3.748,3.722,3.986,4.603
+GridColor10.UITK#2,CPU Main Present Wait (ms),600,7.391,7.375,8.127,8.697
+GridColor10.UITK#2,CPU Render (ms),600,0.655,0.643,0.832,0.997
+GridColor10.UITK#2,GPU (ms),600,9.902,9.899,9.958,10.05
+GridColor10.UITK#2,SetPass Calls Count,600,3,3,3,3
+GridColor10.UITK#2,Vertices Count,600,159003,159003,159003,159003
+GridColor10.UITK#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.018,0.017,0.022,0.081
+GridColor10.YAUI#2,CPU Main (ms),600,2.944,2.944,3.133,3.968
+GridColor10.YAUI#2,CPU Main Present Wait (ms),600,8.192,8.159,9.106,10.464
+GridColor10.YAUI#2,CPU Render (ms),600,0.823,0.815,0.96,1.226
+GridColor10.YAUI#2,GPU (ms),600,8.904,8.91,8.964,9.148
+GridColor10.YAUI#2,SetPass Calls Count,600,3,3,3,3
+GridColor10.YAUI#2,Vertices Count,600,59043,59043,59043,59043
+GridColor10.YAUI#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.023,0.022,0.028,0.101
+GridMove10.uGUI#2,CPU Main (ms),600,4.625,4.667,4.892,5.944
+GridMove10.uGUI#2,CPU Main Present Wait (ms),600,6.513,6.506,7.548,8.849
+GridMove10.uGUI#2,CPU Render (ms),600,0.833,0.822,0.929,1.117
+GridMove10.uGUI#2,GPU (ms),600,8.612,8.614,8.666,8.798
+GridMove10.uGUI#2,SetPass Calls Count,600,22,22,22,22
+GridMove10.uGUI#2,Vertices Count,600,60603,60603,60603,60603
+GridMove10.uGUI#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,1.424,1.418,1.589,2.101
+GridMove10.UITK#2,CPU Main (ms),600,4.286,4.231,4.736,6.149
+GridMove10.UITK#2,CPU Main Present Wait (ms),600,6.854,6.877,7.718,8.646
+GridMove10.UITK#2,CPU Render (ms),600,0.657,0.644,0.838,1.02
+GridMove10.UITK#2,GPU (ms),600,9.912,9.906,9.97,10.24
+GridMove10.UITK#2,SetPass Calls Count,600,3,3,3,3
+GridMove10.UITK#2,Vertices Count,600,159003,159003,159003,159003
+GridMove10.UITK#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.017,0.017,0.021,0.11
+GridMove10.YAUI#2,CPU Main (ms),600,2.966,2.966,3.107,3.775
+GridMove10.YAUI#2,CPU Main Present Wait (ms),600,8.171,8.139,9.043,9.661
+GridMove10.YAUI#2,CPU Render (ms),600,0.785,0.774,0.895,1.062
+GridMove10.YAUI#2,GPU (ms),600,8.848,8.854,8.882,9.011
+GridMove10.YAUI#2,SetPass Calls Count,600,3,3,3,3
+GridMove10.YAUI#2,Vertices Count,600,59043,59043,59043,59043
+GridMove10.YAUI#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.024,0.022,0.028,0.107
+GridText10.uGUI#2,CPU Main (ms),600,7.316,7.265,8,8.823
+GridText10.uGUI#2,CPU Main Present Wait (ms),600,3.828,3.923,5.948,7.81
+GridText10.uGUI#2,CPU Render (ms),600,0.688,0.683,0.893,1.274
+GridText10.uGUI#2,GPU (ms),600,8.486,8.483,8.535,8.697
+GridText10.uGUI#2,SetPass Calls Count,600,22,22,22,22
+GridText10.uGUI#2,Vertices Count,600,60807,60807,60807,60807
+GridText10.uGUI#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,4.799,4.768,5.219,6.213
+GridText10.UITK#2,CPU Main (ms),600,15.659,15.633,16.062,17.259
+GridText10.UITK#2,CPU Main Present Wait (ms),600,3.02,3.027,4.419,19.814
+GridText10.UITK#2,CPU Render (ms),600,1.835,1.817,2.094,3.113
+GridText10.UITK#2,GPU (ms),600,18.551,18.675,18.814,19.254
+GridText10.UITK#2,SetPass Calls Count,600,3,3,3,3
+GridText10.UITK#2,Vertices Count,600,159447,159447,159447,159447
+GridText10.UITK#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.014,0.013,0.016,0.041
+GridText10.YAUI#2,CPU Main (ms),600,7.825,7.519,11.209,17.724
+GridText10.YAUI#2,CPU Main Present Wait (ms),600,3.304,3.485,5.144,7.648
+GridText10.YAUI#2,CPU Render (ms),600,0.609,0.575,0.798,1.23
+GridText10.YAUI#2,GPU (ms),600,6.949,6.535,9.333,9.575
+GridText10.YAUI#2,SetPass Calls Count,600,2.995,3,3,3
+GridText10.YAUI#2,Vertices Count,600,58944.595,59043,59043,59043
+GridText10.YAUI#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.017,0.016,0.022,0.042
+GridHitTest.uGUI#2,CPU Main (ms),600,8.484,8.501,8.729,9.893
+GridHitTest.uGUI#2,CPU Main Present Wait (ms),600,2.658,2.64,3.638,4.571
+GridHitTest.uGUI#2,CPU Render (ms),600,1.114,1.106,1.285,1.455
+GridHitTest.uGUI#2,GPU (ms),600,8.492,8.492,8.529,8.672
+GridHitTest.uGUI#2,SetPass Calls Count,600,61.897,62,62,62
+GridHitTest.uGUI#2,Vertices Count,600,60501.995,60603,60603,60603
+GridHitTest.uGUI#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.099,0.096,0.123,0.224
+GridHitTest.UITK#2,CPU Main (ms),600,5.079,5.039,5.719,7.226
+GridHitTest.UITK#2,CPU Main Present Wait (ms),600,6.061,6.071,7.028,8.389
+GridHitTest.UITK#2,CPU Render (ms),600,0.645,0.635,0.834,1.127
+GridHitTest.UITK#2,GPU (ms),600,9.914,9.913,9.981,10.176
+GridHitTest.UITK#2,SetPass Calls Count,600,3,3,3,3
+GridHitTest.UITK#2,Vertices Count,600,159003,159003,159003,159003
+GridHitTest.UITK#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.017,0.016,0.02,0.076
+GridHitTest.YAUI#2,CPU Main (ms),600,2.78,2.794,2.922,3.933
+GridHitTest.YAUI#2,CPU Main Present Wait (ms),600,8.33,8.325,9.156,9.821
+GridHitTest.YAUI#2,CPU Render (ms),600,0.559,0.544,0.642,0.748
+GridHitTest.YAUI#2,GPU (ms),600,9.239,9.549,9.661,12.594
+GridHitTest.YAUI#2,SetPass Calls Count,600,2.995,3,3,3
+GridHitTest.YAUI#2,Vertices Count,600,58944.595,59043,59043,59043
+GridHitTest.YAUI#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.027,0.025,0.031,0.092
+ListScroll.uGUI#2,CPU Main (ms),600,7.252,7.259,7.653,9.292
+ListScroll.uGUI#2,CPU Main Present Wait (ms),600,3.874,3.867,4.796,7.465
+ListScroll.uGUI#2,CPU Render (ms),600,0.486,0.491,0.546,0.667
+ListScroll.uGUI#2,GPU (ms),600,5.708,5.726,5.739,5.803
+ListScroll.uGUI#2,SetPass Calls Count,600,3.993,4,4,4
+ListScroll.uGUI#2,Vertices Count,600,6509.922,6527,6575,6579
+ListScroll.uGUI#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,5.325,5.347,5.631,6.571
+ListScroll.UITK#2,CPU Main (ms),600,3.458,3.421,3.795,4.179
+ListScroll.UITK#2,CPU Main Present Wait (ms),600,7.657,7.661,8.41,9.987
+ListScroll.UITK#2,CPU Render (ms),600,0.651,0.643,0.728,1.134
+ListScroll.UITK#2,GPU (ms),600,9.301,9.432,9.516,11.025
+ListScroll.UITK#2,SetPass Calls Count,600,2.995,3,3,3
+ListScroll.UITK#2,Vertices Count,600,86270.975,86415,86415,86415
+ListScroll.UITK#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.022,0.021,0.025,0.065
+ListScroll.YAUI#2,CPU Main (ms),600,3.178,3.18,3.315,4.211
+ListScroll.YAUI#2,CPU Main Present Wait (ms),600,7.93,7.923,8.702,9.516
+ListScroll.YAUI#2,CPU Render (ms),600,0.63,0.614,0.706,0.919
+ListScroll.YAUI#2,GPU (ms),600,7.277,7.276,7.307,7.522
+ListScroll.YAUI#2,SetPass Calls Count,600,2.995,3,3,3
+ListScroll.YAUI#2,Vertices Count,600,46964.595,47043,47043,47043
+ListScroll.YAUI#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.027,0.026,0.03,0.161
+ListResize10.uGUI#2,CPU Main (ms),600,81.155,81.172,81.48,82.343
+ListResize10.uGUI#2,CPU Main Present Wait (ms),600,0.017,0.015,0.022,0.045
+ListResize10.uGUI#2,CPU Render (ms),600,0.722,0.686,0.873,1.374
+ListResize10.uGUI#2,GPU (ms),600,5.731,5.729,5.738,5.894
+ListResize10.uGUI#2,SetPass Calls Count,600,4,4,4,4
+ListResize10.uGUI#2,Vertices Count,600,6875,6875,6875,6875
+ListResize10.uGUI#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,79.348,79.364,79.668,80.59
+ListResize10.UITK#2,CPU Main (ms),600,9.617,9.524,10.769,11.792
+ListResize10.UITK#2,CPU Main Present Wait (ms),600,1.511,1.53,2.537,4.648
+ListResize10.UITK#2,CPU Render (ms),600,0.58,0.517,0.758,0.925
+ListResize10.UITK#2,GPU (ms),600,7.711,8.226,8.397,8.493
+ListResize10.UITK#2,SetPass Calls Count,600,2.995,3,3,3
+ListResize10.UITK#2,Vertices Count,600,90807.402,90959,90959,90959
+ListResize10.UITK#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.014,0.013,0.017,0.061
+ListResize10.YAUI#2,CPU Main (ms),600,15.076,14.923,18.085,20.848
+ListResize10.YAUI#2,CPU Main Present Wait (ms),600,0.454,0.46,0.913,7.537
+ListResize10.YAUI#2,CPU Render (ms),600,0.738,0.717,0.9,1.402
+ListResize10.YAUI#2,GPU (ms),600,7.477,7.486,7.518,7.546
+ListResize10.YAUI#2,SetPass Calls Count,600,3,3,3,3
+ListResize10.YAUI#2,Vertices Count,600,55443,55443,55443,55443
+ListResize10.YAUI#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.017,0.015,0.03,0.077
+Empty+Ballast#2,CPU Main (ms),600,2.101,2.079,2.318,3.283
+Empty+Ballast#2,CPU Main Present Wait (ms),600,25.163,25.184,25.856,27.026
+Empty+Ballast#2,CPU Render (ms),600,0.595,0.572,0.709,0.964
+Empty+Ballast#2,GPU (ms),600,27.271,27.271,27.274,27.289
+Empty+Ballast#2,SetPass Calls Count,600,3,3,3,3
+Empty+Ballast#2,Vertices Count,600,5046,5046,5046,5046
+Empty+Ballast#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.02,0.02,0.022,0.061
+GridNone+Ballast.uGUI#2,CPU Main (ms),600,3.066,3.02,3.391,4.405
+GridNone+Ballast.uGUI#2,CPU Main Present Wait (ms),600,27.183,27.228,27.869,53.159
+GridNone+Ballast.uGUI#2,CPU Render (ms),600,1.269,1.244,1.439,2.135
+GridNone+Ballast.uGUI#2,GPU (ms),600,30.201,30.251,30.272,30.306
+GridNone+Ballast.uGUI#2,SetPass Calls Count,600,63,63,63,63
+GridNone+Ballast.uGUI#2,Vertices Count,600,60606,60606,60606,60606
+GridNone+Ballast.uGUI#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.194,0.187,0.229,0.287
+GridNone+Ballast.UITK#2,CPU Main (ms),600,3.269,3.187,3.746,4.122
+GridNone+Ballast.UITK#2,CPU Main Present Wait (ms),600,32.679,32.732,33.763,66.232
+GridNone+Ballast.UITK#2,CPU Render (ms),600,0.81,0.785,1.011,1.277
+GridNone+Ballast.UITK#2,GPU (ms),600,34.394,35.95,35.993,36.033
+GridNone+Ballast.UITK#2,SetPass Calls Count,600,4,4,4,8
+GridNone+Ballast.UITK#2,Vertices Count,600,159006,159006,159006,318012
+GridNone+Ballast.UITK#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.02,0.019,0.024,0.084
+GridNone+Ballast.YAUI#2,CPU Main (ms),600,2.331,2.29,2.615,4.041
+GridNone+Ballast.YAUI#2,CPU Main Present Wait (ms),600,27.913,27.942,28.579,29.828
+GridNone+Ballast.YAUI#2,CPU Render (ms),600,0.647,0.618,0.816,1.172
+GridNone+Ballast.YAUI#2,GPU (ms),600,30.249,30.248,30.261,30.297
+GridNone+Ballast.YAUI#2,SetPass Calls Count,600,4,4,4,8
+GridNone+Ballast.YAUI#2,Vertices Count,600,59046,59046,59046,118092
+GridNone+Ballast.YAUI#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.021,0.02,0.023,0.109
+ListScroll+Ballast.uGUI#2,CPU Main (ms),600,10.458,10.03,11.811,13.931
+ListScroll+Ballast.uGUI#2,CPU Main Present Wait (ms),600,18.244,18.482,19.675,20.67
+ListScroll+Ballast.uGUI#2,CPU Render (ms),600,0.762,0.723,1.003,1.777
+ListScroll+Ballast.uGUI#2,GPU (ms),600,28.704,28.704,28.718,28.732
+ListScroll+Ballast.uGUI#2,SetPass Calls Count,600,5,5,5,10
+ListScroll+Ballast.uGUI#2,Vertices Count,600,6521.373,6530,6578,13144
+ListScroll+Ballast.uGUI#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,7.772,7.407,8.853,10.409
+ListScroll+Ballast.UITK#2,CPU Main (ms),600,3.505,3.45,3.892,5.291
+ListScroll+Ballast.UITK#2,CPU Main Present Wait (ms),600,26.78,26.644,54.5,55.238
+ListScroll+Ballast.UITK#2,CPU Render (ms),600,0.718,0.702,0.832,1.569
+ListScroll+Ballast.UITK#2,GPU (ms),600,25.043,30.29,30.327,30.39
+ListScroll+Ballast.UITK#2,SetPass Calls Count,600,3.993,4,4,4
+ListScroll+Ballast.UITK#2,Vertices Count,600,86273.97,86418,86418,86418
+ListScroll+Ballast.UITK#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.021,0.02,0.022,0.069
+ListScroll+Ballast.YAUI#2,CPU Main (ms),600,2.7,2.642,3.057,4.554
+ListScroll+Ballast.YAUI#2,CPU Main Present Wait (ms),600,26.785,26.82,27.55,51.824
+ListScroll+Ballast.YAUI#2,CPU Render (ms),600,0.77,0.752,0.969,1.169
+ListScroll+Ballast.YAUI#2,GPU (ms),600,29.441,29.49,29.503,29.524
+ListScroll+Ballast.YAUI#2,SetPass Calls Count,600,4,4,4,8
+ListScroll+Ballast.YAUI#2,Vertices Count,600,47046,47046,47046,94092
+ListScroll+Ballast.YAUI#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.021,0.02,0.023,0.087
+Empty+Ballast2#2,CPU Main (ms),600,2.148,2.098,2.465,4.835
+Empty+Ballast2#2,CPU Main Present Wait (ms),600,25.117,25.163,25.79,47.578
+Empty+Ballast2#2,CPU Render (ms),600,0.615,0.579,0.787,1.245
+Empty+Ballast2#2,GPU (ms),600,27.226,27.271,27.273,27.428
+Empty+Ballast2#2,SetPass Calls Count,600,3,3,3,3
+Empty+Ballast2#2,Vertices Count,600,5046,5046,5046,5046
+Empty+Ballast2#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.021,0.02,0.024,0.131
+Empty#3,CPU Main (ms),600,2.518,2.512,2.712,3.741
+Empty#3,CPU Main Present Wait (ms),600,8.588,8.584,9.395,10.89
+Empty#3,CPU Render (ms),600,0.502,0.503,0.57,0.735
+Empty#3,GPU (ms),600,3.312,3.3,3.734,3.872
+Empty#3,SetPass Calls Count,600,1.997,2,2,2
+Empty#3,Vertices Count,600,5034.595,5043,5043,5043
+Empty#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.026,0.026,0.029,0.068
+GridNone.UITK#3,CPU Main (ms),600,3.412,3.399,3.56,4.615
+GridNone.UITK#3,CPU Main Present Wait (ms),600,7.726,7.734,8.571,9.084
+GridNone.UITK#3,CPU Render (ms),600,0.742,0.729,0.883,1.103
+GridNone.UITK#3,GPU (ms),600,9.874,9.866,9.935,10.068
+GridNone.UITK#3,SetPass Calls Count,600,3,3,3,3
+GridNone.UITK#3,Vertices Count,600,159003,159003,159003,159003
+GridNone.UITK#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.02,0.019,0.023,0.111
+GridNone.YAUI#3,CPU Main (ms),600,2.631,2.587,2.808,32.75
+GridNone.YAUI#3,CPU Main Present Wait (ms),600,8.539,8.529,9.444,11.814
+GridNone.YAUI#3,CPU Render (ms),600,0.636,0.639,0.751,1.068
+GridNone.YAUI#3,GPU (ms),600,8.762,8.792,9.577,9.731
+GridNone.YAUI#3,SetPass Calls Count,600,3,3,3,3
+GridNone.YAUI#3,Vertices Count,600,59043,59043,59043,59043
+GridNone.YAUI#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.023,0.022,0.028,0.078
+GridNone.uGUI#3,CPU Main (ms),600,3.229,3.232,3.55,4.886
+GridNone.uGUI#3,CPU Main Present Wait (ms),600,7.911,7.86,8.874,10.279
+GridNone.uGUI#3,CPU Render (ms),600,1.097,1.093,1.271,1.739
+GridNone.uGUI#3,GPU (ms),600,8.606,8.605,8.668,8.778
+GridNone.uGUI#3,SetPass Calls Count,600,62,62,62,62
+GridNone.uGUI#3,Vertices Count,600,60603,60603,60603,60603
+GridNone.uGUI#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.185,0.18,0.237,0.305
+GridColor10.UITK#3,CPU Main (ms),600,3.797,3.804,4.029,4.592
+GridColor10.UITK#3,CPU Main Present Wait (ms),600,7.324,7.312,8.045,9.264
+GridColor10.UITK#3,CPU Render (ms),600,0.608,0.602,0.705,0.794
+GridColor10.UITK#3,GPU (ms),600,9.821,9.817,9.863,10.011
+GridColor10.UITK#3,SetPass Calls Count,600,2.995,3,3,3
+GridColor10.UITK#3,Vertices Count,600,158737.995,159003,159003,159003
+GridColor10.UITK#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.019,0.019,0.022,0.041
+GridColor10.YAUI#3,CPU Main (ms),600,3.055,3.044,3.236,4.057
+GridColor10.YAUI#3,CPU Main Present Wait (ms),600,8.085,8.066,8.982,9.713
+GridColor10.YAUI#3,CPU Render (ms),600,0.825,0.806,0.962,1.173
+GridColor10.YAUI#3,GPU (ms),600,8.912,8.913,8.951,9.027
+GridColor10.YAUI#3,SetPass Calls Count,600,3,3,3,3
+GridColor10.YAUI#3,Vertices Count,600,59043,59043,59043,59043
+GridColor10.YAUI#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.023,0.022,0.028,0.09
+GridColor10.uGUI#3,CPU Main (ms),600,5.774,5.906,6.483,7.381
+GridColor10.uGUI#3,CPU Main Present Wait (ms),600,5.366,5.35,6.427,7.376
+GridColor10.uGUI#3,CPU Render (ms),600,0.788,0.786,0.919,3.466
+GridColor10.uGUI#3,GPU (ms),600,8.403,8.398,8.459,8.578
+GridColor10.uGUI#3,SetPass Calls Count,600,22,22,22,22
+GridColor10.uGUI#3,Vertices Count,600,60603,60603,60603,60603
+GridColor10.uGUI#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,3.277,3.384,3.716,4.01
+GridMove10.UITK#3,CPU Main (ms),600,4.769,4.781,4.933,6.399
+GridMove10.UITK#3,CPU Main Present Wait (ms),600,6.352,6.339,7.062,7.506
+GridMove10.UITK#3,CPU Render (ms),600,0.638,0.633,0.72,0.925
+GridMove10.UITK#3,GPU (ms),600,9.821,9.817,9.859,10.067
+GridMove10.UITK#3,SetPass Calls Count,600,2.995,3,3,3
+GridMove10.UITK#3,Vertices Count,600,158737.995,159003,159003,159003
+GridMove10.UITK#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.02,0.019,0.023,0.061
+GridMove10.YAUI#3,CPU Main (ms),600,3.06,3.058,3.205,4.065
+GridMove10.YAUI#3,CPU Main Present Wait (ms),600,8.078,8.028,8.984,9.413
+GridMove10.YAUI#3,CPU Render (ms),600,0.782,0.77,0.897,1.186
+GridMove10.YAUI#3,GPU (ms),600,8.855,8.854,8.882,8.986
+GridMove10.YAUI#3,SetPass Calls Count,600,3,3,3,3
+GridMove10.YAUI#3,Vertices Count,600,59043,59043,59043,59043
+GridMove10.YAUI#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.023,0.022,0.028,0.06
+GridMove10.uGUI#3,CPU Main (ms),600,4.311,4.292,4.697,5.958
+GridMove10.uGUI#3,CPU Main Present Wait (ms),600,6.827,6.821,7.671,9.394
+GridMove10.uGUI#3,CPU Render (ms),600,0.885,0.888,0.971,1.093
+GridMove10.uGUI#3,GPU (ms),600,8.34,8.303,8.482,8.693
+GridMove10.uGUI#3,SetPass Calls Count,600,22,22,22,44
+GridMove10.uGUI#3,Vertices Count,600,60603,60603,60603,121206
+GridMove10.uGUI#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,1.392,1.397,1.503,2.048
+GridText10.UITK#3,CPU Main (ms),600,16.018,15.978,16.458,18.391
+GridText10.UITK#3,CPU Main Present Wait (ms),600,2.646,2.653,4.313,19.815
+GridText10.UITK#3,CPU Render (ms),600,1.83,1.82,2.102,2.238
+GridText10.UITK#3,GPU (ms),600,18.495,18.64,18.791,19.293
+GridText10.UITK#3,SetPass Calls Count,600,3,3,3,3
+GridText10.UITK#3,Vertices Count,600,159447,159447,159447,159447
+GridText10.UITK#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.014,0.013,0.017,0.041
+GridText10.YAUI#3,CPU Main (ms),600,7.966,7.532,11.455,13.687
+GridText10.YAUI#3,CPU Main Present Wait (ms),600,3.164,3.495,4.98,6.006
+GridText10.YAUI#3,CPU Render (ms),600,0.614,0.577,0.837,1.226
+GridText10.YAUI#3,GPU (ms),600,6.044,6.348,9.023,9.315
+GridText10.YAUI#3,SetPass Calls Count,600,2.995,3,3,3
+GridText10.YAUI#3,Vertices Count,600,58944.595,59043,59043,59043
+GridText10.YAUI#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.018,0.016,0.023,0.081
+GridText10.uGUI#3,CPU Main (ms),600,7.632,7.552,8.379,10.259
+GridText10.uGUI#3,CPU Main Present Wait (ms),600,3.511,3.564,4.373,5.478
+GridText10.uGUI#3,CPU Render (ms),600,0.749,0.749,0.88,2.774
+GridText10.uGUI#3,GPU (ms),600,8.543,8.543,8.599,8.777
+GridText10.uGUI#3,SetPass Calls Count,600,22,22,22,22
+GridText10.uGUI#3,Vertices Count,600,60807,60807,60807,60807
+GridText10.uGUI#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,4.803,4.773,5.136,6.591
+GridHitTest.UITK#3,CPU Main (ms),600,5.851,5.837,6.502,7.27
+GridHitTest.UITK#3,CPU Main Present Wait (ms),600,5.271,5.288,6.17,7.216
+GridHitTest.UITK#3,CPU Render (ms),600,0.633,0.619,0.737,1.037
+GridHitTest.UITK#3,GPU (ms),600,9.81,9.805,9.86,9.965
+GridHitTest.UITK#3,SetPass Calls Count,600,2.995,3,3,3
+GridHitTest.UITK#3,Vertices Count,600,158737.995,159003,159003,159003
+GridHitTest.UITK#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.019,0.019,0.022,0.065
+GridHitTest.YAUI#3,CPU Main (ms),600,2.772,2.778,2.942,4.428
+GridHitTest.YAUI#3,CPU Main Present Wait (ms),600,8.34,8.324,9.125,9.676
+GridHitTest.YAUI#3,CPU Render (ms),600,0.557,0.542,0.636,0.803
+GridHitTest.YAUI#3,GPU (ms),600,9.455,9.456,9.593,9.903
+GridHitTest.YAUI#3,SetPass Calls Count,600,2.995,3,3,3
+GridHitTest.YAUI#3,Vertices Count,600,58944.595,59043,59043,59043
+GridHitTest.YAUI#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.026,0.025,0.031,0.089
+GridHitTest.uGUI#3,CPU Main (ms),600,8.395,8.037,10.12,11.649
+GridHitTest.uGUI#3,CPU Main Present Wait (ms),600,2.759,2.834,4.558,7.529
+GridHitTest.uGUI#3,CPU Render (ms),600,1.138,1.235,1.523,2.062
+GridHitTest.uGUI#3,GPU (ms),600,8.443,8.457,8.516,8.601
+GridHitTest.uGUI#3,SetPass Calls Count,600,62,62,62,62
+GridHitTest.uGUI#3,Vertices Count,600,60603,60603,60603,60603
+GridHitTest.uGUI#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.096,0.092,0.124,0.201
+ListScroll.UITK#3,CPU Main (ms),600,3.583,3.638,3.892,5.028
+ListScroll.UITK#3,CPU Main Present Wait (ms),600,7.551,7.508,8.417,9.168
+ListScroll.UITK#3,CPU Render (ms),600,0.753,0.746,0.872,1.023
+ListScroll.UITK#3,GPU (ms),600,8.671,8.679,8.752,9.033
+ListScroll.UITK#3,SetPass Calls Count,600,3,3,3,3
+ListScroll.UITK#3,Vertices Count,600,86415,86415,86415,86415
+ListScroll.UITK#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.021,0.021,0.025,0.081
+ListScroll.YAUI#3,CPU Main (ms),600,3.195,3.188,3.363,4.188
+ListScroll.YAUI#3,CPU Main Present Wait (ms),600,7.913,7.894,8.678,9.179
+ListScroll.YAUI#3,CPU Render (ms),600,0.637,0.618,0.715,0.819
+ListScroll.YAUI#3,GPU (ms),600,7.274,7.272,7.308,7.437
+ListScroll.YAUI#3,SetPass Calls Count,600,2.995,3,3,3
+ListScroll.YAUI#3,Vertices Count,600,46964.595,47043,47043,47043
+ListScroll.YAUI#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.027,0.026,0.031,0.078
+ListScroll.uGUI#3,CPU Main (ms),600,7.333,7.352,7.708,8.623
+ListScroll.uGUI#3,CPU Main Present Wait (ms),600,3.794,3.786,4.548,5.622
+ListScroll.uGUI#3,CPU Render (ms),600,0.489,0.484,0.56,0.963
+ListScroll.uGUI#3,GPU (ms),600,5.727,5.726,5.74,5.846
+ListScroll.uGUI#3,SetPass Calls Count,600,3.993,4,4,4
+ListScroll.uGUI#3,Vertices Count,600,6507.235,6527,6575,6579
+ListScroll.uGUI#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,5.399,5.405,5.733,6.003
+ListResize10.UITK#3,CPU Main (ms),600,9.527,9.438,10.646,11.789
+ListResize10.UITK#3,CPU Main Present Wait (ms),600,1.603,1.667,2.502,4.464
+ListResize10.UITK#3,CPU Render (ms),600,0.575,0.508,0.751,0.996
+ListResize10.UITK#3,GPU (ms),600,7.801,8.209,8.244,8.337
+ListResize10.UITK#3,SetPass Calls Count,600,2.995,3,3,3
+ListResize10.UITK#3,Vertices Count,600,90807.402,90959,90959,90959
+ListResize10.UITK#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.014,0.013,0.017,0.064
+ListResize10.YAUI#3,CPU Main (ms),600,14.295,14.251,17.733,19.663
+ListResize10.YAUI#3,CPU Main Present Wait (ms),600,0.445,0.495,0.883,6.08
+ListResize10.YAUI#3,CPU Render (ms),600,0.713,0.692,0.951,1.375
+ListResize10.YAUI#3,GPU (ms),600,7.434,7.439,7.508,7.541
+ListResize10.YAUI#3,SetPass Calls Count,600,3,3,3,3
+ListResize10.YAUI#3,Vertices Count,600,55443,55443,55443,55443
+ListResize10.YAUI#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.016,0.014,0.027,0.075
+ListResize10.uGUI#3,CPU Main (ms),600,81.254,81.222,81.605,105.121
+ListResize10.uGUI#3,CPU Main Present Wait (ms),600,0.018,0.016,0.022,0.057
+ListResize10.uGUI#3,CPU Render (ms),600,0.703,0.657,0.869,1.233
+ListResize10.uGUI#3,GPU (ms),600,5.721,5.729,5.736,5.934
+ListResize10.uGUI#3,SetPass Calls Count,600,4,4,4,4
+ListResize10.uGUI#3,Vertices Count,600,6875,6875,6875,6875
+ListResize10.uGUI#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,79.439,79.448,79.837,81.103
+Empty+Ballast#3,CPU Main (ms),600,2.11,2.088,2.34,3.33
+Empty+Ballast#3,CPU Main Present Wait (ms),600,25.154,25.181,25.909,50.242
+Empty+Ballast#3,CPU Render (ms),600,0.601,0.571,0.745,1.225
+Empty+Ballast#3,GPU (ms),600,27.225,27.27,27.273,27.29
+Empty+Ballast#3,SetPass Calls Count,600,3,3,3,6
+Empty+Ballast#3,Vertices Count,600,5046,5046,5046,10092
+Empty+Ballast#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.021,0.02,0.022,0.237
+GridNone+Ballast.UITK#3,CPU Main (ms),600,3.28,3.209,3.671,5.868
+GridNone+Ballast.UITK#3,CPU Main Present Wait (ms),600,32.661,32.71,33.623,65.897
+GridNone+Ballast.UITK#3,CPU Render (ms),600,0.816,0.79,1.009,1.942
+GridNone+Ballast.UITK#3,GPU (ms),600,34.687,35.943,35.986,36.058
+GridNone+Ballast.UITK#3,SetPass Calls Count,600,4,4,4,4
+GridNone+Ballast.UITK#3,Vertices Count,600,159006,159006,159006,159006
+GridNone+Ballast.UITK#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.02,0.019,0.022,0.144
+GridNone+Ballast.YAUI#3,CPU Main (ms),600,2.293,2.277,2.431,3.53
+GridNone+Ballast.YAUI#3,CPU Main Present Wait (ms),600,27.952,27.97,28.653,30.173
+GridNone+Ballast.YAUI#3,CPU Render (ms),600,0.635,0.616,0.725,1.107
+GridNone+Ballast.YAUI#3,GPU (ms),600,30.248,30.247,30.263,30.408
+GridNone+Ballast.YAUI#3,SetPass Calls Count,600,4,4,4,4
+GridNone+Ballast.YAUI#3,Vertices Count,600,59046,59046,59046,59046
+GridNone+Ballast.YAUI#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.02,0.02,0.021,0.271
+GridNone+Ballast.uGUI#3,CPU Main (ms),600,3.101,3.027,3.479,4.612
+GridNone+Ballast.uGUI#3,CPU Main Present Wait (ms),600,27.15,27.206,27.835,28.441
+GridNone+Ballast.uGUI#3,CPU Render (ms),600,1.282,1.261,1.498,2.235
+GridNone+Ballast.uGUI#3,GPU (ms),600,30.255,30.255,30.277,30.3
+GridNone+Ballast.uGUI#3,SetPass Calls Count,600,63,63,63,63
+GridNone+Ballast.uGUI#3,Vertices Count,600,60606,60606,60606,60606
+GridNone+Ballast.uGUI#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.195,0.187,0.231,0.304
+ListScroll+Ballast.UITK#3,CPU Main (ms),600,3.541,3.439,4.034,5.861
+ListScroll+Ballast.UITK#3,CPU Main Present Wait (ms),600,26.748,26.634,54.561,55.393
+ListScroll+Ballast.UITK#3,CPU Render (ms),600,0.743,0.718,0.881,1.566
+ListScroll+Ballast.UITK#3,GPU (ms),600,25.097,30.296,30.335,30.408
+ListScroll+Ballast.UITK#3,SetPass Calls Count,600,4,4,4,4
+ListScroll+Ballast.UITK#3,Vertices Count,600,86418,86418,86418,86418
+ListScroll+Ballast.UITK#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.021,0.02,0.023,0.088
+ListScroll+Ballast.YAUI#3,CPU Main (ms),600,2.724,2.655,3.075,3.996
+ListScroll+Ballast.YAUI#3,CPU Main Present Wait (ms),600,26.76,26.823,27.473,29.544
+ListScroll+Ballast.YAUI#3,CPU Render (ms),600,0.793,0.78,1,1.269
+ListScroll+Ballast.YAUI#3,GPU (ms),600,29.49,29.49,29.503,29.542
+ListScroll+Ballast.YAUI#3,SetPass Calls Count,600,4,4,4,4
+ListScroll+Ballast.YAUI#3,Vertices Count,600,47046,47046,47046,47046
+ListScroll+Ballast.YAUI#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.021,0.02,0.024,0.145
+ListScroll+Ballast.uGUI#3,CPU Main (ms),600,10.255,10.131,11.331,15.975
+ListScroll+Ballast.uGUI#3,CPU Main Present Wait (ms),600,18.448,18.598,19.564,42.832
+ListScroll+Ballast.uGUI#3,CPU Render (ms),600,0.785,0.762,0.998,4.18
+ListScroll+Ballast.uGUI#3,GPU (ms),600,28.657,28.704,28.717,28.872
+ListScroll+Ballast.uGUI#3,SetPass Calls Count,600,5,5,5,10
+ListScroll+Ballast.uGUI#3,Vertices Count,600,6526.46,6530,6578,13060
+ListScroll+Ballast.uGUI#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,7.56,7.486,8.429,13.388
+Empty+Ballast2#3,CPU Main (ms),600,2.175,2.115,2.501,3.621
+Empty+Ballast2#3,CPU Main Present Wait (ms),600,25.092,25.153,25.839,26.967
+Empty+Ballast2#3,CPU Render (ms),600,0.621,0.59,0.783,1.398
+Empty+Ballast2#3,GPU (ms),600,27.271,27.27,27.273,27.29
+Empty+Ballast2#3,SetPass Calls Count,600,3,3,3,6
+Empty+Ballast2#3,Vertices Count,600,5046,5046,5046,10092
+Empty+Ballast2#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.021,0.02,0.024,0.081

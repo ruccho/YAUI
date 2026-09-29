@@ -20,10 +20,10 @@ The same screens are built with YAUI, uGUI (with TextMeshPro) and UI Toolkit, an
 
 ## Summary
 
-- **YAUI has the lowest main thread cost in most scenarios.** A frame without changes costs nothing, and changing colors, moving elements and hit testing cost less than 0.25 ms.
-- **Changing text** costs about half of uGUI's and a fifth of UI Toolkit's.
-- **Layout** is about 7 times faster than uGUI's layout groups, but **slower than UI Toolkit** (10.7 ms vs 6.5 ms added).
-- **GPU time is higher than uGUI's** (about 1.7 to 2.3 times), which is the cost of the uber shader. It is lower than UI Toolkit's in the grid, and about the same in the list.
+- **YAUI has the lowest main thread cost in most scenarios.** A frame without changes costs almost nothing, and changing colors, moving elements and hit testing cost 0.5 ms or less.
+- **Changing text** varies between runs: from about half of uGUI's to about the same, and a quarter to a half of UI Toolkit's.
+- **Layout** is about 7 times faster than uGUI's layout groups, but **slower than UI Toolkit** (11.7 ms vs 6.9 ms added).
+- **GPU time is the same as uGUI's in the grid**, and about 1.5 times uGUI's in the list, where the rows use more features of the uber shader. It is lower than UI Toolkit's in both.
 
 ## Environment
 
@@ -32,7 +32,7 @@ The same screens are built with YAUI, uGUI (with TextMeshPro) and UI Toolkit, an
 - **Screen**: 1080 x 2340, portrait. The UI is drawn at the native resolution
 - **Build**: IL2CPP, ARM64, release build
 - **Unity**: 6000.7.0b2, URP 17.7.0
-- **YAUI**: 0.2.0
+- **YAUI**: main after 0.2.0, with [shader variants and draw reordering](./manual/performance.mdx#shader-variants) (September 30, 2026)
 
 Each scenario runs for 120 frames of warmup and 600 frames of measurement. All scenarios run 3 times, and the systems run one after another for each scenario in an order that changes every time, so that heat affects them evenly. The values are the median over the 3 runs of the median frame.
 
@@ -69,14 +69,14 @@ Main thread time per frame, in milliseconds (waiting for presentation excluded).
 
 | Scenario | YAUI | uGUI + TextMeshPro | UI Toolkit |
 |---|---|---|---|
-| Empty scene | 2.57 | 2.57 | 2.57 |
-| Grid: no changes | **2.30** (±0) | 3.17 (+0.61) | 2.96 (+0.40) |
-| Grid: 10% change color | **2.62** (+0.06) | 5.62 (+3.05) | 3.77 (+1.21) |
-| Grid: 10% move | **2.78** (+0.21) | 4.42 (+1.85) | 4.37 (+1.80) |
-| Grid: 10% change text | **4.81** (+2.25) | 6.97 (+4.41) | 14.98 (+12.41) |
-| Grid: 10 hit tests | **2.41** (±0) | 7.83 (+5.26) | 4.82 (+2.25) |
-| List: scroll | **3.16** (+0.59) | 6.93 (+4.36) | 3.42 (+0.86) |
-| List: 10% relayout | 13.24 (+10.67) | 76.74 (+74.17) | **9.02** (+6.45) |
+| Empty scene | 2.54 | 2.54 | 2.54 |
+| Grid: no changes | **2.59** (+0.05) | 3.23 (+0.69) | 3.38 (+0.84) |
+| Grid: 10% change color | **3.04** (+0.50) | 5.49 (+2.95) | 3.77 (+1.22) |
+| Grid: 10% move | **2.97** (+0.43) | 4.29 (+1.75) | 4.23 (+1.69) |
+| Grid: 10% change text | 7.52 (+4.98) | **7.39** (+4.85) | 15.63 (+13.09) |
+| Grid: 10 hit tests | **2.78** (+0.24) | 8.40 (+5.86) | 5.44 (+2.90) |
+| List: scroll | **3.18** (+0.64) | 7.26 (+4.72) | 3.64 (+1.10) |
+| List: 10% relayout | 14.25 (+11.71) | 81.17 (+78.63) | **9.44** (+6.90) |
 
 Values slightly below the empty scene are within the noise, and are shown as ±0.
 
@@ -88,14 +88,14 @@ The GPU changes its clock with the load, so GPU times of different scenes cannot
 
 | Scenario | YAUI | uGUI + TextMeshPro | UI Toolkit |
 |---|---|---|---|
-| Grid | +5.20 | **+2.98** | +8.69 |
-| List | +3.31 | **+1.45** | +3.01 |
+| Grid | **+2.98** | **+2.98** | +8.67 |
+| List | +2.22 | **+1.43** | +3.02 |
 
 At a lower clock, as in a normal frame, the same work takes longer.
 
 ## Notes
 
-- **Text**: the time to change text varies between runs (4.5 to 7.5 ms in total for YAUI).
+- **Text**: the time to change text varies between runs (3.8 to 7.5 ms in total for YAUI; the median of this run is 7.5 ms).
 - **Layout**: YAUI waits for the layout job on the main thread. The rows of the list have heights that depend on their content, so they are not [layout boundaries](./manual/layout.mdx#layout-boundaries), and the whole list is laid out again.
 - In "List: 10% relayout", the rows stay about the same height, as two lines still fit in their minimum height.
 - The hit test of UI Toolkit (`Pick`) returns only the topmost element; the other two return all the elements under the point.

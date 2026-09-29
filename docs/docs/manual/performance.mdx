@@ -38,7 +38,7 @@ Colors, render transforms and opacity are nearly free to change, and a frame wit
 
 ## GPU
 
-The uber shader has a cost for its many features: the GPU time of YAUI is about 1.7 to 2.3 times uGUI's, and about the same as UI Toolkit's or lower (see [Benchmarks](../benchmarks.mdx#gpu)). To keep it low:
+The uber shader has a cost for its many features, which [shader variants](#shader-variants) keep to the features in use: the GPU time of YAUI is about the same as uGUI's to 1.5 times, and lower than UI Toolkit's (see [Benchmarks](../benchmarks.mdx#gpu)). To keep it low:
 
 - Avoid large overlapping transparent areas (overdraw), as with any UI.
 - Large shadow blurs enlarge the quads that are drawn.

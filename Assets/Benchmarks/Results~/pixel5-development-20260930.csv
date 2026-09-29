@@ -1,0 +1,2336 @@
+# suite,comparison
+# unity,6000.7.0b2
+# device,Google Pixel 5
+# os,Android OS 14 / API-34 (UP1A.231105.001.B2/11260668)
+# cpu,ARM64 FP ASIMD AES
+# gpu,Adreno (TM) 620,Vulkan
+# screen,1080x2340
+# development,True
+scenario,metric,count,mean,median,p95,max
+Empty#1,CPU Main (ms),600,3.22,3.166,3.441,23.95
+Empty#1,CPU Main Present Wait (ms),600,7.899,7.907,8.743,11.484
+Empty#1,CPU Render (ms),600,0.641,0.632,0.728,0.9
+Empty#1,GPU (ms),600,3.169,3.172,3.23,3.265
+Empty#1,GC Alloc (bytes),600,484.517,0,0,139808
+Empty#1,Batches Count,600,0,0,0,0
+Empty#1,SetPass Calls Count,600,2.995,3,3,3
+Empty#1,Draw Calls Count,600,0,0,0,0
+Empty#1,Vertices Count,600,0,0,0,0
+Empty#1,YauiBench.ScenarioTick (ms),600,0.006,0.006,0.007,0.157
+Empty#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.014,0.013,0.015,0.097
+Empty#1,UIEvents.WillRenderCanvases (ms),600,0.008,0.008,0.009,0.09
+Empty#1,Canvas.BuildBatch (ms),600,0,0,0,0
+Empty#1,UI.RenderOverlays (ms),600,0.006,0.006,0.006,0.043
+Empty#1,Layout (ms),600,0,0,0,0
+Empty#1,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.029,0.028,0.032,0.181
+Empty#1,UIR.DrawChain (ms),600,0,0,0,0
+GridNone.YAUI#1,CPU Main (ms),600,3.227,3.234,3.599,13.836
+GridNone.YAUI#1,CPU Main Present Wait (ms),600,7.876,7.894,8.814,10.22
+GridNone.YAUI#1,CPU Render (ms),600,0.717,0.701,0.804,1.41
+GridNone.YAUI#1,GPU (ms),600,9.343,9.646,9.769,12.878
+GridNone.YAUI#1,GC Alloc (bytes),600,678.807,0,0,197376
+GridNone.YAUI#1,Batches Count,600,0,0,0,0
+GridNone.YAUI#1,SetPass Calls Count,600,3.993,4,4,4
+GridNone.YAUI#1,Draw Calls Count,600,0,0,0,0
+GridNone.YAUI#1,Vertices Count,600,0,0,0,0
+GridNone.YAUI#1,YauiBench.ScenarioTick (ms),600,0.004,0.004,0.004,0.006
+GridNone.YAUI#1,Yaui.EarlySubmit (ms),600,0.004,0.004,0.005,0.043
+GridNone.YAUI#1,Yaui.Submit (ms),600,0.024,0.024,0.027,0.16
+GridNone.YAUI#1,Yaui.Collect (ms),600,0.031,0.031,0.035,0.173
+GridNone.YAUI#1,Yaui.Layout (ms),600,0,0,0,0
+GridNone.YAUI#1,Yaui.Text.Generate (ms),600,0,0,0,0
+GridNone.YAUI#1,Yaui.Text.Finish (ms),600,0,0,0,0
+GridNone.YAUI#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.013,0.013,0.015,0.078
+GridNone.YAUI#1,UIEvents.WillRenderCanvases (ms),600,0.007,0.007,0.008,0.072
+GridNone.YAUI#1,Canvas.BuildBatch (ms),600,0,0,0,0
+GridNone.YAUI#1,UI.RenderOverlays (ms),600,0.006,0.005,0.006,0.052
+GridNone.YAUI#1,Layout (ms),600,0,0,0,0
+GridNone.YAUI#1,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.025,0.025,0.029,0.069
+GridNone.YAUI#1,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridNone.YAUI#1,UIR.DrawChain (ms),600,0,0,0,0
+GridNone.uGUI#1,CPU Main (ms),600,3.362,3.326,3.864,5.931
+GridNone.uGUI#1,CPU Main Present Wait (ms),600,7.767,7.768,8.747,9.793
+GridNone.uGUI#1,CPU Render (ms),600,1.143,1.094,1.489,2.409
+GridNone.uGUI#1,GPU (ms),600,8.301,8.345,8.399,8.483
+GridNone.uGUI#1,GC Alloc (bytes),600,677.68,0,0,197376
+GridNone.uGUI#1,Batches Count,600,0,0,0,0
+GridNone.uGUI#1,SetPass Calls Count,600,63,63,63,63
+GridNone.uGUI#1,Draw Calls Count,600,0,0,0,0
+GridNone.uGUI#1,Vertices Count,600,0,0,0,0
+GridNone.uGUI#1,YauiBench.ScenarioTick (ms),600,0.003,0.003,0.004,0.032
+GridNone.uGUI#1,Yaui.EarlySubmit (ms),600,0.003,0.003,0.004,0.022
+GridNone.uGUI#1,Yaui.Submit (ms),600,0.01,0.009,0.012,0.032
+GridNone.uGUI#1,Yaui.Collect (ms),600,0.025,0.024,0.03,0.062
+GridNone.uGUI#1,Yaui.Layout (ms),600,0,0,0,0
+GridNone.uGUI#1,Yaui.Text.Generate (ms),600,0,0,0,0
+GridNone.uGUI#1,Yaui.Text.Finish (ms),600,0,0,0,0
+GridNone.uGUI#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.171,0.158,0.235,0.355
+GridNone.uGUI#1,UIEvents.WillRenderCanvases (ms),600,0.071,0.07,0.084,0.212
+GridNone.uGUI#1,Canvas.BuildBatch (ms),600,0,0,0,0
+GridNone.uGUI#1,UI.RenderOverlays (ms),600,0.903,0.846,1.189,2.081
+GridNone.uGUI#1,Layout (ms),600,0.006,0.006,0.008,0.046
+GridNone.uGUI#1,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.02,0.02,0.024,0.082
+GridNone.uGUI#1,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridNone.uGUI#1,UIR.DrawChain (ms),600,0,0,0,0
+GridNone.UITK#1,CPU Main (ms),600,3.632,3.541,3.912,7.316
+GridNone.UITK#1,CPU Main Present Wait (ms),600,7.479,7.559,8.314,9.024
+GridNone.UITK#1,CPU Render (ms),600,0.793,0.773,0.949,1.39
+GridNone.UITK#1,GPU (ms),600,10.11,10.103,10.173,10.454
+GridNone.UITK#1,GC Alloc (bytes),600,728.007,0,0,213824
+GridNone.UITK#1,Batches Count,600,0,0,0,0
+GridNone.UITK#1,SetPass Calls Count,600,3.993,4,4,4
+GridNone.UITK#1,Draw Calls Count,600,0,0,0,0
+GridNone.UITK#1,Vertices Count,600,0,0,0,0
+GridNone.UITK#1,YauiBench.ScenarioTick (ms),600,0.003,0.003,0.004,0.055
+GridNone.UITK#1,Yaui.EarlySubmit (ms),600,0.003,0.003,0.004,0.006
+GridNone.UITK#1,Yaui.Submit (ms),600,0.01,0.01,0.012,0.015
+GridNone.UITK#1,Yaui.Collect (ms),600,0.022,0.022,0.026,0.079
+GridNone.UITK#1,Yaui.Layout (ms),600,0,0,0,0
+GridNone.UITK#1,Yaui.Text.Generate (ms),600,0,0,0,0
+GridNone.UITK#1,Yaui.Text.Finish (ms),600,0,0,0,0
+GridNone.UITK#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.028,0.027,0.031,0.132
+GridNone.UITK#1,UIEvents.WillRenderCanvases (ms),600,0.023,0.023,0.026,0.128
+GridNone.UITK#1,Canvas.BuildBatch (ms),600,0,0,0,0
+GridNone.UITK#1,UI.RenderOverlays (ms),600,1.071,0.939,1.42,6.927
+GridNone.UITK#1,Layout (ms),600,0.005,0.005,0.006,0.009
+GridNone.UITK#1,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.118,0.116,0.136,0.218
+GridNone.UITK#1,PostLateUpdate.UIElementsRepaintPanels (ms),600,0.13,0.124,0.16,0.369
+GridNone.UITK#1,UIElements.UpdateLayout (ms),600,0.014,0.014,0.016,0.05
+GridNone.UITK#1,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridNone.UITK#1,UIR.DrawChain (ms),600,0.944,0.81,1.309,6.801
+GridColor10.YAUI#1,CPU Main (ms),600,3.242,3.181,3.657,7.178
+GridColor10.YAUI#1,CPU Main Present Wait (ms),600,7.884,7.908,8.787,9.728
+GridColor10.YAUI#1,CPU Render (ms),600,0.919,0.904,1.097,1.318
+GridColor10.YAUI#1,GPU (ms),600,6.924,6.922,7.009,7.713
+GridColor10.YAUI#1,GC Alloc (bytes),600,728.007,0,0,213824
+GridColor10.YAUI#1,Batches Count,600,0,0,0,0
+GridColor10.YAUI#1,SetPass Calls Count,600,4,4,4,4
+GridColor10.YAUI#1,Draw Calls Count,600,0,0,0,0
+GridColor10.YAUI#1,Vertices Count,600,0,0,0,0
+GridColor10.YAUI#1,YauiBench.ScenarioTick (ms),600,0.249,0.248,0.295,0.343
+GridColor10.YAUI#1,Yaui.EarlySubmit (ms),600,0.003,0.003,0.005,0.008
+GridColor10.YAUI#1,Yaui.Submit (ms),600,0.02,0.019,0.024,0.074
+GridColor10.YAUI#1,Yaui.Collect (ms),600,0.107,0.102,0.128,0.208
+GridColor10.YAUI#1,Yaui.Layout (ms),600,0,0,0,0
+GridColor10.YAUI#1,Yaui.Text.Generate (ms),600,0,0,0,0
+GridColor10.YAUI#1,Yaui.Text.Finish (ms),600,0,0,0,0
+GridColor10.YAUI#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.03,0.029,0.035,0.104
+GridColor10.YAUI#1,UIEvents.WillRenderCanvases (ms),600,0.025,0.024,0.03,0.1
+GridColor10.YAUI#1,Canvas.BuildBatch (ms),600,0,0,0,0
+GridColor10.YAUI#1,UI.RenderOverlays (ms),600,0.005,0.005,0.006,0.045
+GridColor10.YAUI#1,Layout (ms),600,0.006,0.005,0.007,0.075
+GridColor10.YAUI#1,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.026,0.025,0.031,0.093
+GridColor10.YAUI#1,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+GridColor10.YAUI#1,UIElements.UpdateLayout (ms),600,0,0,0,0
+GridColor10.YAUI#1,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridColor10.YAUI#1,UIR.DrawChain (ms),600,0,0,0,0
+GridColor10.uGUI#1,CPU Main (ms),600,6.683,6.606,7.316,12.255
+GridColor10.uGUI#1,CPU Main Present Wait (ms),600,4.449,4.508,5.385,6.811
+GridColor10.uGUI#1,CPU Render (ms),600,0.96,0.927,1.14,4.237
+GridColor10.uGUI#1,GPU (ms),600,8.91,8.91,9.002,9.116
+GridColor10.uGUI#1,GC Alloc (bytes),600,728.007,0,0,213824
+GridColor10.uGUI#1,Batches Count,600,0,0,0,0
+GridColor10.uGUI#1,SetPass Calls Count,600,22.962,23,23,23
+GridColor10.uGUI#1,Draw Calls Count,600,0,0,0,0
+GridColor10.uGUI#1,Vertices Count,600,0,0,0,0
+GridColor10.uGUI#1,YauiBench.ScenarioTick (ms),600,0.166,0.162,0.195,0.311
+GridColor10.uGUI#1,Yaui.EarlySubmit (ms),600,0.002,0.002,0.003,0.004
+GridColor10.uGUI#1,Yaui.Submit (ms),600,0.007,0.007,0.009,0.043
+GridColor10.uGUI#1,Yaui.Collect (ms),600,0.02,0.019,0.021,0.807
+GridColor10.uGUI#1,Yaui.Layout (ms),600,0,0,0,0
+GridColor10.uGUI#1,Yaui.Text.Generate (ms),600,0,0,0,0
+GridColor10.uGUI#1,Yaui.Text.Finish (ms),600,0,0,0,0
+GridColor10.uGUI#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,4.038,4.019,4.379,5.428
+GridColor10.uGUI#1,UIEvents.WillRenderCanvases (ms),600,3.968,3.95,4.304,5.36
+GridColor10.uGUI#1,Canvas.BuildBatch (ms),600,0.043,0.04,0.054,0.327
+GridColor10.uGUI#1,UI.RenderOverlays (ms),600,0.473,0.425,0.726,1.637
+GridColor10.uGUI#1,Layout (ms),600,0.019,0.018,0.026,0.061
+GridColor10.uGUI#1,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.02,0.019,0.024,0.068
+GridColor10.uGUI#1,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+GridColor10.uGUI#1,UIElements.UpdateLayout (ms),600,0,0,0,0
+GridColor10.uGUI#1,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridColor10.uGUI#1,UIR.DrawChain (ms),600,0,0,0,0
+GridColor10.UITK#1,CPU Main (ms),600,4.511,4.474,4.919,7.059
+GridColor10.UITK#1,CPU Main Present Wait (ms),600,6.617,6.605,7.449,8.44
+GridColor10.UITK#1,CPU Render (ms),600,0.786,0.759,0.952,1.46
+GridColor10.UITK#1,GPU (ms),600,10.171,10.163,10.24,10.309
+GridColor10.UITK#1,GC Alloc (bytes),600,728.007,0,0,213824
+GridColor10.UITK#1,Batches Count,600,0,0,0,0
+GridColor10.UITK#1,SetPass Calls Count,600,4,4,4,4
+GridColor10.UITK#1,Draw Calls Count,600,0,0,0,0
+GridColor10.UITK#1,Vertices Count,600,0,0,0,0
+GridColor10.UITK#1,YauiBench.ScenarioTick (ms),600,0.608,0.57,0.739,0.974
+GridColor10.UITK#1,Yaui.EarlySubmit (ms),600,0.003,0.003,0.004,0.035
+GridColor10.UITK#1,Yaui.Submit (ms),600,0.009,0.009,0.011,0.068
+GridColor10.UITK#1,Yaui.Collect (ms),600,0.023,0.022,0.033,0.094
+GridColor10.UITK#1,Yaui.Layout (ms),600,0,0,0,0
+GridColor10.UITK#1,Yaui.Text.Generate (ms),600,0,0,0,0
+GridColor10.UITK#1,Yaui.Text.Finish (ms),600,0,0,0,0
+GridColor10.UITK#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.025,0.023,0.03,0.067
+GridColor10.UITK#1,UIEvents.WillRenderCanvases (ms),600,0.02,0.019,0.025,0.062
+GridColor10.UITK#1,Canvas.BuildBatch (ms),600,0,0,0,0
+GridColor10.UITK#1,UI.RenderOverlays (ms),600,0.857,0.834,1.024,1.119
+GridColor10.UITK#1,Layout (ms),600,0.005,0.004,0.006,0.023
+GridColor10.UITK#1,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.095,0.092,0.124,0.175
+GridColor10.UITK#1,PostLateUpdate.UIElementsRepaintPanels (ms),600,0.394,0.378,0.469,0.582
+GridColor10.UITK#1,UIElements.UpdateLayout (ms),600,0.012,0.011,0.015,0.045
+GridColor10.UITK#1,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridColor10.UITK#1,UIR.DrawChain (ms),600,0.725,0.703,0.874,0.986
+GridMove10.YAUI#1,CPU Main (ms),600,3.951,4.079,4.308,7.776
+GridMove10.YAUI#1,CPU Main Present Wait (ms),600,7.15,7.126,8.128,8.839
+GridMove10.YAUI#1,CPU Render (ms),600,0.843,0.829,0.967,1.371
+GridMove10.YAUI#1,GPU (ms),600,7.67,6.859,9.991,10.122
+GridMove10.YAUI#1,GC Alloc (bytes),600,728.007,0,0,213824
+GridMove10.YAUI#1,Batches Count,600,0,0,0,0
+GridMove10.YAUI#1,SetPass Calls Count,600,3.993,4,4,4
+GridMove10.YAUI#1,Draw Calls Count,600,0,0,0,0
+GridMove10.YAUI#1,Vertices Count,600,0,0,0,0
+GridMove10.YAUI#1,YauiBench.ScenarioTick (ms),600,0.166,0.17,0.193,0.263
+GridMove10.YAUI#1,Yaui.EarlySubmit (ms),600,0.004,0.004,0.006,0.008
+GridMove10.YAUI#1,Yaui.Submit (ms),600,0.023,0.023,0.028,0.069
+GridMove10.YAUI#1,Yaui.Collect (ms),600,0.324,0.328,0.38,0.486
+GridMove10.YAUI#1,Yaui.Layout (ms),600,0,0,0,0
+GridMove10.YAUI#1,Yaui.Text.Generate (ms),600,0,0,0,0
+GridMove10.YAUI#1,Yaui.Text.Finish (ms),600,0,0,0,0
+GridMove10.YAUI#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.037,0.037,0.043,0.103
+GridMove10.YAUI#1,UIEvents.WillRenderCanvases (ms),600,0.031,0.031,0.036,0.097
+GridMove10.YAUI#1,Canvas.BuildBatch (ms),600,0,0,0,0
+GridMove10.YAUI#1,UI.RenderOverlays (ms),600,0.006,0.006,0.006,0.061
+GridMove10.YAUI#1,Layout (ms),600,0.007,0.007,0.009,0.016
+GridMove10.YAUI#1,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.03,0.03,0.036,0.145
+GridMove10.YAUI#1,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+GridMove10.YAUI#1,UIElements.UpdateLayout (ms),600,0,0,0,0
+GridMove10.YAUI#1,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridMove10.YAUI#1,UIR.DrawChain (ms),600,0,0,0,0
+GridMove10.uGUI#1,CPU Main (ms),600,3.876,3.731,4.846,6.715
+GridMove10.uGUI#1,CPU Main Present Wait (ms),600,7.253,7.323,8.273,10.613
+GridMove10.uGUI#1,CPU Render (ms),600,0.798,0.779,0.959,1.478
+GridMove10.uGUI#1,GPU (ms),600,8.887,8.882,8.941,9.092
+GridMove10.uGUI#1,GC Alloc (bytes),600,728.007,0,0,213824
+GridMove10.uGUI#1,Batches Count,600,0,0,0,0
+GridMove10.uGUI#1,SetPass Calls Count,600,23,23,23,23
+GridMove10.uGUI#1,Draw Calls Count,600,0,0,0,0
+GridMove10.uGUI#1,Vertices Count,600,0,0,0,0
+GridMove10.uGUI#1,YauiBench.ScenarioTick (ms),600,0.192,0.184,0.232,0.467
+GridMove10.uGUI#1,Yaui.EarlySubmit (ms),600,0.003,0.003,0.004,0.009
+GridMove10.uGUI#1,Yaui.Submit (ms),600,0.008,0.008,0.011,0.071
+GridMove10.uGUI#1,Yaui.Collect (ms),600,0.021,0.02,0.023,0.069
+GridMove10.uGUI#1,Yaui.Layout (ms),600,0,0,0,0
+GridMove10.uGUI#1,Yaui.Text.Generate (ms),600,0,0,0,0
+GridMove10.uGUI#1,Yaui.Text.Finish (ms),600,0,0,0,0
+GridMove10.uGUI#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.989,0.933,1.33,2.282
+GridMove10.uGUI#1,UIEvents.WillRenderCanvases (ms),600,0.912,0.863,1.229,2.112
+GridMove10.uGUI#1,Canvas.BuildBatch (ms),600,0.051,0.032,0.056,0.786
+GridMove10.uGUI#1,UI.RenderOverlays (ms),600,0.343,0.334,0.419,0.818
+GridMove10.uGUI#1,Layout (ms),600,0.005,0.005,0.006,0.102
+GridMove10.uGUI#1,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.022,0.02,0.027,0.055
+GridMove10.uGUI#1,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+GridMove10.uGUI#1,UIElements.UpdateLayout (ms),600,0,0,0,0
+GridMove10.uGUI#1,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridMove10.uGUI#1,UIR.DrawChain (ms),600,0,0,0,0
+GridMove10.UITK#1,CPU Main (ms),600,4.862,4.83,5.238,7.169
+GridMove10.UITK#1,CPU Main Present Wait (ms),600,6.267,6.301,7.128,9.233
+GridMove10.UITK#1,CPU Render (ms),600,0.783,0.763,0.988,1.486
+GridMove10.UITK#1,GPU (ms),600,10.193,10.182,10.261,10.345
+GridMove10.UITK#1,GC Alloc (bytes),600,728.007,0,0,213824
+GridMove10.UITK#1,Batches Count,600,0,0,0,0
+GridMove10.UITK#1,SetPass Calls Count,600,4,4,4,4
+GridMove10.UITK#1,Draw Calls Count,600,0,0,0,0
+GridMove10.UITK#1,Vertices Count,600,0,0,0,0
+GridMove10.UITK#1,YauiBench.ScenarioTick (ms),600,0.518,0.49,0.604,1.475
+GridMove10.UITK#1,Yaui.EarlySubmit (ms),600,0.003,0.002,0.004,0.048
+GridMove10.UITK#1,Yaui.Submit (ms),600,0.009,0.009,0.012,0.043
+GridMove10.UITK#1,Yaui.Collect (ms),600,0.022,0.02,0.036,0.057
+GridMove10.UITK#1,Yaui.Layout (ms),600,0,0,0,0
+GridMove10.UITK#1,Yaui.Text.Generate (ms),600,0,0,0,0
+GridMove10.UITK#1,Yaui.Text.Finish (ms),600,0,0,0,0
+GridMove10.UITK#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.023,0.022,0.027,0.077
+GridMove10.UITK#1,UIEvents.WillRenderCanvases (ms),600,0.019,0.018,0.023,0.049
+GridMove10.UITK#1,Canvas.BuildBatch (ms),600,0,0,0,0
+GridMove10.UITK#1,UI.RenderOverlays (ms),600,0.831,0.801,1.038,1.115
+GridMove10.UITK#1,Layout (ms),600,0.004,0.004,0.006,0.009
+GridMove10.UITK#1,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.51,0.5,0.564,0.689
+GridMove10.UITK#1,PostLateUpdate.UIElementsRepaintPanels (ms),600,0.651,0.641,0.716,0.995
+GridMove10.UITK#1,UIElements.UpdateLayout (ms),600,0.014,0.013,0.016,0.059
+GridMove10.UITK#1,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridMove10.UITK#1,UIR.DrawChain (ms),600,0.702,0.669,0.894,0.983
+GridText10.YAUI#1,CPU Main (ms),600,9.596,8.674,12.087,15.11
+GridText10.YAUI#1,CPU Main Present Wait (ms),600,1.533,1.581,3.629,6.294
+GridText10.YAUI#1,CPU Render (ms),600,0.616,0.596,0.733,1.162
+GridText10.YAUI#1,GPU (ms),600,5.471,6.687,6.763,6.842
+GridText10.YAUI#1,GC Alloc (bytes),600,728.007,0,0,213824
+GridText10.YAUI#1,Batches Count,600,0,0,0,0
+GridText10.YAUI#1,SetPass Calls Count,600,3.993,4,4,4
+GridText10.YAUI#1,Draw Calls Count,600,0,0,0,0
+GridText10.YAUI#1,Vertices Count,600,0,0,0,0
+GridText10.YAUI#1,YauiBench.ScenarioTick (ms),600,0.107,0.104,0.136,0.203
+GridText10.YAUI#1,Yaui.EarlySubmit (ms),600,0.284,0.274,0.336,0.696
+GridText10.YAUI#1,Yaui.Submit (ms),600,0.1,0.098,0.119,0.229
+GridText10.YAUI#1,Yaui.Collect (ms),600,7.081,6.228,9.52,11.69
+GridText10.YAUI#1,Yaui.Layout (ms),600,0.103,0.101,0.128,0.188
+GridText10.YAUI#1,Yaui.Text.Generate (ms),600,7.683,7.181,10.689,13.573
+GridText10.YAUI#1,Yaui.Text.Finish (ms),600,0.714,0.708,0.796,1
+GridText10.YAUI#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.022,0.021,0.026,0.108
+GridText10.YAUI#1,UIEvents.WillRenderCanvases (ms),600,0.018,0.017,0.023,0.104
+GridText10.YAUI#1,Canvas.BuildBatch (ms),600,0,0,0,0
+GridText10.YAUI#1,UI.RenderOverlays (ms),600,0.003,0.003,0.004,0.027
+GridText10.YAUI#1,Layout (ms),600,0.004,0.004,0.006,0.03
+GridText10.YAUI#1,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.019,0.018,0.024,0.067
+GridText10.YAUI#1,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+GridText10.YAUI#1,UIElements.UpdateLayout (ms),600,0,0,0,0
+GridText10.YAUI#1,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridText10.YAUI#1,UIR.DrawChain (ms),600,0,0,0,0
+GridText10.uGUI#1,CPU Main (ms),600,9.493,9.513,10.397,12.29
+GridText10.uGUI#1,CPU Main Present Wait (ms),600,1.641,1.666,3.171,5.117
+GridText10.uGUI#1,CPU Render (ms),600,0.732,0.722,0.912,2.465
+GridText10.uGUI#1,GPU (ms),600,8.948,8.971,9.037,9.097
+GridText10.uGUI#1,GC Alloc (bytes),600,728.007,0,0,213824
+GridText10.uGUI#1,Batches Count,600,0,0,0,0
+GridText10.uGUI#1,SetPass Calls Count,600,23,23,23,23
+GridText10.uGUI#1,Draw Calls Count,600,0,0,0,0
+GridText10.uGUI#1,Vertices Count,600,0,0,0,0
+GridText10.uGUI#1,YauiBench.ScenarioTick (ms),600,1.014,0.977,1.341,2.462
+GridText10.uGUI#1,Yaui.EarlySubmit (ms),600,0.002,0.002,0.003,0.004
+GridText10.uGUI#1,Yaui.Submit (ms),600,0.007,0.006,0.009,0.303
+GridText10.uGUI#1,Yaui.Collect (ms),600,0.021,0.017,0.045,0.068
+GridText10.uGUI#1,Yaui.Layout (ms),600,0,0,0,0
+GridText10.uGUI#1,Yaui.Text.Generate (ms),600,0,0,0,0
+GridText10.uGUI#1,Yaui.Text.Finish (ms),600,0,0,0,0
+GridText10.uGUI#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,6.173,6.152,6.93,9.073
+GridText10.uGUI#1,UIEvents.WillRenderCanvases (ms),600,6.104,6.08,6.861,9.007
+GridText10.uGUI#1,Canvas.BuildBatch (ms),600,0.049,0.041,0.093,0.131
+GridText10.uGUI#1,UI.RenderOverlays (ms),600,0.339,0.342,0.487,1.158
+GridText10.uGUI#1,Layout (ms),600,0.024,0.022,0.034,0.08
+GridText10.uGUI#1,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.018,0.018,0.022,0.06
+GridText10.uGUI#1,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+GridText10.uGUI#1,UIElements.UpdateLayout (ms),600,0,0,0,0
+GridText10.uGUI#1,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridText10.uGUI#1,UIR.DrawChain (ms),600,0,0,0,0
+GridText10.UITK#1,CPU Main (ms),600,18.361,18.332,18.736,20.149
+GridText10.UITK#1,CPU Main Present Wait (ms),600,0.536,0.47,2.08,3.501
+GridText10.UITK#1,CPU Render (ms),600,2.088,2.057,2.408,2.554
+GridText10.UITK#1,GPU (ms),600,18.927,18.923,19.029,19.135
+GridText10.UITK#1,GC Alloc (bytes),600,744.22,0,144,213824
+GridText10.UITK#1,Batches Count,600,0,0,0,0
+GridText10.UITK#1,SetPass Calls Count,600,4,4,4,4
+GridText10.UITK#1,Draw Calls Count,600,0,0,0,0
+GridText10.UITK#1,Vertices Count,600,0,0,0,0
+GridText10.UITK#1,YauiBench.ScenarioTick (ms),600,1.797,1.796,1.86,2.098
+GridText10.UITK#1,Yaui.EarlySubmit (ms),600,0.002,0.002,0.002,0.005
+GridText10.UITK#1,Yaui.Submit (ms),600,0.008,0.008,0.01,0.049
+GridText10.UITK#1,Yaui.Collect (ms),600,0.018,0.018,0.021,0.062
+GridText10.UITK#1,Yaui.Layout (ms),600,0,0,0,0
+GridText10.UITK#1,Yaui.Text.Generate (ms),600,0,0,0,0
+GridText10.UITK#1,Yaui.Text.Finish (ms),600,0,0,0,0
+GridText10.UITK#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.019,0.018,0.022,0.063
+GridText10.UITK#1,UIEvents.WillRenderCanvases (ms),600,0.015,0.015,0.017,0.059
+GridText10.UITK#1,Canvas.BuildBatch (ms),600,0,0,0,0
+GridText10.UITK#1,UI.RenderOverlays (ms),600,1.021,1.062,1.304,2.537
+GridText10.UITK#1,Layout (ms),600,0.003,0.003,0.004,0.03
+GridText10.UITK#1,PreLateUpdate.UIElementsUpdatePanels (ms),600,9.02,8.993,9.314,9.605
+GridText10.UITK#1,PostLateUpdate.UIElementsRepaintPanels (ms),600,5.005,4.999,5.179,5.577
+GridText10.UITK#1,UIElements.UpdateLayout (ms),600,8.903,8.897,9.103,9.37
+GridText10.UITK#1,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridText10.UITK#1,UIR.DrawChain (ms),600,0.937,0.961,1.202,2.355
+GridHitTest.YAUI#1,CPU Main (ms),600,3.483,3.476,3.656,7.402
+GridHitTest.YAUI#1,CPU Main Present Wait (ms),600,7.642,7.649,8.533,9.306
+GridHitTest.YAUI#1,CPU Render (ms),600,0.984,0.968,1.13,1.536
+GridHitTest.YAUI#1,GPU (ms),600,9.31,9.312,9.362,9.528
+GridHitTest.YAUI#1,GC Alloc (bytes),600,728.007,0,0,213824
+GridHitTest.YAUI#1,Batches Count,600,0,0,0,0
+GridHitTest.YAUI#1,SetPass Calls Count,600,4,4,4,8
+GridHitTest.YAUI#1,Draw Calls Count,600,0,0,0,0
+GridHitTest.YAUI#1,Vertices Count,600,0,0,0,0
+GridHitTest.YAUI#1,YauiBench.ScenarioTick (ms),600,0.177,0.174,0.22,0.272
+GridHitTest.YAUI#1,Yaui.EarlySubmit (ms),600,0.004,0.004,0.005,0.008
+GridHitTest.YAUI#1,Yaui.Submit (ms),600,0.018,0.018,0.022,0.025
+GridHitTest.YAUI#1,Yaui.Collect (ms),600,0.034,0.032,0.039,0.092
+GridHitTest.YAUI#1,Yaui.Layout (ms),600,0,0,0,0
+GridHitTest.YAUI#1,Yaui.Text.Generate (ms),600,0,0,0,0
+GridHitTest.YAUI#1,Yaui.Text.Finish (ms),600,0,0,0,0
+GridHitTest.YAUI#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.034,0.033,0.038,0.106
+GridHitTest.YAUI#1,UIEvents.WillRenderCanvases (ms),600,0.028,0.028,0.033,0.101
+GridHitTest.YAUI#1,Canvas.BuildBatch (ms),600,0,0,0,0
+GridHitTest.YAUI#1,UI.RenderOverlays (ms),600,0.007,0.007,0.008,0.06
+GridHitTest.YAUI#1,Layout (ms),600,0.007,0.006,0.008,0.075
+GridHitTest.YAUI#1,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.027,0.025,0.031,0.105
+GridHitTest.YAUI#1,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+GridHitTest.YAUI#1,UIElements.UpdateLayout (ms),600,0,0,0,0
+GridHitTest.YAUI#1,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridHitTest.YAUI#1,UIR.DrawChain (ms),600,0,0,0,0
+GridHitTest.uGUI#1,CPU Main (ms),600,10.345,10.374,11.467,13.685
+GridHitTest.uGUI#1,CPU Main Present Wait (ms),600,0.79,0.676,2.231,3.615
+GridHitTest.uGUI#1,CPU Render (ms),600,1.086,0.977,1.581,2.05
+GridHitTest.uGUI#1,GPU (ms),600,8.974,8.973,9.015,9.128
+GridHitTest.uGUI#1,GC Alloc (bytes),600,728.007,0,0,213824
+GridHitTest.uGUI#1,Batches Count,600,0,0,0,0
+GridHitTest.uGUI#1,SetPass Calls Count,600,62.895,63,63,63
+GridHitTest.uGUI#1,Draw Calls Count,600,0,0,0,0
+GridHitTest.uGUI#1,Vertices Count,600,0,0,0,0
+GridHitTest.uGUI#1,YauiBench.ScenarioTick (ms),600,8.16,8.252,9.207,10.185
+GridHitTest.uGUI#1,Yaui.EarlySubmit (ms),600,0.002,0.002,0.004,0.089
+GridHitTest.uGUI#1,Yaui.Submit (ms),600,0.007,0.006,0.011,0.042
+GridHitTest.uGUI#1,Yaui.Collect (ms),600,0.018,0.016,0.023,0.059
+GridHitTest.uGUI#1,Yaui.Layout (ms),600,0,0,0,0
+GridHitTest.uGUI#1,Yaui.Text.Generate (ms),600,0,0,0,0
+GridHitTest.uGUI#1,Yaui.Text.Finish (ms),600,0,0,0,0
+GridHitTest.uGUI#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.108,0.101,0.167,0.41
+GridHitTest.uGUI#1,UIEvents.WillRenderCanvases (ms),600,0.052,0.047,0.102,0.178
+GridHitTest.uGUI#1,Canvas.BuildBatch (ms),600,0,0,0,0
+GridHitTest.uGUI#1,UI.RenderOverlays (ms),600,0.676,0.585,0.98,1.381
+GridHitTest.uGUI#1,Layout (ms),600,0.004,0.004,0.007,0.039
+GridHitTest.uGUI#1,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.02,0.018,0.038,0.068
+GridHitTest.uGUI#1,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+GridHitTest.uGUI#1,UIElements.UpdateLayout (ms),600,0,0,0,0
+GridHitTest.uGUI#1,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridHitTest.uGUI#1,UIR.DrawChain (ms),600,0,0,0,0
+GridHitTest.UITK#1,CPU Main (ms),600,5.676,5.583,6.541,8.167
+GridHitTest.UITK#1,CPU Main Present Wait (ms),600,5.456,5.504,6.434,8.183
+GridHitTest.UITK#1,CPU Render (ms),600,0.835,0.828,1.043,1.183
+GridHitTest.UITK#1,GPU (ms),600,10.21,10.206,10.285,10.419
+GridHitTest.UITK#1,GC Alloc (bytes),600,728.007,0,0,213824
+GridHitTest.UITK#1,Batches Count,600,0,0,0,0
+GridHitTest.UITK#1,SetPass Calls Count,600,4,4,4,4
+GridHitTest.UITK#1,Draw Calls Count,600,0,0,0,0
+GridHitTest.UITK#1,Vertices Count,600,0,0,0,0
+GridHitTest.UITK#1,YauiBench.ScenarioTick (ms),600,2.426,2.375,3.081,4.301
+GridHitTest.UITK#1,Yaui.EarlySubmit (ms),600,0.003,0.003,0.004,0.028
+GridHitTest.UITK#1,Yaui.Submit (ms),600,0.008,0.008,0.01,0.095
+GridHitTest.UITK#1,Yaui.Collect (ms),600,0.02,0.019,0.033,0.072
+GridHitTest.UITK#1,Yaui.Layout (ms),600,0,0,0,0
+GridHitTest.UITK#1,Yaui.Text.Generate (ms),600,0,0,0,0
+GridHitTest.UITK#1,Yaui.Text.Finish (ms),600,0,0,0,0
+GridHitTest.UITK#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.023,0.022,0.027,0.086
+GridHitTest.UITK#1,UIEvents.WillRenderCanvases (ms),600,0.019,0.018,0.022,0.081
+GridHitTest.UITK#1,Canvas.BuildBatch (ms),600,0,0,0,0
+GridHitTest.UITK#1,UI.RenderOverlays (ms),600,0.828,0.833,1.019,1.204
+GridHitTest.UITK#1,Layout (ms),600,0.004,0.004,0.005,0.058
+GridHitTest.UITK#1,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.093,0.09,0.107,0.219
+GridHitTest.UITK#1,PostLateUpdate.UIElementsRepaintPanels (ms),600,0.104,0.1,0.125,0.286
+GridHitTest.UITK#1,UIElements.UpdateLayout (ms),600,0.033,0.032,0.042,0.094
+GridHitTest.UITK#1,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridHitTest.UITK#1,UIR.DrawChain (ms),600,0.696,0.701,0.875,1.045
+ListScroll.YAUI#1,CPU Main (ms),600,3.274,3.249,3.67,7.053
+ListScroll.YAUI#1,CPU Main Present Wait (ms),600,7.851,7.855,8.74,9.21
+ListScroll.YAUI#1,CPU Render (ms),600,0.9,0.891,1.058,1.278
+ListScroll.YAUI#1,GPU (ms),600,7.793,7.794,7.839,8.017
+ListScroll.YAUI#1,GC Alloc (bytes),600,728.007,0,0,213824
+ListScroll.YAUI#1,Batches Count,600,0,0,0,0
+ListScroll.YAUI#1,SetPass Calls Count,600,4,4,4,4
+ListScroll.YAUI#1,Draw Calls Count,600,0,0,0,0
+ListScroll.YAUI#1,Vertices Count,600,0,0,0,0
+ListScroll.YAUI#1,YauiBench.ScenarioTick (ms),600,0.05,0.049,0.058,0.131
+ListScroll.YAUI#1,Yaui.EarlySubmit (ms),600,0.003,0.003,0.004,0.007
+ListScroll.YAUI#1,Yaui.Submit (ms),600,0.017,0.017,0.021,0.08
+ListScroll.YAUI#1,Yaui.Collect (ms),600,0.351,0.337,0.434,0.673
+ListScroll.YAUI#1,Yaui.Layout (ms),600,0,0,0,0
+ListScroll.YAUI#1,Yaui.Text.Generate (ms),600,0,0,0,0
+ListScroll.YAUI#1,Yaui.Text.Finish (ms),600,0,0,0,0
+ListScroll.YAUI#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.029,0.029,0.034,0.12
+ListScroll.YAUI#1,UIEvents.WillRenderCanvases (ms),600,0.025,0.024,0.029,0.115
+ListScroll.YAUI#1,Canvas.BuildBatch (ms),600,0,0,0,0
+ListScroll.YAUI#1,UI.RenderOverlays (ms),600,0.005,0.005,0.006,0.031
+ListScroll.YAUI#1,Layout (ms),600,0.006,0.005,0.007,0.051
+ListScroll.YAUI#1,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.025,0.025,0.03,0.089
+ListScroll.YAUI#1,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+ListScroll.YAUI#1,UIElements.UpdateLayout (ms),600,0,0,0,0
+ListScroll.YAUI#1,TextGenerator.GenerateText (ms),600,0,0,0,0
+ListScroll.YAUI#1,UIR.DrawChain (ms),600,0,0,0,0
+ListScroll.uGUI#1,CPU Main (ms),600,7.981,7.763,9.444,11.565
+ListScroll.uGUI#1,CPU Main Present Wait (ms),600,3.138,3.273,4.66,7.048
+ListScroll.uGUI#1,CPU Render (ms),600,0.591,0.528,0.854,1.485
+ListScroll.uGUI#1,GPU (ms),600,5.908,6.185,6.202,6.257
+ListScroll.uGUI#1,GC Alloc (bytes),600,728.007,0,0,213824
+ListScroll.uGUI#1,Batches Count,600,0,0,0,0
+ListScroll.uGUI#1,SetPass Calls Count,600,4.992,5,5,5
+ListScroll.uGUI#1,Draw Calls Count,600,0,0,0,0
+ListScroll.uGUI#1,Vertices Count,600,0,0,0,0
+ListScroll.uGUI#1,YauiBench.ScenarioTick (ms),600,0.248,0.19,0.56,1.089
+ListScroll.uGUI#1,Yaui.EarlySubmit (ms),600,0.002,0.002,0.003,0.035
+ListScroll.uGUI#1,Yaui.Submit (ms),600,0.008,0.007,0.011,0.422
+ListScroll.uGUI#1,Yaui.Collect (ms),600,0.017,0.016,0.019,0.053
+ListScroll.uGUI#1,Yaui.Layout (ms),600,0,0,0,0
+ListScroll.uGUI#1,Yaui.Text.Generate (ms),600,0,0,0,0
+ListScroll.uGUI#1,Yaui.Text.Finish (ms),600,0,0,0,0
+ListScroll.uGUI#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,5.594,5.466,6.736,8.306
+ListScroll.uGUI#1,UIEvents.WillRenderCanvases (ms),600,5.546,5.413,6.699,8.263
+ListScroll.uGUI#1,Canvas.BuildBatch (ms),600,0.043,0.035,0.075,0.485
+ListScroll.uGUI#1,UI.RenderOverlays (ms),600,0.157,0.134,0.219,0.744
+ListScroll.uGUI#1,Layout (ms),600,0.005,0.004,0.008,0.043
+ListScroll.uGUI#1,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.019,0.018,0.025,0.058
+ListScroll.uGUI#1,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+ListScroll.uGUI#1,UIElements.UpdateLayout (ms),600,0,0,0,0
+ListScroll.uGUI#1,TextGenerator.GenerateText (ms),600,0,0,0,0
+ListScroll.uGUI#1,UIR.DrawChain (ms),600,0,0,0,0
+ListScroll.UITK#1,CPU Main (ms),600,4.105,4.109,4.387,7.471
+ListScroll.UITK#1,CPU Main Present Wait (ms),600,6.996,6.973,7.782,8.758
+ListScroll.UITK#1,CPU Render (ms),600,0.829,0.838,0.937,1.186
+ListScroll.UITK#1,GPU (ms),600,9.217,9.577,9.727,10.923
+ListScroll.UITK#1,GC Alloc (bytes),600,728.007,0,0,213824
+ListScroll.UITK#1,Batches Count,600,0,0,0,0
+ListScroll.UITK#1,SetPass Calls Count,600,3.993,4,4,4
+ListScroll.UITK#1,Draw Calls Count,600,0,0,0,0
+ListScroll.UITK#1,Vertices Count,600,0,0,0,0
+ListScroll.UITK#1,YauiBench.ScenarioTick (ms),600,0.367,0.364,0.419,0.531
+ListScroll.UITK#1,Yaui.EarlySubmit (ms),600,0.003,0.003,0.005,0.007
+ListScroll.UITK#1,Yaui.Submit (ms),600,0.011,0.01,0.013,0.078
+ListScroll.UITK#1,Yaui.Collect (ms),600,0.024,0.023,0.029,0.094
+ListScroll.UITK#1,Yaui.Layout (ms),600,0,0,0,0
+ListScroll.UITK#1,Yaui.Text.Generate (ms),600,0,0,0,0
+ListScroll.UITK#1,Yaui.Text.Finish (ms),600,0,0,0,0
+ListScroll.UITK#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.03,0.03,0.034,0.088
+ListScroll.UITK#1,UIEvents.WillRenderCanvases (ms),600,0.025,0.024,0.029,0.081
+ListScroll.UITK#1,Canvas.BuildBatch (ms),600,0,0,0,0
+ListScroll.UITK#1,UI.RenderOverlays (ms),600,0.746,0.713,0.948,1.412
+ListScroll.UITK#1,Layout (ms),600,0.005,0.005,0.007,0.01
+ListScroll.UITK#1,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.123,0.122,0.139,0.197
+ListScroll.UITK#1,PostLateUpdate.UIElementsRepaintPanels (ms),600,0.24,0.235,0.289,0.353
+ListScroll.UITK#1,UIElements.UpdateLayout (ms),600,0.013,0.012,0.015,0.05
+ListScroll.UITK#1,TextGenerator.GenerateText (ms),600,0,0,0,0
+ListScroll.UITK#1,UIR.DrawChain (ms),600,0.612,0.571,0.799,1.299
+ListResize10.YAUI#1,CPU Main (ms),600,17.547,17.658,20.832,22.894
+ListResize10.YAUI#1,CPU Main Present Wait (ms),600,0.233,0.026,0.634,7.884
+ListResize10.YAUI#1,CPU Render (ms),600,0.837,0.82,1.028,1.636
+ListResize10.YAUI#1,GPU (ms),600,7.95,7.944,7.997,8.031
+ListResize10.YAUI#1,GC Alloc (bytes),600,728.007,0,0,213824
+ListResize10.YAUI#1,Batches Count,600,0,0,0,0
+ListResize10.YAUI#1,SetPass Calls Count,600,3.993,4,4,4
+ListResize10.YAUI#1,Draw Calls Count,600,0,0,0,0
+ListResize10.YAUI#1,Vertices Count,600,0,0,0,0
+ListResize10.YAUI#1,YauiBench.ScenarioTick (ms),600,0.042,0.037,0.065,0.125
+ListResize10.YAUI#1,Yaui.EarlySubmit (ms),600,0.15,0.145,0.197,0.381
+ListResize10.YAUI#1,Yaui.Submit (ms),600,0.063,0.059,0.087,0.177
+ListResize10.YAUI#1,Yaui.Collect (ms),600,15.194,15.274,18.23,20.643
+ListResize10.YAUI#1,Yaui.Layout (ms),600,0.061,0.059,0.075,0.301
+ListResize10.YAUI#1,Yaui.Text.Generate (ms),600,8.868,8.728,10.536,14.246
+ListResize10.YAUI#1,Yaui.Text.Finish (ms),600,2.966,2.925,3.435,4.149
+ListResize10.YAUI#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.021,0.02,0.032,0.07
+ListResize10.YAUI#1,UIEvents.WillRenderCanvases (ms),600,0.018,0.017,0.027,0.067
+ListResize10.YAUI#1,Canvas.BuildBatch (ms),600,0,0,0,0
+ListResize10.YAUI#1,UI.RenderOverlays (ms),600,0.003,0.003,0.004,0.048
+ListResize10.YAUI#1,Layout (ms),600,0.004,0.004,0.006,0.051
+ListResize10.YAUI#1,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.02,0.018,0.033,0.087
+ListResize10.YAUI#1,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+ListResize10.YAUI#1,UIElements.UpdateLayout (ms),600,0,0,0,0
+ListResize10.YAUI#1,TextGenerator.GenerateText (ms),600,0,0,0,0
+ListResize10.YAUI#1,UIR.DrawChain (ms),600,0,0,0,0
+ListResize10.uGUI#1,CPU Main (ms),600,112.122,112.094,112.608,134.722
+ListResize10.uGUI#1,CPU Main Present Wait (ms),600,0.021,0.019,0.025,0.462
+ListResize10.uGUI#1,CPU Render (ms),600,0.86,0.833,1.11,1.695
+ListResize10.uGUI#1,GPU (ms),600,6.211,6.219,6.253,6.366
+ListResize10.uGUI#1,GC Alloc (bytes),600,728.007,0,0,213824
+ListResize10.uGUI#1,Batches Count,600,0,0,0,0
+ListResize10.uGUI#1,SetPass Calls Count,600,4.992,5,5,5
+ListResize10.uGUI#1,Draw Calls Count,600,0,0,0,0
+ListResize10.uGUI#1,Vertices Count,600,0,0,0,0
+ListResize10.uGUI#1,YauiBench.ScenarioTick (ms),600,0.462,0.46,0.501,0.532
+ListResize10.uGUI#1,Yaui.EarlySubmit (ms),600,0.002,0.002,0.002,0.036
+ListResize10.uGUI#1,Yaui.Submit (ms),600,0.006,0.006,0.007,0.042
+ListResize10.uGUI#1,Yaui.Collect (ms),600,0.016,0.016,0.017,0.045
+ListResize10.uGUI#1,Yaui.Layout (ms),600,0,0,0,0
+ListResize10.uGUI#1,Yaui.Text.Generate (ms),600,0,0,0,0
+ListResize10.uGUI#1,Yaui.Text.Finish (ms),600,0,0,0,0
+ListResize10.uGUI#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,109.683,109.666,110.127,132.083
+ListResize10.uGUI#1,UIEvents.WillRenderCanvases (ms),600,109.642,109.625,110.086,132.052
+ListResize10.uGUI#1,Canvas.BuildBatch (ms),600,0.032,0.032,0.036,0.069
+ListResize10.uGUI#1,UI.RenderOverlays (ms),600,0.219,0.179,0.345,1.043
+ListResize10.uGUI#1,Layout (ms),600,100.295,100.323,100.731,100.969
+ListResize10.uGUI#1,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.016,0.016,0.017,0.051
+ListResize10.uGUI#1,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+ListResize10.uGUI#1,UIElements.UpdateLayout (ms),600,0,0,0,0
+ListResize10.uGUI#1,TextGenerator.GenerateText (ms),600,0,0,0,0
+ListResize10.uGUI#1,UIR.DrawChain (ms),600,0,0,0,0
+ListResize10.UITK#1,CPU Main (ms),600,11.029,10.968,11.713,13.563
+ListResize10.UITK#1,CPU Main Present Wait (ms),600,0.102,0.023,0.484,0.933
+ListResize10.UITK#1,CPU Render (ms),600,0.951,0.954,1.121,2.587
+ListResize10.UITK#1,GPU (ms),600,8.776,8.778,8.83,8.923
+ListResize10.UITK#1,GC Alloc (bytes),600,728.007,0,0,213824
+ListResize10.UITK#1,Batches Count,600,0,0,0,0
+ListResize10.UITK#1,SetPass Calls Count,600,4,4,4,4
+ListResize10.UITK#1,Draw Calls Count,600,0,0,0,0
+ListResize10.UITK#1,Vertices Count,600,0,0,0,0
+ListResize10.UITK#1,YauiBench.ScenarioTick (ms),600,0.687,0.657,0.781,1.936
+ListResize10.UITK#1,Yaui.EarlySubmit (ms),600,0.002,0.002,0.002,0.005
+ListResize10.UITK#1,Yaui.Submit (ms),600,0.008,0.007,0.01,0.046
+ListResize10.UITK#1,Yaui.Collect (ms),600,0.016,0.015,0.021,0.07
+ListResize10.UITK#1,Yaui.Layout (ms),600,0,0,0,0
+ListResize10.UITK#1,Yaui.Text.Generate (ms),600,0,0,0,0
+ListResize10.UITK#1,Yaui.Text.Finish (ms),600,0,0,0,0
+ListResize10.UITK#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.019,0.018,0.024,0.044
+ListResize10.UITK#1,UIEvents.WillRenderCanvases (ms),600,0.016,0.015,0.02,0.041
+ListResize10.UITK#1,Canvas.BuildBatch (ms),600,0,0,0,0
+ListResize10.UITK#1,UI.RenderOverlays (ms),600,0.714,0.717,0.786,2.258
+ListResize10.UITK#1,Layout (ms),600,0.004,0.003,0.005,0.01
+ListResize10.UITK#1,PreLateUpdate.UIElementsUpdatePanels (ms),600,5.479,5.397,6.084,7.802
+ListResize10.UITK#1,PostLateUpdate.UIElementsRepaintPanels (ms),600,2.721,2.723,2.892,3.069
+ListResize10.UITK#1,UIElements.UpdateLayout (ms),600,5.39,5.312,5.991,7.714
+ListResize10.UITK#1,TextGenerator.GenerateText (ms),600,0,0,0,0
+ListResize10.UITK#1,UIR.DrawChain (ms),600,0.609,0.613,0.677,1.977
+Empty+Ballast#1,CPU Main (ms),600,2.859,2.803,3.231,7.064
+Empty+Ballast#1,CPU Main Present Wait (ms),600,24.688,24.725,25.544,49.415
+Empty+Ballast#1,CPU Render (ms),600,0.763,0.742,0.894,1.38
+Empty+Ballast#1,GPU (ms),600,27.337,27.564,27.601,27.624
+Empty+Ballast#1,GC Alloc (bytes),600,728.007,0,0,213824
+Empty+Ballast#1,Batches Count,600,0,0,0,0
+Empty+Ballast#1,SetPass Calls Count,600,4,4,4,4
+Empty+Ballast#1,Draw Calls Count,600,0,0,0,0
+Empty+Ballast#1,Vertices Count,600,0,0,0,0
+Empty+Ballast#1,YauiBench.ScenarioTick (ms),600,0.007,0.007,0.007,0.048
+Empty+Ballast#1,Yaui.EarlySubmit (ms),600,0.004,0.004,0.004,0.005
+Empty+Ballast#1,Yaui.Submit (ms),600,0.011,0.01,0.012,0.047
+Empty+Ballast#1,Yaui.Collect (ms),600,0.026,0.025,0.029,0.073
+Empty+Ballast#1,Yaui.Layout (ms),600,0,0,0,0
+Empty+Ballast#1,Yaui.Text.Generate (ms),600,0,0,0,0
+Empty+Ballast#1,Yaui.Text.Finish (ms),600,0,0,0,0
+Empty+Ballast#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.031,0.03,0.034,0.094
+Empty+Ballast#1,UIEvents.WillRenderCanvases (ms),600,0.026,0.025,0.028,0.089
+Empty+Ballast#1,Canvas.BuildBatch (ms),600,0,0,0,0
+Empty+Ballast#1,UI.RenderOverlays (ms),600,0.006,0.005,0.008,0.177
+Empty+Ballast#1,Layout (ms),600,0.006,0.006,0.007,0.064
+Empty+Ballast#1,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.024,0.024,0.027,0.084
+Empty+Ballast#1,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+Empty+Ballast#1,UIElements.UpdateLayout (ms),600,0,0,0,0
+Empty+Ballast#1,TextGenerator.GenerateText (ms),600,0,0,0,0
+Empty+Ballast#1,UIR.DrawChain (ms),600,0,0,0,0
+GridNone+Ballast.YAUI#1,CPU Main (ms),600,3.02,2.937,3.444,7.398
+GridNone+Ballast.YAUI#1,CPU Main Present Wait (ms),600,27.533,27.624,28.275,52.464
+GridNone+Ballast.YAUI#1,CPU Render (ms),600,0.868,0.83,1.106,1.827
+GridNone+Ballast.YAUI#1,GPU (ms),600,30.52,30.569,30.607,30.674
+GridNone+Ballast.YAUI#1,GC Alloc (bytes),600,728.007,0,0,213824
+GridNone+Ballast.YAUI#1,Batches Count,600,0,0,0,0
+GridNone+Ballast.YAUI#1,SetPass Calls Count,600,5,5,5,10
+GridNone+Ballast.YAUI#1,Draw Calls Count,600,0,0,0,0
+GridNone+Ballast.YAUI#1,Vertices Count,600,0,0,0,0
+GridNone+Ballast.YAUI#1,YauiBench.ScenarioTick (ms),600,0.008,0.007,0.008,0.11
+GridNone+Ballast.YAUI#1,Yaui.EarlySubmit (ms),600,0.004,0.003,0.004,0.144
+GridNone+Ballast.YAUI#1,Yaui.Submit (ms),600,0.02,0.019,0.022,0.284
+GridNone+Ballast.YAUI#1,Yaui.Collect (ms),600,0.031,0.03,0.033,0.078
+GridNone+Ballast.YAUI#1,Yaui.Layout (ms),600,0,0,0,0
+GridNone+Ballast.YAUI#1,Yaui.Text.Generate (ms),600,0,0,0,0
+GridNone+Ballast.YAUI#1,Yaui.Text.Finish (ms),600,0,0,0,0
+GridNone+Ballast.YAUI#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.031,0.03,0.035,0.075
+GridNone+Ballast.YAUI#1,UIEvents.WillRenderCanvases (ms),600,0.026,0.025,0.029,0.07
+GridNone+Ballast.YAUI#1,Canvas.BuildBatch (ms),600,0,0,0,0
+GridNone+Ballast.YAUI#1,UI.RenderOverlays (ms),600,0.006,0.006,0.009,0.049
+GridNone+Ballast.YAUI#1,Layout (ms),600,0.006,0.006,0.007,0.05
+GridNone+Ballast.YAUI#1,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.034,0.024,0.043,0.404
+GridNone+Ballast.YAUI#1,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+GridNone+Ballast.YAUI#1,UIElements.UpdateLayout (ms),600,0,0,0,0
+GridNone+Ballast.YAUI#1,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridNone+Ballast.YAUI#1,UIR.DrawChain (ms),600,0,0,0,0
+GridNone+Ballast.uGUI#1,CPU Main (ms),600,3.721,3.654,4.117,7.834
+GridNone+Ballast.uGUI#1,CPU Main Present Wait (ms),600,26.838,26.888,27.547,53.489
+GridNone+Ballast.uGUI#1,CPU Render (ms),600,1.532,1.509,1.78,2.332
+GridNone+Ballast.uGUI#1,GPU (ms),600,30.473,30.574,30.62,30.643
+GridNone+Ballast.uGUI#1,GC Alloc (bytes),600,728.007,0,0,213824
+GridNone+Ballast.uGUI#1,Batches Count,600,0,0,0,0
+GridNone+Ballast.uGUI#1,SetPass Calls Count,600,64,64,64,128
+GridNone+Ballast.uGUI#1,Draw Calls Count,600,0,0,0,0
+GridNone+Ballast.uGUI#1,Vertices Count,600,0,0,0,0
+GridNone+Ballast.uGUI#1,YauiBench.ScenarioTick (ms),600,0.007,0.006,0.007,0.059
+GridNone+Ballast.uGUI#1,Yaui.EarlySubmit (ms),600,0.004,0.004,0.004,0.042
+GridNone+Ballast.uGUI#1,Yaui.Submit (ms),600,0.011,0.01,0.012,0.068
+GridNone+Ballast.uGUI#1,Yaui.Collect (ms),600,0.026,0.026,0.028,0.06
+GridNone+Ballast.uGUI#1,Yaui.Layout (ms),600,0,0,0,0
+GridNone+Ballast.uGUI#1,Yaui.Text.Generate (ms),600,0,0,0,0
+GridNone+Ballast.uGUI#1,Yaui.Text.Finish (ms),600,0,0,0,0
+GridNone+Ballast.uGUI#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.213,0.206,0.251,0.47
+GridNone+Ballast.uGUI#1,UIEvents.WillRenderCanvases (ms),600,0.074,0.07,0.09,0.333
+GridNone+Ballast.uGUI#1,Canvas.BuildBatch (ms),600,0,0,0,0
+GridNone+Ballast.uGUI#1,UI.RenderOverlays (ms),600,1.026,0.991,1.276,3.016
+GridNone+Ballast.uGUI#1,Layout (ms),600,0.007,0.007,0.007,0.05
+GridNone+Ballast.uGUI#1,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.025,0.024,0.027,0.068
+GridNone+Ballast.uGUI#1,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+GridNone+Ballast.uGUI#1,UIElements.UpdateLayout (ms),600,0,0,0,0
+GridNone+Ballast.uGUI#1,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridNone+Ballast.uGUI#1,UIR.DrawChain (ms),600,0,0,0,0
+GridNone+Ballast.UITK#1,CPU Main (ms),600,4.102,4.01,4.783,12.835
+GridNone+Ballast.UITK#1,CPU Main Present Wait (ms),600,32.152,32.073,65.177,66.123
+GridNone+Ballast.UITK#1,CPU Render (ms),600,1.046,1.04,1.207,1.99
+GridNone+Ballast.UITK#1,GPU (ms),600,29.505,36.269,36.323,36.364
+GridNone+Ballast.UITK#1,GC Alloc (bytes),600,728.007,0,0,213824
+GridNone+Ballast.UITK#1,Batches Count,600,0,0,0,0
+GridNone+Ballast.UITK#1,SetPass Calls Count,600,5,5,5,5
+GridNone+Ballast.UITK#1,Draw Calls Count,600,0,0,0,0
+GridNone+Ballast.UITK#1,Vertices Count,600,0,0,0,0
+GridNone+Ballast.UITK#1,YauiBench.ScenarioTick (ms),600,0.007,0.007,0.008,0.074
+GridNone+Ballast.UITK#1,Yaui.EarlySubmit (ms),600,0.004,0.004,0.005,0.006
+GridNone+Ballast.UITK#1,Yaui.Submit (ms),600,0.011,0.011,0.013,0.105
+GridNone+Ballast.UITK#1,Yaui.Collect (ms),600,0.025,0.025,0.028,0.111
+GridNone+Ballast.UITK#1,Yaui.Layout (ms),600,0,0,0,0
+GridNone+Ballast.UITK#1,Yaui.Text.Generate (ms),600,0,0,0,0
+GridNone+Ballast.UITK#1,Yaui.Text.Finish (ms),600,0,0,0,0
+GridNone+Ballast.UITK#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.031,0.03,0.035,0.101
+GridNone+Ballast.UITK#1,UIEvents.WillRenderCanvases (ms),600,0.026,0.025,0.029,0.095
+GridNone+Ballast.UITK#1,Canvas.BuildBatch (ms),600,0,0,0,0
+GridNone+Ballast.UITK#1,UI.RenderOverlays (ms),600,1.226,1.248,1.77,1.999
+GridNone+Ballast.UITK#1,Layout (ms),600,0.006,0.006,0.007,0.075
+GridNone+Ballast.UITK#1,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.126,0.121,0.148,0.229
+GridNone+Ballast.UITK#1,PostLateUpdate.UIElementsRepaintPanels (ms),600,0.125,0.118,0.164,0.224
+GridNone+Ballast.UITK#1,UIElements.UpdateLayout (ms),600,0.015,0.015,0.018,0.02
+GridNone+Ballast.UITK#1,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridNone+Ballast.UITK#1,UIR.DrawChain (ms),600,1.079,1.101,1.626,1.817
+ListScroll+Ballast.YAUI#1,CPU Main (ms),600,3.531,3.438,3.934,7.29
+ListScroll+Ballast.YAUI#1,CPU Main Present Wait (ms),600,26.257,26.314,27.086,52.703
+ListScroll+Ballast.YAUI#1,CPU Render (ms),600,1.018,0.997,1.286,1.987
+ListScroll+Ballast.YAUI#1,GPU (ms),600,29.657,29.803,29.849,29.873
+ListScroll+Ballast.YAUI#1,GC Alloc (bytes),600,728.007,0,0,213824
+ListScroll+Ballast.YAUI#1,Batches Count,600,0,0,0,0
+ListScroll+Ballast.YAUI#1,SetPass Calls Count,600,5,5,5,5
+ListScroll+Ballast.YAUI#1,Draw Calls Count,600,0,0,0,0
+ListScroll+Ballast.YAUI#1,Vertices Count,600,0,0,0,0
+ListScroll+Ballast.YAUI#1,YauiBench.ScenarioTick (ms),600,0.05,0.048,0.057,0.146
+ListScroll+Ballast.YAUI#1,Yaui.EarlySubmit (ms),600,0.004,0.004,0.005,0.006
+ListScroll+Ballast.YAUI#1,Yaui.Submit (ms),600,0.018,0.017,0.02,0.103
+ListScroll+Ballast.YAUI#1,Yaui.Collect (ms),600,0.438,0.428,0.515,0.85
+ListScroll+Ballast.YAUI#1,Yaui.Layout (ms),600,0,0,0,0
+ListScroll+Ballast.YAUI#1,Yaui.Text.Generate (ms),600,0,0,0,0
+ListScroll+Ballast.YAUI#1,Yaui.Text.Finish (ms),600,0,0,0,0
+ListScroll+Ballast.YAUI#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.035,0.031,0.036,1.561
+ListScroll+Ballast.YAUI#1,UIEvents.WillRenderCanvases (ms),600,0.029,0.026,0.029,1.554
+ListScroll+Ballast.YAUI#1,Canvas.BuildBatch (ms),600,0,0,0,0
+ListScroll+Ballast.YAUI#1,UI.RenderOverlays (ms),600,0.006,0.006,0.009,0.083
+ListScroll+Ballast.YAUI#1,Layout (ms),600,0.006,0.006,0.007,0.008
+ListScroll+Ballast.YAUI#1,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.024,0.024,0.027,0.102
+ListScroll+Ballast.YAUI#1,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+ListScroll+Ballast.YAUI#1,UIElements.UpdateLayout (ms),600,0,0,0,0
+ListScroll+Ballast.YAUI#1,TextGenerator.GenerateText (ms),600,0,0,0,0
+ListScroll+Ballast.YAUI#1,UIR.DrawChain (ms),600,0,0,0,0
+ListScroll+Ballast.uGUI#1,CPU Main (ms),600,11.641,11.526,13.044,15.383
+ListScroll+Ballast.uGUI#1,CPU Main Present Wait (ms),600,17.356,17.472,18.685,41.708
+ListScroll+Ballast.uGUI#1,CPU Render (ms),600,0.998,0.963,1.318,2
+ListScroll+Ballast.uGUI#1,GPU (ms),600,28.915,29.011,29.053,29.072
+ListScroll+Ballast.uGUI#1,GC Alloc (bytes),600,728.007,0,0,213824
+ListScroll+Ballast.uGUI#1,Batches Count,600,0,0,0,0
+ListScroll+Ballast.uGUI#1,SetPass Calls Count,600,6,6,6,6
+ListScroll+Ballast.uGUI#1,Draw Calls Count,600,0,0,0,0
+ListScroll+Ballast.uGUI#1,Vertices Count,600,0,0,0,0
+ListScroll+Ballast.uGUI#1,YauiBench.ScenarioTick (ms),600,0.348,0.316,0.489,1.082
+ListScroll+Ballast.uGUI#1,Yaui.EarlySubmit (ms),600,0.003,0.003,0.004,0.007
+ListScroll+Ballast.uGUI#1,Yaui.Submit (ms),600,0.01,0.01,0.012,0.114
+ListScroll+Ballast.uGUI#1,Yaui.Collect (ms),600,0.024,0.023,0.028,0.11
+ListScroll+Ballast.uGUI#1,Yaui.Layout (ms),600,0,0,0,0
+ListScroll+Ballast.uGUI#1,Yaui.Text.Generate (ms),600,0,0,0,0
+ListScroll+Ballast.uGUI#1,Yaui.Text.Finish (ms),600,0,0,0,0
+ListScroll+Ballast.uGUI#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,8.254,8.238,9.292,11.429
+ListScroll+Ballast.uGUI#1,UIEvents.WillRenderCanvases (ms),600,8.185,8.167,9.178,11.357
+ListScroll+Ballast.uGUI#1,Canvas.BuildBatch (ms),600,0.057,0.055,0.068,0.406
+ListScroll+Ballast.uGUI#1,UI.RenderOverlays (ms),600,0.167,0.208,0.367,1.234
+ListScroll+Ballast.uGUI#1,Layout (ms),600,0.006,0.006,0.007,0.039
+ListScroll+Ballast.uGUI#1,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.023,0.023,0.028,0.058
+ListScroll+Ballast.uGUI#1,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+ListScroll+Ballast.uGUI#1,UIElements.UpdateLayout (ms),600,0,0,0,0
+ListScroll+Ballast.uGUI#1,TextGenerator.GenerateText (ms),600,0,0,0,0
+ListScroll+Ballast.uGUI#1,UIR.DrawChain (ms),600,0,0,0,0
+ListScroll+Ballast.UITK#1,CPU Main (ms),600,4.384,4.152,5.027,10.255
+ListScroll+Ballast.UITK#1,CPU Main Present Wait (ms),600,26.203,26.294,53.643,54.641
+ListScroll+Ballast.UITK#1,CPU Render (ms),600,1.048,1.006,1.332,1.988
+ListScroll+Ballast.UITK#1,GPU (ms),600,25.813,30.599,30.659,30.698
+ListScroll+Ballast.UITK#1,GC Alloc (bytes),600,728.007,0,0,213824
+ListScroll+Ballast.UITK#1,Batches Count,600,0,0,0,0
+ListScroll+Ballast.UITK#1,SetPass Calls Count,600,5,5,5,5
+ListScroll+Ballast.UITK#1,Draw Calls Count,600,0,0,0,0
+ListScroll+Ballast.UITK#1,Vertices Count,600,0,0,0,0
+ListScroll+Ballast.UITK#1,YauiBench.ScenarioTick (ms),600,0.366,0.343,0.445,0.852
+ListScroll+Ballast.UITK#1,Yaui.EarlySubmit (ms),600,0.004,0.003,0.005,0.062
+ListScroll+Ballast.UITK#1,Yaui.Submit (ms),600,0.011,0.011,0.013,0.067
+ListScroll+Ballast.UITK#1,Yaui.Collect (ms),600,0.026,0.026,0.029,0.059
+ListScroll+Ballast.UITK#1,Yaui.Layout (ms),600,0,0,0,0
+ListScroll+Ballast.UITK#1,Yaui.Text.Generate (ms),600,0,0,0,0
+ListScroll+Ballast.UITK#1,Yaui.Text.Finish (ms),600,0,0,0,0
+ListScroll+Ballast.UITK#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.031,0.03,0.035,0.105
+ListScroll+Ballast.UITK#1,UIEvents.WillRenderCanvases (ms),600,0.025,0.025,0.028,0.098
+ListScroll+Ballast.UITK#1,Canvas.BuildBatch (ms),600,0,0,0,0
+ListScroll+Ballast.UITK#1,UI.RenderOverlays (ms),600,0.792,0.746,0.956,3.769
+ListScroll+Ballast.UITK#1,Layout (ms),600,0.006,0.006,0.007,0.011
+ListScroll+Ballast.UITK#1,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.123,0.117,0.144,0.326
+ListScroll+Ballast.UITK#1,PostLateUpdate.UIElementsRepaintPanels (ms),600,0.215,0.198,0.272,1.06
+ListScroll+Ballast.UITK#1,UIElements.UpdateLayout (ms),600,0.014,0.013,0.016,0.06
+ListScroll+Ballast.UITK#1,TextGenerator.GenerateText (ms),600,0,0,0,0
+ListScroll+Ballast.UITK#1,UIR.DrawChain (ms),600,0.632,0.588,0.757,2.915
+Empty+Ballast2#1,CPU Main (ms),600,2.89,2.789,3.332,6.888
+Empty+Ballast2#1,CPU Main Present Wait (ms),600,24.66,24.726,25.542,49.597
+Empty+Ballast2#1,CPU Render (ms),600,0.778,0.744,0.92,1.59
+Empty+Ballast2#1,GPU (ms),600,27.429,27.564,27.603,27.623
+Empty+Ballast2#1,GC Alloc (bytes),600,728.007,0,0,213824
+Empty+Ballast2#1,Batches Count,600,0,0,0,0
+Empty+Ballast2#1,SetPass Calls Count,600,4,4,4,4
+Empty+Ballast2#1,Draw Calls Count,600,0,0,0,0
+Empty+Ballast2#1,Vertices Count,600,0,0,0,0
+Empty+Ballast2#1,YauiBench.ScenarioTick (ms),600,0.007,0.006,0.008,0.078
+Empty+Ballast2#1,Yaui.EarlySubmit (ms),600,0.004,0.003,0.004,0.008
+Empty+Ballast2#1,Yaui.Submit (ms),600,0.011,0.01,0.012,0.062
+Empty+Ballast2#1,Yaui.Collect (ms),600,0.026,0.026,0.029,0.08
+Empty+Ballast2#1,Yaui.Layout (ms),600,0,0,0,0
+Empty+Ballast2#1,Yaui.Text.Generate (ms),600,0,0,0,0
+Empty+Ballast2#1,Yaui.Text.Finish (ms),600,0,0,0,0
+Empty+Ballast2#1,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.031,0.03,0.035,0.114
+Empty+Ballast2#1,UIEvents.WillRenderCanvases (ms),600,0.026,0.025,0.029,0.108
+Empty+Ballast2#1,Canvas.BuildBatch (ms),600,0,0,0,0
+Empty+Ballast2#1,UI.RenderOverlays (ms),600,0.006,0.006,0.008,0.129
+Empty+Ballast2#1,Layout (ms),600,0.006,0.006,0.007,0.045
+Empty+Ballast2#1,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.025,0.024,0.028,0.065
+Empty+Ballast2#1,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+Empty+Ballast2#1,UIElements.UpdateLayout (ms),600,0,0,0,0
+Empty+Ballast2#1,TextGenerator.GenerateText (ms),600,0,0,0,0
+Empty+Ballast2#1,UIR.DrawChain (ms),600,0,0,0,0
+Empty#2,CPU Main (ms),600,3.134,3.142,3.376,6.974
+Empty#2,CPU Main Present Wait (ms),600,7.987,7.995,8.872,9.891
+Empty#2,CPU Render (ms),600,0.778,0.767,0.914,1.276
+Empty#2,GPU (ms),600,3.66,3.591,4.358,4.534
+Empty#2,GC Alloc (bytes),600,728.007,0,0,213824
+Empty#2,Batches Count,600,0,0,0,0
+Empty#2,SetPass Calls Count,600,2.995,3,3,3
+Empty#2,Draw Calls Count,600,0,0,0,0
+Empty#2,Vertices Count,600,0,0,0,0
+Empty#2,YauiBench.ScenarioTick (ms),600,0.006,0.005,0.006,0.097
+Empty#2,Yaui.EarlySubmit (ms),600,0.004,0.004,0.005,0.035
+Empty#2,Yaui.Submit (ms),600,0.011,0.011,0.013,0.064
+Empty#2,Yaui.Collect (ms),600,0.029,0.028,0.031,0.083
+Empty#2,Yaui.Layout (ms),600,0,0,0,0
+Empty#2,Yaui.Text.Generate (ms),600,0,0,0,0
+Empty#2,Yaui.Text.Finish (ms),600,0,0,0,0
+Empty#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.033,0.032,0.039,0.12
+Empty#2,UIEvents.WillRenderCanvases (ms),600,0.028,0.027,0.033,0.114
+Empty#2,Canvas.BuildBatch (ms),600,0,0,0,0
+Empty#2,UI.RenderOverlays (ms),600,0.006,0.005,0.006,0.041
+Empty#2,Layout (ms),600,0.006,0.006,0.008,0.067
+Empty#2,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.029,0.028,0.032,0.086
+Empty#2,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+Empty#2,UIElements.UpdateLayout (ms),600,0,0,0,0
+Empty#2,TextGenerator.GenerateText (ms),600,0,0,0,0
+Empty#2,UIR.DrawChain (ms),600,0,0,0,0
+GridNone.uGUI#2,CPU Main (ms),600,3.635,3.566,4.103,8.09
+GridNone.uGUI#2,CPU Main Present Wait (ms),600,7.495,7.497,8.443,9.097
+GridNone.uGUI#2,CPU Render (ms),600,1.167,1.129,1.425,2.085
+GridNone.uGUI#2,GPU (ms),600,9.148,9.151,9.202,9.358
+GridNone.uGUI#2,GC Alloc (bytes),600,728.007,0,0,213824
+GridNone.uGUI#2,Batches Count,600,0,0,0,0
+GridNone.uGUI#2,SetPass Calls Count,600,63,63,63,63
+GridNone.uGUI#2,Draw Calls Count,600,0,0,0,0
+GridNone.uGUI#2,Vertices Count,600,0,0,0,0
+GridNone.uGUI#2,YauiBench.ScenarioTick (ms),600,0.003,0.003,0.004,0.095
+GridNone.uGUI#2,Yaui.EarlySubmit (ms),600,0.003,0.003,0.004,0.006
+GridNone.uGUI#2,Yaui.Submit (ms),600,0.01,0.009,0.011,0.074
+GridNone.uGUI#2,Yaui.Collect (ms),600,0.026,0.025,0.03,0.079
+GridNone.uGUI#2,Yaui.Layout (ms),600,0,0,0,0
+GridNone.uGUI#2,Yaui.Text.Generate (ms),600,0,0,0,0
+GridNone.uGUI#2,Yaui.Text.Finish (ms),600,0,0,0,0
+GridNone.uGUI#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.169,0.155,0.217,0.295
+GridNone.uGUI#2,UIEvents.WillRenderCanvases (ms),600,0.071,0.07,0.084,0.122
+GridNone.uGUI#2,Canvas.BuildBatch (ms),600,0,0,0,0
+GridNone.uGUI#2,UI.RenderOverlays (ms),600,0.93,0.9,1.154,1.371
+GridNone.uGUI#2,Layout (ms),600,0.006,0.006,0.007,0.045
+GridNone.uGUI#2,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.025,0.024,0.029,0.082
+GridNone.uGUI#2,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+GridNone.uGUI#2,UIElements.UpdateLayout (ms),600,0,0,0,0
+GridNone.uGUI#2,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridNone.uGUI#2,UIR.DrawChain (ms),600,0,0,0,0
+GridNone.UITK#2,CPU Main (ms),600,4.106,4.121,4.26,7.894
+GridNone.UITK#2,CPU Main Present Wait (ms),600,7.025,7.005,7.842,13.019
+GridNone.UITK#2,CPU Render (ms),600,0.855,0.841,0.992,1.357
+GridNone.UITK#2,GPU (ms),600,10.129,10.139,10.197,10.358
+GridNone.UITK#2,GC Alloc (bytes),600,728.007,0,0,213824
+GridNone.UITK#2,Batches Count,600,0,0,0,0
+GridNone.UITK#2,SetPass Calls Count,600,4,4,4,4
+GridNone.UITK#2,Draw Calls Count,600,0,0,0,0
+GridNone.UITK#2,Vertices Count,600,0,0,0,0
+GridNone.UITK#2,YauiBench.ScenarioTick (ms),600,0.003,0.003,0.004,0.006
+GridNone.UITK#2,Yaui.EarlySubmit (ms),600,0.003,0.003,0.004,0.007
+GridNone.UITK#2,Yaui.Submit (ms),600,0.01,0.01,0.012,0.044
+GridNone.UITK#2,Yaui.Collect (ms),600,0.026,0.024,0.039,0.082
+GridNone.UITK#2,Yaui.Layout (ms),600,0,0,0,0
+GridNone.UITK#2,Yaui.Text.Generate (ms),600,0,0,0,0
+GridNone.UITK#2,Yaui.Text.Finish (ms),600,0,0,0,0
+GridNone.UITK#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.028,0.027,0.031,0.073
+GridNone.UITK#2,UIEvents.WillRenderCanvases (ms),600,0.023,0.023,0.026,0.068
+GridNone.UITK#2,Canvas.BuildBatch (ms),600,0,0,0,0
+GridNone.UITK#2,UI.RenderOverlays (ms),600,1.017,1.009,1.133,1.463
+GridNone.UITK#2,Layout (ms),600,0.005,0.005,0.007,0.034
+GridNone.UITK#2,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.118,0.116,0.142,0.201
+GridNone.UITK#2,PostLateUpdate.UIElementsRepaintPanels (ms),600,0.115,0.114,0.135,0.236
+GridNone.UITK#2,UIElements.UpdateLayout (ms),600,0.014,0.014,0.016,0.084
+GridNone.UITK#2,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridNone.UITK#2,UIR.DrawChain (ms),600,0.87,0.858,0.969,1.089
+GridNone.YAUI#2,CPU Main (ms),600,3.248,3.254,3.431,6.845
+GridNone.YAUI#2,CPU Main Present Wait (ms),600,7.877,7.866,8.754,9.469
+GridNone.YAUI#2,CPU Render (ms),600,0.841,0.831,0.949,1.292
+GridNone.YAUI#2,GPU (ms),600,7.444,6.855,9.799,11.94
+GridNone.YAUI#2,GC Alloc (bytes),600,728.007,0,0,213824
+GridNone.YAUI#2,Batches Count,600,0,0,0,0
+GridNone.YAUI#2,SetPass Calls Count,600,4,4,4,4
+GridNone.YAUI#2,Draw Calls Count,600,0,0,0,0
+GridNone.YAUI#2,Vertices Count,600,0,0,0,0
+GridNone.YAUI#2,YauiBench.ScenarioTick (ms),600,0.003,0.003,0.004,0.007
+GridNone.YAUI#2,Yaui.EarlySubmit (ms),600,0.004,0.003,0.005,0.008
+GridNone.YAUI#2,Yaui.Submit (ms),600,0.022,0.021,0.027,0.082
+GridNone.YAUI#2,Yaui.Collect (ms),600,0.032,0.031,0.037,0.083
+GridNone.YAUI#2,Yaui.Layout (ms),600,0,0,0,0
+GridNone.YAUI#2,Yaui.Text.Generate (ms),600,0,0,0,0
+GridNone.YAUI#2,Yaui.Text.Finish (ms),600,0,0,0,0
+GridNone.YAUI#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.034,0.031,0.039,0.116
+GridNone.YAUI#2,UIEvents.WillRenderCanvases (ms),600,0.028,0.026,0.032,0.11
+GridNone.YAUI#2,Canvas.BuildBatch (ms),600,0,0,0,0
+GridNone.YAUI#2,UI.RenderOverlays (ms),600,0.006,0.006,0.007,0.047
+GridNone.YAUI#2,Layout (ms),600,0.007,0.006,0.008,0.064
+GridNone.YAUI#2,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.028,0.026,0.034,0.141
+GridNone.YAUI#2,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+GridNone.YAUI#2,UIElements.UpdateLayout (ms),600,0,0,0,0
+GridNone.YAUI#2,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridNone.YAUI#2,UIR.DrawChain (ms),600,0,0,0,0
+GridColor10.uGUI#2,CPU Main (ms),600,6.906,6.752,8.015,9.396
+GridColor10.uGUI#2,CPU Main Present Wait (ms),600,4.226,4.302,5.207,7.166
+GridColor10.uGUI#2,CPU Render (ms),600,0.961,0.939,1.14,3.752
+GridColor10.uGUI#2,GPU (ms),600,8.944,8.947,9.014,9.152
+GridColor10.uGUI#2,GC Alloc (bytes),600,728.007,0,0,213824
+GridColor10.uGUI#2,Batches Count,600,0,0,0,0
+GridColor10.uGUI#2,SetPass Calls Count,600,23,23,23,23
+GridColor10.uGUI#2,Draw Calls Count,600,0,0,0,0
+GridColor10.uGUI#2,Vertices Count,600,0,0,0,0
+GridColor10.uGUI#2,YauiBench.ScenarioTick (ms),600,0.175,0.169,0.204,0.333
+GridColor10.uGUI#2,Yaui.EarlySubmit (ms),600,0.002,0.002,0.003,0.006
+GridColor10.uGUI#2,Yaui.Submit (ms),600,0.008,0.007,0.009,0.039
+GridColor10.uGUI#2,Yaui.Collect (ms),600,0.02,0.019,0.023,0.113
+GridColor10.uGUI#2,Yaui.Layout (ms),600,0,0,0,0
+GridColor10.uGUI#2,Yaui.Text.Generate (ms),600,0,0,0,0
+GridColor10.uGUI#2,Yaui.Text.Finish (ms),600,0,0,0,0
+GridColor10.uGUI#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,4.163,4.083,4.723,5.715
+GridColor10.uGUI#2,UIEvents.WillRenderCanvases (ms),600,4.091,4.01,4.634,5.614
+GridColor10.uGUI#2,Canvas.BuildBatch (ms),600,0.049,0.043,0.059,0.56
+GridColor10.uGUI#2,UI.RenderOverlays (ms),600,0.464,0.431,0.693,1.01
+GridColor10.uGUI#2,Layout (ms),600,0.02,0.019,0.027,0.082
+GridColor10.uGUI#2,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.02,0.02,0.025,0.06
+GridColor10.uGUI#2,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+GridColor10.uGUI#2,UIElements.UpdateLayout (ms),600,0,0,0,0
+GridColor10.uGUI#2,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridColor10.uGUI#2,UIR.DrawChain (ms),600,0,0,0,0
+GridColor10.UITK#2,CPU Main (ms),600,4.585,4.525,5.014,7.339
+GridColor10.UITK#2,CPU Main Present Wait (ms),600,6.546,6.544,7.377,8.363
+GridColor10.UITK#2,CPU Render (ms),600,0.79,0.772,0.961,1.169
+GridColor10.UITK#2,GPU (ms),600,10.177,10.167,10.252,10.383
+GridColor10.UITK#2,GC Alloc (bytes),600,728.007,0,0,213824
+GridColor10.UITK#2,Batches Count,600,0,0,0,0
+GridColor10.UITK#2,SetPass Calls Count,600,4,4,4,4
+GridColor10.UITK#2,Draw Calls Count,600,0,0,0,0
+GridColor10.UITK#2,Vertices Count,600,0,0,0,0
+GridColor10.UITK#2,YauiBench.ScenarioTick (ms),600,0.64,0.601,0.762,1.966
+GridColor10.UITK#2,Yaui.EarlySubmit (ms),600,0.003,0.002,0.003,0.04
+GridColor10.UITK#2,Yaui.Submit (ms),600,0.009,0.009,0.012,0.04
+GridColor10.UITK#2,Yaui.Collect (ms),600,0.023,0.021,0.036,0.124
+GridColor10.UITK#2,Yaui.Layout (ms),600,0,0,0,0
+GridColor10.UITK#2,Yaui.Text.Generate (ms),600,0,0,0,0
+GridColor10.UITK#2,Yaui.Text.Finish (ms),600,0,0,0,0
+GridColor10.UITK#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.025,0.023,0.03,0.101
+GridColor10.UITK#2,UIEvents.WillRenderCanvases (ms),600,0.02,0.019,0.025,0.069
+GridColor10.UITK#2,Canvas.BuildBatch (ms),600,0,0,0,0
+GridColor10.UITK#2,UI.RenderOverlays (ms),600,0.88,0.852,1.068,1.153
+GridColor10.UITK#2,Layout (ms),600,0.005,0.004,0.006,0.008
+GridColor10.UITK#2,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.097,0.092,0.121,1.159
+GridColor10.UITK#2,PostLateUpdate.UIElementsRepaintPanels (ms),600,0.421,0.402,0.499,1.409
+GridColor10.UITK#2,UIElements.UpdateLayout (ms),600,0.012,0.011,0.015,0.056
+GridColor10.UITK#2,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridColor10.UITK#2,UIR.DrawChain (ms),600,0.747,0.72,0.922,1.007
+GridColor10.YAUI#2,CPU Main (ms),600,3.479,3.514,3.809,6.354
+GridColor10.YAUI#2,CPU Main Present Wait (ms),600,7.646,7.578,8.608,9.701
+GridColor10.YAUI#2,CPU Render (ms),600,0.974,0.958,1.144,1.947
+GridColor10.YAUI#2,GPU (ms),600,6.91,6.91,6.997,7.065
+GridColor10.YAUI#2,GC Alloc (bytes),600,728.007,0,0,213824
+GridColor10.YAUI#2,Batches Count,600,0,0,0,0
+GridColor10.YAUI#2,SetPass Calls Count,600,3.993,4,4,4
+GridColor10.YAUI#2,Draw Calls Count,600,0,0,0,0
+GridColor10.YAUI#2,Vertices Count,600,0,0,0,0
+GridColor10.YAUI#2,YauiBench.ScenarioTick (ms),600,0.254,0.254,0.3,0.356
+GridColor10.YAUI#2,Yaui.EarlySubmit (ms),600,0.004,0.003,0.005,0.007
+GridColor10.YAUI#2,Yaui.Submit (ms),600,0.02,0.02,0.025,0.078
+GridColor10.YAUI#2,Yaui.Collect (ms),600,0.11,0.105,0.129,0.192
+GridColor10.YAUI#2,Yaui.Layout (ms),600,0,0,0,0
+GridColor10.YAUI#2,Yaui.Text.Generate (ms),600,0,0,0,0
+GridColor10.YAUI#2,Yaui.Text.Finish (ms),600,0,0,0,0
+GridColor10.YAUI#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.032,0.031,0.037,0.12
+GridColor10.YAUI#2,UIEvents.WillRenderCanvases (ms),600,0.027,0.025,0.031,0.114
+GridColor10.YAUI#2,Canvas.BuildBatch (ms),600,0,0,0,0
+GridColor10.YAUI#2,UI.RenderOverlays (ms),600,0.006,0.006,0.007,0.049
+GridColor10.YAUI#2,Layout (ms),600,0.006,0.006,0.008,0.087
+GridColor10.YAUI#2,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.027,0.026,0.033,0.093
+GridColor10.YAUI#2,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+GridColor10.YAUI#2,UIElements.UpdateLayout (ms),600,0,0,0,0
+GridColor10.YAUI#2,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridColor10.YAUI#2,UIR.DrawChain (ms),600,0,0,0,0
+GridMove10.uGUI#2,CPU Main (ms),600,4.031,3.879,5.092,6.429
+GridMove10.uGUI#2,CPU Main Present Wait (ms),600,7.095,7.184,8.161,10.006
+GridMove10.uGUI#2,CPU Render (ms),600,0.809,0.783,0.967,1.745
+GridMove10.uGUI#2,GPU (ms),600,8.87,8.875,8.941,9.139
+GridMove10.uGUI#2,GC Alloc (bytes),600,728.007,0,0,213824
+GridMove10.uGUI#2,Batches Count,600,0,0,0,0
+GridMove10.uGUI#2,SetPass Calls Count,600,23,23,23,23
+GridMove10.uGUI#2,Draw Calls Count,600,0,0,0,0
+GridMove10.uGUI#2,Vertices Count,600,0,0,0,0
+GridMove10.uGUI#2,YauiBench.ScenarioTick (ms),600,0.193,0.186,0.233,0.425
+GridMove10.uGUI#2,Yaui.EarlySubmit (ms),600,0.003,0.003,0.004,0.047
+GridMove10.uGUI#2,Yaui.Submit (ms),600,0.008,0.008,0.01,0.048
+GridMove10.uGUI#2,Yaui.Collect (ms),600,0.021,0.02,0.024,0.068
+GridMove10.uGUI#2,Yaui.Layout (ms),600,0,0,0,0
+GridMove10.uGUI#2,Yaui.Text.Generate (ms),600,0,0,0,0
+GridMove10.uGUI#2,Yaui.Text.Finish (ms),600,0,0,0,0
+GridMove10.uGUI#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,1.061,1.018,1.349,2.298
+GridMove10.uGUI#2,UIEvents.WillRenderCanvases (ms),600,0.983,0.946,1.273,2.232
+GridMove10.uGUI#2,Canvas.BuildBatch (ms),600,0.053,0.032,0.069,0.947
+GridMove10.uGUI#2,UI.RenderOverlays (ms),600,0.358,0.345,0.432,1.212
+GridMove10.uGUI#2,Layout (ms),600,0.005,0.005,0.006,0.031
+GridMove10.uGUI#2,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.023,0.02,0.027,0.778
+GridMove10.uGUI#2,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+GridMove10.uGUI#2,UIElements.UpdateLayout (ms),600,0,0,0,0
+GridMove10.uGUI#2,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridMove10.uGUI#2,UIR.DrawChain (ms),600,0,0,0,0
+GridMove10.UITK#2,CPU Main (ms),600,5.475,5.471,5.912,8.964
+GridMove10.UITK#2,CPU Main Present Wait (ms),600,5.637,5.627,6.384,6.779
+GridMove10.UITK#2,CPU Render (ms),600,0.847,0.852,0.984,1.241
+GridMove10.UITK#2,GPU (ms),600,10.093,10.09,10.135,10.267
+GridMove10.UITK#2,GC Alloc (bytes),600,728.007,0,0,213824
+GridMove10.UITK#2,Batches Count,600,0,0,0,0
+GridMove10.UITK#2,SetPass Calls Count,600,3.993,4,4,4
+GridMove10.UITK#2,Draw Calls Count,600,0,0,0,0
+GridMove10.UITK#2,Vertices Count,600,0,0,0,0
+GridMove10.UITK#2,YauiBench.ScenarioTick (ms),600,0.645,0.636,0.719,0.908
+GridMove10.UITK#2,Yaui.EarlySubmit (ms),600,0.003,0.003,0.004,0.063
+GridMove10.UITK#2,Yaui.Submit (ms),600,0.012,0.011,0.014,0.063
+GridMove10.UITK#2,Yaui.Collect (ms),600,0.023,0.022,0.026,0.093
+GridMove10.UITK#2,Yaui.Layout (ms),600,0,0,0,0
+GridMove10.UITK#2,Yaui.Text.Generate (ms),600,0,0,0,0
+GridMove10.UITK#2,Yaui.Text.Finish (ms),600,0,0,0,0
+GridMove10.UITK#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.03,0.029,0.033,0.097
+GridMove10.UITK#2,UIEvents.WillRenderCanvases (ms),600,0.025,0.024,0.028,0.089
+GridMove10.UITK#2,Canvas.BuildBatch (ms),600,0,0,0,0
+GridMove10.UITK#2,UI.RenderOverlays (ms),600,1.041,1.012,1.3,1.669
+GridMove10.UITK#2,Layout (ms),600,0.006,0.006,0.007,0.069
+GridMove10.UITK#2,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.589,0.579,0.646,0.813
+GridMove10.UITK#2,PostLateUpdate.UIElementsRepaintPanels (ms),600,0.776,0.771,0.848,0.993
+GridMove10.UITK#2,UIElements.UpdateLayout (ms),600,0.015,0.015,0.017,0.079
+GridMove10.UITK#2,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridMove10.UITK#2,UIR.DrawChain (ms),600,0.918,0.89,1.177,1.518
+GridMove10.YAUI#2,CPU Main (ms),600,3.763,3.599,4.251,9.006
+GridMove10.YAUI#2,CPU Main Present Wait (ms),600,7.341,7.353,8.257,9.841
+GridMove10.YAUI#2,CPU Render (ms),600,0.826,0.81,0.95,1.261
+GridMove10.YAUI#2,GPU (ms),600,9.128,9.564,9.739,11.813
+GridMove10.YAUI#2,GC Alloc (bytes),600,728.007,0,0,213824
+GridMove10.YAUI#2,Batches Count,600,0,0,0,0
+GridMove10.YAUI#2,SetPass Calls Count,600,3.993,4,4,4
+GridMove10.YAUI#2,Draw Calls Count,600,0,0,0,0
+GridMove10.YAUI#2,Vertices Count,600,0,0,0,0
+GridMove10.YAUI#2,YauiBench.ScenarioTick (ms),600,0.153,0.144,0.175,0.264
+GridMove10.YAUI#2,Yaui.EarlySubmit (ms),600,0.004,0.004,0.006,0.073
+GridMove10.YAUI#2,Yaui.Submit (ms),600,0.022,0.021,0.027,0.094
+GridMove10.YAUI#2,Yaui.Collect (ms),600,0.313,0.302,0.376,0.479
+GridMove10.YAUI#2,Yaui.Layout (ms),600,0,0,0,0
+GridMove10.YAUI#2,Yaui.Text.Generate (ms),600,0,0,0,0
+GridMove10.YAUI#2,Yaui.Text.Finish (ms),600,0,0,0,0
+GridMove10.YAUI#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.034,0.034,0.041,0.088
+GridMove10.YAUI#2,UIEvents.WillRenderCanvases (ms),600,0.029,0.028,0.034,0.082
+GridMove10.YAUI#2,Canvas.BuildBatch (ms),600,0,0,0,0
+GridMove10.YAUI#2,UI.RenderOverlays (ms),600,0.006,0.005,0.006,0.076
+GridMove10.YAUI#2,Layout (ms),600,0.007,0.006,0.009,0.046
+GridMove10.YAUI#2,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.028,0.028,0.034,0.101
+GridMove10.YAUI#2,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+GridMove10.YAUI#2,UIElements.UpdateLayout (ms),600,0,0,0,0
+GridMove10.YAUI#2,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridMove10.YAUI#2,UIR.DrawChain (ms),600,0,0,0,0
+GridText10.uGUI#2,CPU Main (ms),600,9.997,9.91,10.964,13.829
+GridText10.uGUI#2,CPU Main Present Wait (ms),600,1.137,1.155,2.242,5.263
+GridText10.uGUI#2,CPU Render (ms),600,0.782,0.803,0.944,2.541
+GridText10.uGUI#2,GPU (ms),600,8.882,8.871,8.992,9.07
+GridText10.uGUI#2,GC Alloc (bytes),600,728.007,0,0,213824
+GridText10.uGUI#2,Batches Count,600,0,0,0,0
+GridText10.uGUI#2,SetPass Calls Count,600,23,23,23,23
+GridText10.uGUI#2,Draw Calls Count,600,0,0,0,0
+GridText10.uGUI#2,Vertices Count,600,0,0,0,0
+GridText10.uGUI#2,YauiBench.ScenarioTick (ms),600,1.009,0.992,1.187,2.632
+GridText10.uGUI#2,Yaui.EarlySubmit (ms),600,0.002,0.002,0.003,0.04
+GridText10.uGUI#2,Yaui.Submit (ms),600,0.007,0.006,0.008,0.08
+GridText10.uGUI#2,Yaui.Collect (ms),600,0.02,0.017,0.039,0.059
+GridText10.uGUI#2,Yaui.Layout (ms),600,0,0,0,0
+GridText10.uGUI#2,Yaui.Text.Generate (ms),600,0,0,0,0
+GridText10.uGUI#2,Yaui.Text.Finish (ms),600,0,0,0,0
+GridText10.uGUI#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,6.79,6.696,7.613,9.531
+GridText10.uGUI#2,UIEvents.WillRenderCanvases (ms),600,6.72,6.623,7.533,9.459
+GridText10.uGUI#2,Canvas.BuildBatch (ms),600,0.049,0.042,0.084,0.131
+GridText10.uGUI#2,UI.RenderOverlays (ms),600,0.374,0.359,0.555,1.918
+GridText10.uGUI#2,Layout (ms),600,0.026,0.024,0.035,0.325
+GridText10.uGUI#2,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.018,0.017,0.021,0.416
+GridText10.uGUI#2,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+GridText10.uGUI#2,UIElements.UpdateLayout (ms),600,0,0,0,0
+GridText10.uGUI#2,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridText10.uGUI#2,UIR.DrawChain (ms),600,0,0,0,0
+GridText10.UITK#2,CPU Main (ms),600,20.185,20.154,20.514,22.013
+GridText10.UITK#2,CPU Main Present Wait (ms),600,0.022,0.022,0.024,0.06
+GridText10.UITK#2,CPU Render (ms),600,1.956,1.937,2.255,2.307
+GridText10.UITK#2,GPU (ms),600,18.897,18.89,18.99,19.264
+GridText10.UITK#2,GC Alloc (bytes),600,728.007,0,0,213824
+GridText10.UITK#2,Batches Count,600,0,0,0,0
+GridText10.UITK#2,SetPass Calls Count,600,3.993,4,4,4
+GridText10.UITK#2,Draw Calls Count,600,0,0,0,0
+GridText10.UITK#2,Vertices Count,600,0,0,0,0
+GridText10.UITK#2,YauiBench.ScenarioTick (ms),600,1.987,1.986,2.05,2.204
+GridText10.UITK#2,Yaui.EarlySubmit (ms),600,0.002,0.002,0.004,0.006
+GridText10.UITK#2,Yaui.Submit (ms),600,0.008,0.008,0.009,0.047
+GridText10.UITK#2,Yaui.Collect (ms),600,0.016,0.016,0.02,0.065
+GridText10.UITK#2,Yaui.Layout (ms),600,0,0,0,0
+GridText10.UITK#2,Yaui.Text.Generate (ms),600,0,0,0,0
+GridText10.UITK#2,Yaui.Text.Finish (ms),600,0,0,0,0
+GridText10.UITK#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.02,0.019,0.023,0.057
+GridText10.UITK#2,UIEvents.WillRenderCanvases (ms),600,0.016,0.016,0.018,0.043
+GridText10.UITK#2,Canvas.BuildBatch (ms),600,0,0,0,0
+GridText10.UITK#2,UI.RenderOverlays (ms),600,0.98,0.914,1.218,1.344
+GridText10.UITK#2,Layout (ms),600,0.003,0.003,0.004,0.03
+GridText10.UITK#2,PreLateUpdate.UIElementsUpdatePanels (ms),600,10.329,10.296,10.634,11.365
+GridText10.UITK#2,PostLateUpdate.UIElementsRepaintPanels (ms),600,5.464,5.468,5.564,5.702
+GridText10.UITK#2,UIElements.UpdateLayout (ms),600,10.195,10.191,10.377,11.288
+GridText10.UITK#2,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridText10.UITK#2,UIR.DrawChain (ms),600,0.902,0.824,1.127,2.323
+GridText10.YAUI#2,CPU Main (ms),600,9.819,8.83,12.681,16.785
+GridText10.YAUI#2,CPU Main Present Wait (ms),600,1.309,1.281,3.292,5.004
+GridText10.YAUI#2,CPU Render (ms),600,0.623,0.596,0.78,1.131
+GridText10.YAUI#2,GPU (ms),600,5.582,6.69,6.905,7.012
+GridText10.YAUI#2,GC Alloc (bytes),600,728.007,0,0,213824
+GridText10.YAUI#2,Batches Count,600,0,0,0,0
+GridText10.YAUI#2,SetPass Calls Count,600,3.993,4,4,4
+GridText10.YAUI#2,Draw Calls Count,600,0,0,0,0
+GridText10.YAUI#2,Vertices Count,600,0,0,0,0
+GridText10.YAUI#2,YauiBench.ScenarioTick (ms),600,0.1,0.097,0.125,0.2
+GridText10.YAUI#2,Yaui.EarlySubmit (ms),600,0.289,0.283,0.341,0.517
+GridText10.YAUI#2,Yaui.Submit (ms),600,0.106,0.104,0.125,0.223
+GridText10.YAUI#2,Yaui.Collect (ms),600,7.259,6.254,9.89,12.276
+GridText10.YAUI#2,Yaui.Layout (ms),600,0.107,0.105,0.129,0.209
+GridText10.YAUI#2,Yaui.Text.Generate (ms),600,7.96,7.51,10.914,14.797
+GridText10.YAUI#2,Yaui.Text.Finish (ms),600,0.782,0.776,0.86,1.007
+GridText10.YAUI#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.022,0.021,0.027,0.083
+GridText10.YAUI#2,UIEvents.WillRenderCanvases (ms),600,0.019,0.018,0.023,0.08
+GridText10.YAUI#2,Canvas.BuildBatch (ms),600,0,0,0,0
+GridText10.YAUI#2,UI.RenderOverlays (ms),600,0.003,0.003,0.004,0.01
+GridText10.YAUI#2,Layout (ms),600,0.004,0.004,0.006,0.048
+GridText10.YAUI#2,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.02,0.019,0.024,0.072
+GridText10.YAUI#2,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+GridText10.YAUI#2,UIElements.UpdateLayout (ms),600,0,0,0,0
+GridText10.YAUI#2,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridText10.YAUI#2,UIR.DrawChain (ms),600,0,0,0,0
+GridHitTest.uGUI#2,CPU Main (ms),600,10.234,10.208,10.615,12.312
+GridHitTest.uGUI#2,CPU Main Present Wait (ms),600,0.905,0.843,2.419,4.346
+GridHitTest.uGUI#2,CPU Render (ms),600,1.536,1.529,1.709,2.027
+GridHitTest.uGUI#2,GPU (ms),600,8.913,8.894,8.998,9.131
+GridHitTest.uGUI#2,GC Alloc (bytes),600,728.007,0,0,213824
+GridHitTest.uGUI#2,Batches Count,600,0,0,0,0
+GridHitTest.uGUI#2,SetPass Calls Count,600,62.895,63,63,63
+GridHitTest.uGUI#2,Draw Calls Count,600,0,0,0,0
+GridHitTest.uGUI#2,Vertices Count,600,0,0,0,0
+GridHitTest.uGUI#2,YauiBench.ScenarioTick (ms),600,8.17,8.16,8.443,9.56
+GridHitTest.uGUI#2,Yaui.EarlySubmit (ms),600,0.002,0.002,0.002,0.032
+GridHitTest.uGUI#2,Yaui.Submit (ms),600,0.006,0.006,0.007,0.036
+GridHitTest.uGUI#2,Yaui.Collect (ms),600,0.016,0.016,0.017,0.039
+GridHitTest.uGUI#2,Yaui.Layout (ms),600,0,0,0,0
+GridHitTest.uGUI#2,Yaui.Text.Generate (ms),600,0,0,0,0
+GridHitTest.uGUI#2,Yaui.Text.Finish (ms),600,0,0,0,0
+GridHitTest.uGUI#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.107,0.105,0.114,0.164
+GridHitTest.uGUI#2,UIEvents.WillRenderCanvases (ms),600,0.046,0.045,0.051,0.104
+GridHitTest.uGUI#2,Canvas.BuildBatch (ms),600,0,0,0,0
+GridHitTest.uGUI#2,UI.RenderOverlays (ms),600,0.968,0.952,1.082,1.189
+GridHitTest.uGUI#2,Layout (ms),600,0.004,0.004,0.004,0.061
+GridHitTest.uGUI#2,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.018,0.017,0.02,0.073
+GridHitTest.uGUI#2,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+GridHitTest.uGUI#2,UIElements.UpdateLayout (ms),600,0,0,0,0
+GridHitTest.uGUI#2,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridHitTest.uGUI#2,UIR.DrawChain (ms),600,0,0,0,0
+GridHitTest.UITK#2,CPU Main (ms),600,6.081,5.988,7.102,8.657
+GridHitTest.UITK#2,CPU Main Present Wait (ms),600,5.052,5.126,6.214,8.297
+GridHitTest.UITK#2,CPU Render (ms),600,0.874,0.87,1.097,1.354
+GridHitTest.UITK#2,GPU (ms),600,10.206,10.206,10.276,10.393
+GridHitTest.UITK#2,GC Alloc (bytes),600,728.007,0,0,213824
+GridHitTest.UITK#2,Batches Count,600,0,0,0,0
+GridHitTest.UITK#2,SetPass Calls Count,600,4,4,4,4
+GridHitTest.UITK#2,Draw Calls Count,600,0,0,0,0
+GridHitTest.UITK#2,Vertices Count,600,0,0,0,0
+GridHitTest.UITK#2,YauiBench.ScenarioTick (ms),600,2.774,2.735,3.552,4.524
+GridHitTest.UITK#2,Yaui.EarlySubmit (ms),600,0.003,0.003,0.004,0.02
+GridHitTest.UITK#2,Yaui.Submit (ms),600,0.008,0.008,0.01,0.083
+GridHitTest.UITK#2,Yaui.Collect (ms),600,0.02,0.019,0.026,0.061
+GridHitTest.UITK#2,Yaui.Layout (ms),600,0,0,0,0
+GridHitTest.UITK#2,Yaui.Text.Generate (ms),600,0,0,0,0
+GridHitTest.UITK#2,Yaui.Text.Finish (ms),600,0,0,0,0
+GridHitTest.UITK#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.024,0.022,0.028,0.105
+GridHitTest.UITK#2,UIEvents.WillRenderCanvases (ms),600,0.02,0.018,0.023,0.099
+GridHitTest.UITK#2,Canvas.BuildBatch (ms),600,0,0,0,0
+GridHitTest.UITK#2,UI.RenderOverlays (ms),600,0.849,0.866,1.033,1.335
+GridHitTest.UITK#2,Layout (ms),600,0.004,0.004,0.005,0.068
+GridHitTest.UITK#2,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.097,0.093,0.118,1.079
+GridHitTest.UITK#2,PostLateUpdate.UIElementsRepaintPanels (ms),600,0.106,0.102,0.129,0.235
+GridHitTest.UITK#2,UIElements.UpdateLayout (ms),600,0.035,0.034,0.044,0.091
+GridHitTest.UITK#2,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridHitTest.UITK#2,UIR.DrawChain (ms),600,0.717,0.73,0.884,1.154
+GridHitTest.YAUI#2,CPU Main (ms),600,3.48,3.46,3.66,7.068
+GridHitTest.YAUI#2,CPU Main Present Wait (ms),600,7.647,7.614,8.59,9.364
+GridHitTest.YAUI#2,CPU Render (ms),600,0.821,0.802,0.917,1.113
+GridHitTest.YAUI#2,GPU (ms),600,9.518,9.636,9.84,11.352
+GridHitTest.YAUI#2,GC Alloc (bytes),600,728.007,0,0,213824
+GridHitTest.YAUI#2,Batches Count,600,0,0,0,0
+GridHitTest.YAUI#2,SetPass Calls Count,600,4,4,4,4
+GridHitTest.YAUI#2,Draw Calls Count,600,0,0,0,0
+GridHitTest.YAUI#2,Vertices Count,600,0,0,0,0
+GridHitTest.YAUI#2,YauiBench.ScenarioTick (ms),600,0.172,0.164,0.213,0.284
+GridHitTest.YAUI#2,Yaui.EarlySubmit (ms),600,0.004,0.004,0.006,0.023
+GridHitTest.YAUI#2,Yaui.Submit (ms),600,0.019,0.018,0.023,0.075
+GridHitTest.YAUI#2,Yaui.Collect (ms),600,0.033,0.032,0.039,0.073
+GridHitTest.YAUI#2,Yaui.Layout (ms),600,0,0,0,0
+GridHitTest.YAUI#2,Yaui.Text.Generate (ms),600,0,0,0,0
+GridHitTest.YAUI#2,Yaui.Text.Finish (ms),600,0,0,0,0
+GridHitTest.YAUI#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.034,0.032,0.039,0.134
+GridHitTest.YAUI#2,UIEvents.WillRenderCanvases (ms),600,0.028,0.026,0.033,0.129
+GridHitTest.YAUI#2,Canvas.BuildBatch (ms),600,0,0,0,0
+GridHitTest.YAUI#2,UI.RenderOverlays (ms),600,0.006,0.006,0.007,0.067
+GridHitTest.YAUI#2,Layout (ms),600,0.007,0.006,0.009,0.049
+GridHitTest.YAUI#2,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.027,0.025,0.033,0.1
+GridHitTest.YAUI#2,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+GridHitTest.YAUI#2,UIElements.UpdateLayout (ms),600,0,0,0,0
+GridHitTest.YAUI#2,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridHitTest.YAUI#2,UIR.DrawChain (ms),600,0,0,0,0
+ListScroll.uGUI#2,CPU Main (ms),600,8.428,8.302,9.691,13.391
+ListScroll.uGUI#2,CPU Main Present Wait (ms),600,2.689,2.763,3.998,6.669
+ListScroll.uGUI#2,CPU Render (ms),600,0.621,0.559,0.907,1.457
+ListScroll.uGUI#2,GPU (ms),600,5.893,6.191,6.208,6.261
+ListScroll.uGUI#2,GC Alloc (bytes),600,728.007,0,0,213824
+ListScroll.uGUI#2,Batches Count,600,0,0,0,0
+ListScroll.uGUI#2,SetPass Calls Count,600,4.992,5,5,5
+ListScroll.uGUI#2,Draw Calls Count,600,0,0,0,0
+ListScroll.uGUI#2,Vertices Count,600,0,0,0,0
+ListScroll.uGUI#2,YauiBench.ScenarioTick (ms),600,0.292,0.224,0.653,1.008
+ListScroll.uGUI#2,Yaui.EarlySubmit (ms),600,0.002,0.002,0.003,0.013
+ListScroll.uGUI#2,Yaui.Submit (ms),600,0.008,0.008,0.011,0.067
+ListScroll.uGUI#2,Yaui.Collect (ms),600,0.019,0.019,0.021,0.057
+ListScroll.uGUI#2,Yaui.Layout (ms),600,0,0,0,0
+ListScroll.uGUI#2,Yaui.Text.Generate (ms),600,0,0,0,0
+ListScroll.uGUI#2,Yaui.Text.Finish (ms),600,0,0,0,0
+ListScroll.uGUI#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,5.961,5.835,7.068,9.2
+ListScroll.uGUI#2,UIEvents.WillRenderCanvases (ms),600,5.909,5.791,6.956,9.001
+ListScroll.uGUI#2,Canvas.BuildBatch (ms),600,0.05,0.049,0.064,0.122
+ListScroll.uGUI#2,UI.RenderOverlays (ms),600,0.168,0.139,0.278,1.647
+ListScroll.uGUI#2,Layout (ms),600,0.005,0.004,0.008,0.048
+ListScroll.uGUI#2,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.021,0.019,0.026,0.346
+ListScroll.uGUI#2,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+ListScroll.uGUI#2,UIElements.UpdateLayout (ms),600,0,0,0,0
+ListScroll.uGUI#2,TextGenerator.GenerateText (ms),600,0,0,0,0
+ListScroll.uGUI#2,UIR.DrawChain (ms),600,0,0,0,0
+ListScroll.UITK#2,CPU Main (ms),600,4.315,4.19,4.874,8.888
+ListScroll.UITK#2,CPU Main Present Wait (ms),600,6.785,6.835,7.624,8.272
+ListScroll.UITK#2,CPU Render (ms),600,0.894,0.863,1.108,1.437
+ListScroll.UITK#2,GPU (ms),600,9.358,9.583,9.755,10.949
+ListScroll.UITK#2,GC Alloc (bytes),600,728.007,0,0,213824
+ListScroll.UITK#2,Batches Count,600,0,0,0,0
+ListScroll.UITK#2,SetPass Calls Count,600,3.993,4,4,4
+ListScroll.UITK#2,Draw Calls Count,600,0,0,0,0
+ListScroll.UITK#2,Vertices Count,600,0,0,0,0
+ListScroll.UITK#2,YauiBench.ScenarioTick (ms),600,0.388,0.378,0.443,0.52
+ListScroll.UITK#2,Yaui.EarlySubmit (ms),600,0.004,0.003,0.004,0.087
+ListScroll.UITK#2,Yaui.Submit (ms),600,0.011,0.011,0.014,0.086
+ListScroll.UITK#2,Yaui.Collect (ms),600,0.025,0.024,0.03,0.089
+ListScroll.UITK#2,Yaui.Layout (ms),600,0,0,0,0
+ListScroll.UITK#2,Yaui.Text.Generate (ms),600,0,0,0,0
+ListScroll.UITK#2,Yaui.Text.Finish (ms),600,0,0,0,0
+ListScroll.UITK#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.032,0.03,0.036,0.108
+ListScroll.UITK#2,UIEvents.WillRenderCanvases (ms),600,0.026,0.025,0.03,0.102
+ListScroll.UITK#2,Canvas.BuildBatch (ms),600,0,0,0,0
+ListScroll.UITK#2,UI.RenderOverlays (ms),600,0.772,0.73,0.961,2.662
+ListScroll.UITK#2,Layout (ms),600,0.006,0.006,0.007,0.011
+ListScroll.UITK#2,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.129,0.126,0.145,0.21
+ListScroll.UITK#2,PostLateUpdate.UIElementsRepaintPanels (ms),600,0.239,0.229,0.292,0.418
+ListScroll.UITK#2,UIElements.UpdateLayout (ms),600,0.013,0.013,0.016,0.078
+ListScroll.UITK#2,TextGenerator.GenerateText (ms),600,0,0,0,0
+ListScroll.UITK#2,UIR.DrawChain (ms),600,0.626,0.585,0.794,2.063
+ListScroll.YAUI#2,CPU Main (ms),600,3.601,3.658,3.859,6.948
+ListScroll.YAUI#2,CPU Main Present Wait (ms),600,7.522,7.484,8.519,9.336
+ListScroll.YAUI#2,CPU Render (ms),600,0.939,0.928,1.09,1.341
+ListScroll.YAUI#2,GPU (ms),600,7.79,7.792,7.826,7.933
+ListScroll.YAUI#2,GC Alloc (bytes),600,728.007,0,0,213824
+ListScroll.YAUI#2,Batches Count,600,0,0,0,0
+ListScroll.YAUI#2,SetPass Calls Count,600,3.993,4,4,4
+ListScroll.YAUI#2,Draw Calls Count,600,0,0,0,0
+ListScroll.YAUI#2,Vertices Count,600,0,0,0,0
+ListScroll.YAUI#2,YauiBench.ScenarioTick (ms),600,0.052,0.051,0.058,0.177
+ListScroll.YAUI#2,Yaui.EarlySubmit (ms),600,0.004,0.004,0.005,0.057
+ListScroll.YAUI#2,Yaui.Submit (ms),600,0.018,0.017,0.022,0.055
+ListScroll.YAUI#2,Yaui.Collect (ms),600,0.42,0.43,0.488,0.794
+ListScroll.YAUI#2,Yaui.Layout (ms),600,0,0,0,0
+ListScroll.YAUI#2,Yaui.Text.Generate (ms),600,0,0,0,0
+ListScroll.YAUI#2,Yaui.Text.Finish (ms),600,0,0,0,0
+ListScroll.YAUI#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.031,0.03,0.036,0.09
+ListScroll.YAUI#2,UIEvents.WillRenderCanvases (ms),600,0.026,0.026,0.031,0.077
+ListScroll.YAUI#2,Canvas.BuildBatch (ms),600,0,0,0,0
+ListScroll.YAUI#2,UI.RenderOverlays (ms),600,0.006,0.006,0.007,0.024
+ListScroll.YAUI#2,Layout (ms),600,0.006,0.006,0.008,0.011
+ListScroll.YAUI#2,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.026,0.025,0.031,0.089
+ListScroll.YAUI#2,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+ListScroll.YAUI#2,UIElements.UpdateLayout (ms),600,0,0,0,0
+ListScroll.YAUI#2,TextGenerator.GenerateText (ms),600,0,0,0,0
+ListScroll.YAUI#2,UIR.DrawChain (ms),600,0,0,0,0
+ListResize10.uGUI#2,CPU Main (ms),600,127.842,127.854,128.396,130.124
+ListResize10.uGUI#2,CPU Main Present Wait (ms),600,0.02,0.019,0.026,0.06
+ListResize10.uGUI#2,CPU Render (ms),600,0.828,0.79,1.093,1.668
+ListResize10.uGUI#2,GPU (ms),600,6.227,6.225,6.256,6.305
+ListResize10.uGUI#2,GC Alloc (bytes),600,728.007,0,0,213824
+ListResize10.uGUI#2,Batches Count,600,0,0,0,0
+ListResize10.uGUI#2,SetPass Calls Count,600,4.992,5,5,5
+ListResize10.uGUI#2,Draw Calls Count,600,0,0,0,0
+ListResize10.uGUI#2,Vertices Count,600,0,0,0,0
+ListResize10.uGUI#2,YauiBench.ScenarioTick (ms),600,0.506,0.502,0.548,0.575
+ListResize10.uGUI#2,Yaui.EarlySubmit (ms),600,0.002,0.002,0.002,0.037
+ListResize10.uGUI#2,Yaui.Submit (ms),600,0.006,0.006,0.007,0.008
+ListResize10.uGUI#2,Yaui.Collect (ms),600,0.017,0.017,0.017,0.051
+ListResize10.uGUI#2,Yaui.Layout (ms),600,0,0,0,0
+ListResize10.uGUI#2,Yaui.Text.Generate (ms),600,0,0,0,0
+ListResize10.uGUI#2,Yaui.Text.Finish (ms),600,0,0,0,0
+ListResize10.uGUI#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,125.239,125.257,125.796,126.217
+ListResize10.uGUI#2,UIEvents.WillRenderCanvases (ms),600,125.196,125.217,125.761,126.173
+ListResize10.uGUI#2,Canvas.BuildBatch (ms),600,0.034,0.034,0.037,0.068
+ListResize10.uGUI#2,UI.RenderOverlays (ms),600,0.196,0.179,0.254,2.019
+ListResize10.uGUI#2,Layout (ms),600,114.989,115.004,115.451,115.8
+ListResize10.uGUI#2,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.017,0.016,0.017,0.051
+ListResize10.uGUI#2,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+ListResize10.uGUI#2,UIElements.UpdateLayout (ms),600,0,0,0,0
+ListResize10.uGUI#2,TextGenerator.GenerateText (ms),600,0,0,0,0
+ListResize10.uGUI#2,UIR.DrawChain (ms),600,0,0,0,0
+ListResize10.UITK#2,CPU Main (ms),600,11.453,11.419,11.715,13.874
+ListResize10.UITK#2,CPU Main Present Wait (ms),600,0.017,0.017,0.018,0.053
+ListResize10.UITK#2,CPU Render (ms),600,0.945,0.87,1.164,1.483
+ListResize10.UITK#2,GPU (ms),600,8.594,8.588,8.619,10.099
+ListResize10.UITK#2,GC Alloc (bytes),600,728.007,0,0,213824
+ListResize10.UITK#2,Batches Count,600,0,0,0,0
+ListResize10.UITK#2,SetPass Calls Count,600,3.993,4,4,4
+ListResize10.UITK#2,Draw Calls Count,600,0,0,0,0
+ListResize10.UITK#2,Vertices Count,600,0,0,0,0
+ListResize10.UITK#2,YauiBench.ScenarioTick (ms),600,0.723,0.719,0.764,0.787
+ListResize10.UITK#2,Yaui.EarlySubmit (ms),600,0.002,0.002,0.003,0.005
+ListResize10.UITK#2,Yaui.Submit (ms),600,0.007,0.007,0.009,0.048
+ListResize10.UITK#2,Yaui.Collect (ms),600,0.015,0.015,0.016,0.052
+ListResize10.UITK#2,Yaui.Layout (ms),600,0,0,0,0
+ListResize10.UITK#2,Yaui.Text.Generate (ms),600,0,0,0,0
+ListResize10.UITK#2,Yaui.Text.Finish (ms),600,0,0,0,0
+ListResize10.UITK#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.019,0.018,0.023,0.06
+ListResize10.UITK#2,UIEvents.WillRenderCanvases (ms),600,0.016,0.015,0.019,0.057
+ListResize10.UITK#2,Canvas.BuildBatch (ms),600,0,0,0,0
+ListResize10.UITK#2,UI.RenderOverlays (ms),600,0.653,0.686,1.058,1.409
+ListResize10.UITK#2,Layout (ms),600,0.003,0.003,0.004,0.008
+ListResize10.UITK#2,PreLateUpdate.UIElementsUpdatePanels (ms),600,5.895,5.875,6.08,6.311
+ListResize10.UITK#2,PostLateUpdate.UIElementsRepaintPanels (ms),600,2.814,2.811,2.961,3.155
+ListResize10.UITK#2,UIElements.UpdateLayout (ms),600,5.809,5.788,5.99,6.192
+ListResize10.UITK#2,TextGenerator.GenerateText (ms),600,0,0,0,0
+ListResize10.UITK#2,UIR.DrawChain (ms),600,0.578,0.601,0.922,1.242
+ListResize10.YAUI#2,CPU Main (ms),600,18.524,18.438,21.773,25.123
+ListResize10.YAUI#2,CPU Main Present Wait (ms),600,0.211,0.026,0.638,5.794
+ListResize10.YAUI#2,CPU Render (ms),600,0.884,0.842,1.127,8.929
+ListResize10.YAUI#2,GPU (ms),600,7.935,7.947,7.994,8.045
+ListResize10.YAUI#2,GC Alloc (bytes),600,728.007,0,0,213824
+ListResize10.YAUI#2,Batches Count,600,0,0,0,0
+ListResize10.YAUI#2,SetPass Calls Count,600,3.993,4,4,4
+ListResize10.YAUI#2,Draw Calls Count,600,0,0,0,0
+ListResize10.YAUI#2,Vertices Count,600,0,0,0,0
+ListResize10.YAUI#2,YauiBench.ScenarioTick (ms),600,0.041,0.037,0.063,0.108
+ListResize10.YAUI#2,Yaui.EarlySubmit (ms),600,0.156,0.145,0.222,0.421
+ListResize10.YAUI#2,Yaui.Submit (ms),600,0.064,0.06,0.087,0.155
+ListResize10.YAUI#2,Yaui.Collect (ms),600,16.023,15.938,19.126,22.548
+ListResize10.YAUI#2,Yaui.Layout (ms),600,0.059,0.058,0.07,0.213
+ListResize10.YAUI#2,Yaui.Text.Generate (ms),600,9.351,9.274,10.867,14.658
+ListResize10.YAUI#2,Yaui.Text.Finish (ms),600,3.192,3.138,3.501,4.402
+ListResize10.YAUI#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.022,0.021,0.031,0.079
+ListResize10.YAUI#2,UIEvents.WillRenderCanvases (ms),600,0.019,0.017,0.027,0.075
+ListResize10.YAUI#2,Canvas.BuildBatch (ms),600,0,0,0,0
+ListResize10.YAUI#2,UI.RenderOverlays (ms),600,0.003,0.003,0.005,0.043
+ListResize10.YAUI#2,Layout (ms),600,0.004,0.004,0.007,0.046
+ListResize10.YAUI#2,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.02,0.018,0.035,0.059
+ListResize10.YAUI#2,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+ListResize10.YAUI#2,UIElements.UpdateLayout (ms),600,0,0,0,0
+ListResize10.YAUI#2,TextGenerator.GenerateText (ms),600,0,0,0,0
+ListResize10.YAUI#2,UIR.DrawChain (ms),600,0,0,0,0
+Empty+Ballast#2,CPU Main (ms),600,2.82,2.776,3.156,6.771
+Empty+Ballast#2,CPU Main Present Wait (ms),600,24.732,24.761,25.571,27.061
+Empty+Ballast#2,CPU Render (ms),600,0.767,0.738,0.909,1.359
+Empty+Ballast#2,GPU (ms),600,27.431,27.566,27.604,27.619
+Empty+Ballast#2,GC Alloc (bytes),600,728.007,0,0,213824
+Empty+Ballast#2,Batches Count,600,0,0,0,0
+Empty+Ballast#2,SetPass Calls Count,600,4,4,4,8
+Empty+Ballast#2,Draw Calls Count,600,0,0,0,0
+Empty+Ballast#2,Vertices Count,600,0,0,0,0
+Empty+Ballast#2,YauiBench.ScenarioTick (ms),600,0.007,0.007,0.007,0.015
+Empty+Ballast#2,Yaui.EarlySubmit (ms),600,0.004,0.003,0.004,0.046
+Empty+Ballast#2,Yaui.Submit (ms),600,0.01,0.01,0.012,0.052
+Empty+Ballast#2,Yaui.Collect (ms),600,0.026,0.025,0.029,0.073
+Empty+Ballast#2,Yaui.Layout (ms),600,0,0,0,0
+Empty+Ballast#2,Yaui.Text.Generate (ms),600,0,0,0,0
+Empty+Ballast#2,Yaui.Text.Finish (ms),600,0,0,0,0
+Empty+Ballast#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.031,0.03,0.035,0.102
+Empty+Ballast#2,UIEvents.WillRenderCanvases (ms),600,0.026,0.025,0.029,0.097
+Empty+Ballast#2,Canvas.BuildBatch (ms),600,0,0,0,0
+Empty+Ballast#2,UI.RenderOverlays (ms),600,0.006,0.005,0.008,0.013
+Empty+Ballast#2,Layout (ms),600,0.006,0.006,0.007,0.072
+Empty+Ballast#2,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.024,0.024,0.026,0.07
+Empty+Ballast#2,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+Empty+Ballast#2,UIElements.UpdateLayout (ms),600,0,0,0,0
+Empty+Ballast#2,TextGenerator.GenerateText (ms),600,0,0,0,0
+Empty+Ballast#2,UIR.DrawChain (ms),600,0,0,0,0
+GridNone+Ballast.uGUI#2,CPU Main (ms),600,3.733,3.642,4.185,7.662
+GridNone+Ballast.uGUI#2,CPU Main Present Wait (ms),600,26.829,26.899,27.507,54.051
+GridNone+Ballast.uGUI#2,CPU Render (ms),600,1.524,1.515,1.751,2.429
+GridNone+Ballast.uGUI#2,GPU (ms),600,30.427,30.58,30.627,30.69
+GridNone+Ballast.uGUI#2,GC Alloc (bytes),600,728.007,0,0,213824
+GridNone+Ballast.uGUI#2,Batches Count,600,0,0,0,0
+GridNone+Ballast.uGUI#2,SetPass Calls Count,600,64,64,64,64
+GridNone+Ballast.uGUI#2,Draw Calls Count,600,0,0,0,0
+GridNone+Ballast.uGUI#2,Vertices Count,600,0,0,0,0
+GridNone+Ballast.uGUI#2,YauiBench.ScenarioTick (ms),600,0.007,0.006,0.008,0.01
+GridNone+Ballast.uGUI#2,Yaui.EarlySubmit (ms),600,0.004,0.004,0.005,0.005
+GridNone+Ballast.uGUI#2,Yaui.Submit (ms),600,0.011,0.01,0.012,0.048
+GridNone+Ballast.uGUI#2,Yaui.Collect (ms),600,0.026,0.026,0.029,0.079
+GridNone+Ballast.uGUI#2,Yaui.Layout (ms),600,0,0,0,0
+GridNone+Ballast.uGUI#2,Yaui.Text.Generate (ms),600,0,0,0,0
+GridNone+Ballast.uGUI#2,Yaui.Text.Finish (ms),600,0,0,0,0
+GridNone+Ballast.uGUI#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.213,0.205,0.251,0.428
+GridNone+Ballast.uGUI#2,UIEvents.WillRenderCanvases (ms),600,0.074,0.07,0.09,0.287
+GridNone+Ballast.uGUI#2,Canvas.BuildBatch (ms),600,0,0,0,0
+GridNone+Ballast.uGUI#2,UI.RenderOverlays (ms),600,1.011,0.978,1.257,1.932
+GridNone+Ballast.uGUI#2,Layout (ms),600,0.007,0.007,0.008,0.01
+GridNone+Ballast.uGUI#2,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.025,0.024,0.028,0.094
+GridNone+Ballast.uGUI#2,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+GridNone+Ballast.uGUI#2,UIElements.UpdateLayout (ms),600,0,0,0,0
+GridNone+Ballast.uGUI#2,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridNone+Ballast.uGUI#2,UIR.DrawChain (ms),600,0,0,0,0
+GridNone+Ballast.UITK#2,CPU Main (ms),600,4.141,3.996,4.8,12.98
+GridNone+Ballast.UITK#2,CPU Main Present Wait (ms),600,32.107,32.06,65.257,67.22
+GridNone+Ballast.UITK#2,CPU Render (ms),600,1.06,1.037,1.262,2.784
+GridNone+Ballast.UITK#2,GPU (ms),600,29.077,36.263,36.319,36.355
+GridNone+Ballast.UITK#2,GC Alloc (bytes),600,728.007,0,0,213824
+GridNone+Ballast.UITK#2,Batches Count,600,0,0,0,0
+GridNone+Ballast.UITK#2,SetPass Calls Count,600,5,5,5,10
+GridNone+Ballast.UITK#2,Draw Calls Count,600,0,0,0,0
+GridNone+Ballast.UITK#2,Vertices Count,600,0,0,0,0
+GridNone+Ballast.UITK#2,YauiBench.ScenarioTick (ms),600,0.007,0.007,0.008,0.068
+GridNone+Ballast.UITK#2,Yaui.EarlySubmit (ms),600,0.004,0.004,0.005,0.035
+GridNone+Ballast.UITK#2,Yaui.Submit (ms),600,0.011,0.011,0.013,0.07
+GridNone+Ballast.UITK#2,Yaui.Collect (ms),600,0.026,0.025,0.029,0.071
+GridNone+Ballast.UITK#2,Yaui.Layout (ms),600,0,0,0,0
+GridNone+Ballast.UITK#2,Yaui.Text.Generate (ms),600,0,0,0,0
+GridNone+Ballast.UITK#2,Yaui.Text.Finish (ms),600,0,0,0,0
+GridNone+Ballast.UITK#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.031,0.03,0.036,0.122
+GridNone+Ballast.UITK#2,UIEvents.WillRenderCanvases (ms),600,0.026,0.025,0.029,0.116
+GridNone+Ballast.UITK#2,Canvas.BuildBatch (ms),600,0,0,0,0
+GridNone+Ballast.UITK#2,UI.RenderOverlays (ms),600,1.234,1.241,1.782,3.004
+GridNone+Ballast.UITK#2,Layout (ms),600,0.006,0.006,0.007,0.072
+GridNone+Ballast.UITK#2,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.128,0.121,0.164,0.264
+GridNone+Ballast.UITK#2,PostLateUpdate.UIElementsRepaintPanels (ms),600,0.126,0.118,0.164,0.355
+GridNone+Ballast.UITK#2,UIElements.UpdateLayout (ms),600,0.015,0.014,0.018,0.076
+GridNone+Ballast.UITK#2,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridNone+Ballast.UITK#2,UIR.DrawChain (ms),600,1.081,1.076,1.633,2.617
+GridNone+Ballast.YAUI#2,CPU Main (ms),600,3.012,2.917,3.483,6.786
+GridNone+Ballast.YAUI#2,CPU Main Present Wait (ms),600,27.54,27.639,28.268,30.225
+GridNone+Ballast.YAUI#2,CPU Render (ms),600,0.872,0.833,1.08,1.818
+GridNone+Ballast.YAUI#2,GPU (ms),600,30.518,30.567,30.608,30.637
+GridNone+Ballast.YAUI#2,GC Alloc (bytes),600,728.007,0,0,213824
+GridNone+Ballast.YAUI#2,Batches Count,600,0,0,0,0
+GridNone+Ballast.YAUI#2,SetPass Calls Count,600,5,5,5,5
+GridNone+Ballast.YAUI#2,Draw Calls Count,600,0,0,0,0
+GridNone+Ballast.YAUI#2,Vertices Count,600,0,0,0,0
+GridNone+Ballast.YAUI#2,YauiBench.ScenarioTick (ms),600,0.007,0.007,0.008,0.074
+GridNone+Ballast.YAUI#2,Yaui.EarlySubmit (ms),600,0.004,0.004,0.004,0.066
+GridNone+Ballast.YAUI#2,Yaui.Submit (ms),600,0.02,0.019,0.023,0.28
+GridNone+Ballast.YAUI#2,Yaui.Collect (ms),600,0.031,0.03,0.034,0.152
+GridNone+Ballast.YAUI#2,Yaui.Layout (ms),600,0,0,0,0
+GridNone+Ballast.YAUI#2,Yaui.Text.Generate (ms),600,0,0,0,0
+GridNone+Ballast.YAUI#2,Yaui.Text.Finish (ms),600,0,0,0,0
+GridNone+Ballast.YAUI#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.031,0.03,0.035,0.078
+GridNone+Ballast.YAUI#2,UIEvents.WillRenderCanvases (ms),600,0.026,0.025,0.029,0.072
+GridNone+Ballast.YAUI#2,Canvas.BuildBatch (ms),600,0,0,0,0
+GridNone+Ballast.YAUI#2,UI.RenderOverlays (ms),600,0.006,0.006,0.009,0.066
+GridNone+Ballast.YAUI#2,Layout (ms),600,0.006,0.006,0.007,0.011
+GridNone+Ballast.YAUI#2,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.025,0.024,0.028,0.094
+GridNone+Ballast.YAUI#2,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+GridNone+Ballast.YAUI#2,UIElements.UpdateLayout (ms),600,0,0,0,0
+GridNone+Ballast.YAUI#2,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridNone+Ballast.YAUI#2,UIR.DrawChain (ms),600,0,0,0,0
+ListScroll+Ballast.uGUI#2,CPU Main (ms),600,11.616,11.39,13.082,15.191
+ListScroll+Ballast.uGUI#2,CPU Main Present Wait (ms),600,17.379,17.572,18.678,42.933
+ListScroll+Ballast.uGUI#2,CPU Render (ms),600,0.988,0.948,1.302,2.622
+ListScroll+Ballast.uGUI#2,GPU (ms),600,28.963,29.009,29.051,29.064
+ListScroll+Ballast.uGUI#2,GC Alloc (bytes),600,728.007,0,0,213824
+ListScroll+Ballast.uGUI#2,Batches Count,600,0,0,0,0
+ListScroll+Ballast.uGUI#2,SetPass Calls Count,600,6,6,6,12
+ListScroll+Ballast.uGUI#2,Draw Calls Count,600,0,0,0,0
+ListScroll+Ballast.uGUI#2,Vertices Count,600,0,0,0,0
+ListScroll+Ballast.uGUI#2,YauiBench.ScenarioTick (ms),600,0.348,0.315,0.479,1.058
+ListScroll+Ballast.uGUI#2,Yaui.EarlySubmit (ms),600,0.003,0.003,0.004,0.093
+ListScroll+Ballast.uGUI#2,Yaui.Submit (ms),600,0.01,0.01,0.013,0.071
+ListScroll+Ballast.uGUI#2,Yaui.Collect (ms),600,0.024,0.023,0.028,0.079
+ListScroll+Ballast.uGUI#2,Yaui.Layout (ms),600,0,0,0,0
+ListScroll+Ballast.uGUI#2,Yaui.Text.Generate (ms),600,0,0,0,0
+ListScroll+Ballast.uGUI#2,Yaui.Text.Finish (ms),600,0,0,0,0
+ListScroll+Ballast.uGUI#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,8.216,8.08,9.221,10.326
+ListScroll+Ballast.uGUI#2,UIEvents.WillRenderCanvases (ms),600,8.144,8.012,9.139,10.214
+ListScroll+Ballast.uGUI#2,Canvas.BuildBatch (ms),600,0.056,0.055,0.068,0.113
+ListScroll+Ballast.uGUI#2,UI.RenderOverlays (ms),600,0.163,0.206,0.387,0.971
+ListScroll+Ballast.uGUI#2,Layout (ms),600,0.006,0.006,0.007,0.059
+ListScroll+Ballast.uGUI#2,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.024,0.023,0.028,0.06
+ListScroll+Ballast.uGUI#2,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+ListScroll+Ballast.uGUI#2,UIElements.UpdateLayout (ms),600,0,0,0,0
+ListScroll+Ballast.uGUI#2,TextGenerator.GenerateText (ms),600,0,0,0,0
+ListScroll+Ballast.uGUI#2,UIR.DrawChain (ms),600,0,0,0,0
+ListScroll+Ballast.UITK#2,CPU Main (ms),600,4.302,4.109,5.033,8.751
+ListScroll+Ballast.UITK#2,CPU Main Present Wait (ms),600,26.245,26.431,53.41,54.72
+ListScroll+Ballast.UITK#2,CPU Render (ms),600,1.038,0.996,1.306,2.85
+ListScroll+Ballast.UITK#2,GPU (ms),600,30744573446.31,30.606,30.669,18446744052019.8
+ListScroll+Ballast.UITK#2,GC Alloc (bytes),600,728.007,0,0,213824
+ListScroll+Ballast.UITK#2,Batches Count,600,0,0,0,0
+ListScroll+Ballast.UITK#2,SetPass Calls Count,600,5,5,5,5
+ListScroll+Ballast.UITK#2,Draw Calls Count,600,0,0,0,0
+ListScroll+Ballast.UITK#2,Vertices Count,600,0,0,0,0
+ListScroll+Ballast.UITK#2,YauiBench.ScenarioTick (ms),600,0.363,0.342,0.432,0.718
+ListScroll+Ballast.UITK#2,Yaui.EarlySubmit (ms),600,0.004,0.003,0.004,0.006
+ListScroll+Ballast.UITK#2,Yaui.Submit (ms),600,0.011,0.011,0.013,0.069
+ListScroll+Ballast.UITK#2,Yaui.Collect (ms),600,0.026,0.026,0.031,0.083
+ListScroll+Ballast.UITK#2,Yaui.Layout (ms),600,0,0,0,0
+ListScroll+Ballast.UITK#2,Yaui.Text.Generate (ms),600,0,0,0,0
+ListScroll+Ballast.UITK#2,Yaui.Text.Finish (ms),600,0,0,0,0
+ListScroll+Ballast.UITK#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.031,0.03,0.035,0.098
+ListScroll+Ballast.UITK#2,UIEvents.WillRenderCanvases (ms),600,0.025,0.024,0.029,0.091
+ListScroll+Ballast.UITK#2,Canvas.BuildBatch (ms),600,0,0,0,0
+ListScroll+Ballast.UITK#2,UI.RenderOverlays (ms),600,0.765,0.723,0.907,1.785
+ListScroll+Ballast.UITK#2,Layout (ms),600,0.006,0.006,0.007,0.072
+ListScroll+Ballast.UITK#2,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.122,0.117,0.148,0.354
+ListScroll+Ballast.UITK#2,PostLateUpdate.UIElementsRepaintPanels (ms),600,0.207,0.195,0.254,0.467
+ListScroll+Ballast.UITK#2,UIElements.UpdateLayout (ms),600,0.014,0.013,0.017,0.096
+ListScroll+Ballast.UITK#2,TextGenerator.GenerateText (ms),600,0,0,0,0
+ListScroll+Ballast.UITK#2,UIR.DrawChain (ms),600,0.612,0.578,0.722,1.498
+ListScroll+Ballast.YAUI#2,CPU Main (ms),600,3.527,3.399,4.003,7.622
+ListScroll+Ballast.YAUI#2,CPU Main Present Wait (ms),600,26.257,26.375,27.075,50.647
+ListScroll+Ballast.YAUI#2,CPU Render (ms),600,1.023,1,1.275,2.423
+ListScroll+Ballast.YAUI#2,GPU (ms),600,29.705,29.802,29.846,29.873
+ListScroll+Ballast.YAUI#2,GC Alloc (bytes),600,728.007,0,0,213824
+ListScroll+Ballast.YAUI#2,Batches Count,600,0,0,0,0
+ListScroll+Ballast.YAUI#2,SetPass Calls Count,600,5,5,5,10
+ListScroll+Ballast.YAUI#2,Draw Calls Count,600,0,0,0,0
+ListScroll+Ballast.YAUI#2,Vertices Count,600,0,0,0,0
+ListScroll+Ballast.YAUI#2,YauiBench.ScenarioTick (ms),600,0.05,0.048,0.06,0.16
+ListScroll+Ballast.YAUI#2,Yaui.EarlySubmit (ms),600,0.004,0.004,0.005,0.007
+ListScroll+Ballast.YAUI#2,Yaui.Submit (ms),600,0.018,0.017,0.021,0.12
+ListScroll+Ballast.YAUI#2,Yaui.Collect (ms),600,0.443,0.43,0.518,0.893
+ListScroll+Ballast.YAUI#2,Yaui.Layout (ms),600,0,0,0,0
+ListScroll+Ballast.YAUI#2,Yaui.Text.Generate (ms),600,0,0,0,0
+ListScroll+Ballast.YAUI#2,Yaui.Text.Finish (ms),600,0,0,0,0
+ListScroll+Ballast.YAUI#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.032,0.03,0.036,0.264
+ListScroll+Ballast.YAUI#2,UIEvents.WillRenderCanvases (ms),600,0.027,0.025,0.03,0.127
+ListScroll+Ballast.YAUI#2,Canvas.BuildBatch (ms),600,0,0,0,0
+ListScroll+Ballast.YAUI#2,UI.RenderOverlays (ms),600,-0.091,0.006,0.009,0.355
+ListScroll+Ballast.YAUI#2,Layout (ms),600,0.006,0.006,0.007,0.049
+ListScroll+Ballast.YAUI#2,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.024,0.024,0.028,0.088
+ListScroll+Ballast.YAUI#2,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+ListScroll+Ballast.YAUI#2,UIElements.UpdateLayout (ms),600,0,0,0,0
+ListScroll+Ballast.YAUI#2,TextGenerator.GenerateText (ms),600,0,0,0,0
+ListScroll+Ballast.YAUI#2,UIR.DrawChain (ms),600,0,0,0,0
+Empty+Ballast2#2,CPU Main (ms),600,2.867,2.794,3.182,6.625
+Empty+Ballast2#2,CPU Main Present Wait (ms),600,24.682,24.73,25.576,26.508
+Empty+Ballast2#2,CPU Render (ms),600,0.746,0.72,0.893,1.332
+Empty+Ballast2#2,GPU (ms),600,27.567,27.564,27.601,27.62
+Empty+Ballast2#2,GC Alloc (bytes),600,728.007,0,0,213824
+Empty+Ballast2#2,Batches Count,600,0,0,0,0
+Empty+Ballast2#2,SetPass Calls Count,600,4,4,4,8
+Empty+Ballast2#2,Draw Calls Count,600,0,0,0,0
+Empty+Ballast2#2,Vertices Count,600,0,0,0,0
+Empty+Ballast2#2,YauiBench.ScenarioTick (ms),600,0.007,0.006,0.008,0.067
+Empty+Ballast2#2,Yaui.EarlySubmit (ms),600,0.004,0.003,0.004,0.006
+Empty+Ballast2#2,Yaui.Submit (ms),600,0.011,0.01,0.012,0.052
+Empty+Ballast2#2,Yaui.Collect (ms),600,0.027,0.026,0.029,0.115
+Empty+Ballast2#2,Yaui.Layout (ms),600,0,0,0,0
+Empty+Ballast2#2,Yaui.Text.Generate (ms),600,0,0,0,0
+Empty+Ballast2#2,Yaui.Text.Finish (ms),600,0,0,0,0
+Empty+Ballast2#2,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.031,0.03,0.035,0.091
+Empty+Ballast2#2,UIEvents.WillRenderCanvases (ms),600,0.026,0.025,0.029,0.084
+Empty+Ballast2#2,Canvas.BuildBatch (ms),600,0,0,0,0
+Empty+Ballast2#2,UI.RenderOverlays (ms),600,0.006,0.005,0.008,0.01
+Empty+Ballast2#2,Layout (ms),600,0.006,0.006,0.007,0.046
+Empty+Ballast2#2,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.025,0.024,0.028,0.111
+Empty+Ballast2#2,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+Empty+Ballast2#2,UIElements.UpdateLayout (ms),600,0,0,0,0
+Empty+Ballast2#2,TextGenerator.GenerateText (ms),600,0,0,0,0
+Empty+Ballast2#2,UIR.DrawChain (ms),600,0,0,0,0
+Empty#3,CPU Main (ms),600,3.391,3.37,3.664,8.044
+Empty#3,CPU Main Present Wait (ms),600,7.702,7.678,8.501,9.383
+Empty#3,CPU Render (ms),600,0.663,0.658,0.768,0.918
+Empty#3,GPU (ms),600,4.135,4.237,4.329,4.638
+Empty#3,GC Alloc (bytes),600,728.007,0,0,213824
+Empty#3,Batches Count,600,0,0,0,0
+Empty#3,SetPass Calls Count,600,3,3,3,3
+Empty#3,Draw Calls Count,600,0,0,0,0
+Empty#3,Vertices Count,600,0,0,0,0
+Empty#3,YauiBench.ScenarioTick (ms),600,0.006,0.006,0.007,0.05
+Empty#3,Yaui.EarlySubmit (ms),600,0.005,0.004,0.006,0.044
+Empty#3,Yaui.Submit (ms),600,0.013,0.013,0.014,0.076
+Empty#3,Yaui.Collect (ms),600,0.029,0.028,0.032,0.082
+Empty#3,Yaui.Layout (ms),600,0,0,0,0
+Empty#3,Yaui.Text.Generate (ms),600,0,0,0,0
+Empty#3,Yaui.Text.Finish (ms),600,0,0,0,0
+Empty#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.039,0.038,0.041,0.118
+Empty#3,UIEvents.WillRenderCanvases (ms),600,0.032,0.032,0.035,0.08
+Empty#3,Canvas.BuildBatch (ms),600,0,0,0,0
+Empty#3,UI.RenderOverlays (ms),600,0.006,0.005,0.006,0.045
+Empty#3,Layout (ms),600,0.008,0.008,0.009,0.044
+Empty#3,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.033,0.031,0.035,0.117
+Empty#3,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+Empty#3,UIElements.UpdateLayout (ms),600,0,0,0,0
+Empty#3,TextGenerator.GenerateText (ms),600,0,0,0,0
+Empty#3,UIR.DrawChain (ms),600,0,0,0,0
+GridNone.UITK#3,CPU Main (ms),600,3.7,3.7,4.028,7.98
+GridNone.UITK#3,CPU Main Present Wait (ms),600,7.411,7.427,8.138,8.926
+GridNone.UITK#3,CPU Render (ms),600,0.824,0.813,0.958,1.247
+GridNone.UITK#3,GPU (ms),600,10.099,10.094,10.142,10.375
+GridNone.UITK#3,GC Alloc (bytes),600,728.007,0,0,213824
+GridNone.UITK#3,Batches Count,600,0,0,0,0
+GridNone.UITK#3,SetPass Calls Count,600,3.993,4,4,4
+GridNone.UITK#3,Draw Calls Count,600,0,0,0,0
+GridNone.UITK#3,Vertices Count,600,0,0,0,0
+GridNone.UITK#3,YauiBench.ScenarioTick (ms),600,0.003,0.003,0.004,0.04
+GridNone.UITK#3,Yaui.EarlySubmit (ms),600,0.003,0.003,0.005,0.006
+GridNone.UITK#3,Yaui.Submit (ms),600,0.01,0.01,0.012,0.063
+GridNone.UITK#3,Yaui.Collect (ms),600,0.023,0.022,0.027,0.101
+GridNone.UITK#3,Yaui.Layout (ms),600,0,0,0,0
+GridNone.UITK#3,Yaui.Text.Generate (ms),600,0,0,0,0
+GridNone.UITK#3,Yaui.Text.Finish (ms),600,0,0,0,0
+GridNone.UITK#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.029,0.028,0.032,0.146
+GridNone.UITK#3,UIEvents.WillRenderCanvases (ms),600,0.024,0.023,0.027,0.141
+GridNone.UITK#3,Canvas.BuildBatch (ms),600,0,0,0,0
+GridNone.UITK#3,UI.RenderOverlays (ms),600,1.102,1.004,1.463,3.307
+GridNone.UITK#3,Layout (ms),600,0.006,0.005,0.007,0.053
+GridNone.UITK#3,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.122,0.121,0.144,0.224
+GridNone.UITK#3,PostLateUpdate.UIElementsRepaintPanels (ms),600,0.13,0.128,0.152,0.382
+GridNone.UITK#3,UIElements.UpdateLayout (ms),600,0.014,0.013,0.016,0.061
+GridNone.UITK#3,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridNone.UITK#3,UIR.DrawChain (ms),600,0.978,0.862,1.324,2.785
+GridNone.YAUI#3,CPU Main (ms),600,3.268,3.258,3.435,6.763
+GridNone.YAUI#3,CPU Main Present Wait (ms),600,7.858,7.856,8.709,9.234
+GridNone.YAUI#3,CPU Render (ms),600,0.828,0.81,0.939,1.345
+GridNone.YAUI#3,GPU (ms),600,9.001,9.743,9.916,11.415
+GridNone.YAUI#3,GC Alloc (bytes),600,728.007,0,0,213824
+GridNone.YAUI#3,Batches Count,600,0,0,0,0
+GridNone.YAUI#3,SetPass Calls Count,600,4,4,4,4
+GridNone.YAUI#3,Draw Calls Count,600,0,0,0,0
+GridNone.YAUI#3,Vertices Count,600,0,0,0,0
+GridNone.YAUI#3,YauiBench.ScenarioTick (ms),600,0.004,0.003,0.005,0.07
+GridNone.YAUI#3,Yaui.EarlySubmit (ms),600,0.004,0.004,0.005,0.008
+GridNone.YAUI#3,Yaui.Submit (ms),600,0.022,0.021,0.026,0.061
+GridNone.YAUI#3,Yaui.Collect (ms),600,0.035,0.033,0.04,0.104
+GridNone.YAUI#3,Yaui.Layout (ms),600,0,0,0,0
+GridNone.YAUI#3,Yaui.Text.Generate (ms),600,0,0,0,0
+GridNone.YAUI#3,Yaui.Text.Finish (ms),600,0,0,0,0
+GridNone.YAUI#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.033,0.031,0.04,0.123
+GridNone.YAUI#3,UIEvents.WillRenderCanvases (ms),600,0.028,0.026,0.033,0.116
+GridNone.YAUI#3,Canvas.BuildBatch (ms),600,0,0,0,0
+GridNone.YAUI#3,UI.RenderOverlays (ms),600,0.006,0.006,0.007,0.053
+GridNone.YAUI#3,Layout (ms),600,0.007,0.006,0.008,0.011
+GridNone.YAUI#3,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.028,0.027,0.034,0.103
+GridNone.YAUI#3,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+GridNone.YAUI#3,UIElements.UpdateLayout (ms),600,0,0,0,0
+GridNone.YAUI#3,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridNone.YAUI#3,UIR.DrawChain (ms),600,0,0,0,0
+GridNone.uGUI#3,CPU Main (ms),600,4.05,4.086,4.393,10.425
+GridNone.uGUI#3,CPU Main Present Wait (ms),600,7.08,7.047,8.113,10.883
+GridNone.uGUI#3,CPU Render (ms),600,1.636,1.654,1.898,2.506
+GridNone.uGUI#3,GPU (ms),600,9.125,9.148,9.185,9.287
+GridNone.uGUI#3,GC Alloc (bytes),600,728.007,0,0,213824
+GridNone.uGUI#3,Batches Count,600,0,0,0,0
+GridNone.uGUI#3,SetPass Calls Count,600,63,63,63,126
+GridNone.uGUI#3,Draw Calls Count,600,0,0,0,0
+GridNone.uGUI#3,Vertices Count,600,0,0,0,0
+GridNone.uGUI#3,YauiBench.ScenarioTick (ms),600,0.004,0.004,0.004,0.01
+GridNone.uGUI#3,Yaui.EarlySubmit (ms),600,0.004,0.004,0.005,0.008
+GridNone.uGUI#3,Yaui.Submit (ms),600,0.012,0.011,0.013,0.073
+GridNone.uGUI#3,Yaui.Collect (ms),600,0.033,0.028,0.033,2.19
+GridNone.uGUI#3,Yaui.Layout (ms),600,0,0,0,0
+GridNone.uGUI#3,Yaui.Text.Generate (ms),600,0,0,0,0
+GridNone.uGUI#3,Yaui.Text.Finish (ms),600,0,0,0,0
+GridNone.uGUI#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.215,0.213,0.258,0.3
+GridNone.uGUI#3,UIEvents.WillRenderCanvases (ms),600,0.079,0.078,0.085,0.157
+GridNone.uGUI#3,Canvas.BuildBatch (ms),600,0,0,0,0
+GridNone.uGUI#3,UI.RenderOverlays (ms),600,1.285,1.303,1.419,1.736
+GridNone.uGUI#3,Layout (ms),600,0.007,0.007,0.008,0.073
+GridNone.uGUI#3,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.027,0.027,0.03,0.076
+GridNone.uGUI#3,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+GridNone.uGUI#3,UIElements.UpdateLayout (ms),600,0,0,0,0
+GridNone.uGUI#3,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridNone.uGUI#3,UIR.DrawChain (ms),600,0,0,0,0
+GridColor10.UITK#3,CPU Main (ms),600,4.541,4.504,4.868,7.37
+GridColor10.UITK#3,CPU Main Present Wait (ms),600,6.592,6.613,7.303,8.07
+GridColor10.UITK#3,CPU Render (ms),600,0.794,0.773,0.975,1.337
+GridColor10.UITK#3,GPU (ms),600,10.17,10.161,10.242,10.34
+GridColor10.UITK#3,GC Alloc (bytes),600,728.007,0,0,213824
+GridColor10.UITK#3,Batches Count,600,0,0,0,0
+GridColor10.UITK#3,SetPass Calls Count,600,4,4,4,4
+GridColor10.UITK#3,Draw Calls Count,600,0,0,0,0
+GridColor10.UITK#3,Vertices Count,600,0,0,0,0
+GridColor10.UITK#3,YauiBench.ScenarioTick (ms),600,0.624,0.584,0.744,0.952
+GridColor10.UITK#3,Yaui.EarlySubmit (ms),600,0.003,0.003,0.003,0.005
+GridColor10.UITK#3,Yaui.Submit (ms),600,0.009,0.008,0.012,0.041
+GridColor10.UITK#3,Yaui.Collect (ms),600,0.023,0.021,0.03,0.07
+GridColor10.UITK#3,Yaui.Layout (ms),600,0,0,0,0
+GridColor10.UITK#3,Yaui.Text.Generate (ms),600,0,0,0,0
+GridColor10.UITK#3,Yaui.Text.Finish (ms),600,0,0,0,0
+GridColor10.UITK#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.025,0.023,0.03,0.095
+GridColor10.UITK#3,UIEvents.WillRenderCanvases (ms),600,0.021,0.019,0.025,0.09
+GridColor10.UITK#3,Canvas.BuildBatch (ms),600,0,0,0,0
+GridColor10.UITK#3,UI.RenderOverlays (ms),600,0.875,0.846,1.053,1.289
+GridColor10.UITK#3,Layout (ms),600,0.005,0.004,0.006,0.067
+GridColor10.UITK#3,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.094,0.091,0.111,0.231
+GridColor10.UITK#3,PostLateUpdate.UIElementsRepaintPanels (ms),600,0.406,0.388,0.481,0.603
+GridColor10.UITK#3,UIElements.UpdateLayout (ms),600,0.012,0.011,0.014,0.117
+GridColor10.UITK#3,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridColor10.UITK#3,UIR.DrawChain (ms),600,0.741,0.711,0.902,1.14
+GridColor10.YAUI#3,CPU Main (ms),600,3.482,3.512,3.782,6.771
+GridColor10.YAUI#3,CPU Main Present Wait (ms),600,7.644,7.634,8.532,9.594
+GridColor10.YAUI#3,CPU Render (ms),600,0.964,0.954,1.138,1.443
+GridColor10.YAUI#3,GPU (ms),600,6.92,6.917,6.998,9.273
+GridColor10.YAUI#3,GC Alloc (bytes),600,728.007,0,0,213824
+GridColor10.YAUI#3,Batches Count,600,0,0,0,0
+GridColor10.YAUI#3,SetPass Calls Count,600,4,4,4,4
+GridColor10.YAUI#3,Draw Calls Count,600,0,0,0,0
+GridColor10.YAUI#3,Vertices Count,600,0,0,0,0
+GridColor10.YAUI#3,YauiBench.ScenarioTick (ms),600,0.257,0.254,0.315,0.386
+GridColor10.YAUI#3,Yaui.EarlySubmit (ms),600,0.004,0.004,0.005,0.047
+GridColor10.YAUI#3,Yaui.Submit (ms),600,0.02,0.019,0.025,0.084
+GridColor10.YAUI#3,Yaui.Collect (ms),600,0.11,0.104,0.134,0.28
+GridColor10.YAUI#3,Yaui.Layout (ms),600,0,0,0,0
+GridColor10.YAUI#3,Yaui.Text.Generate (ms),600,0,0,0,0
+GridColor10.YAUI#3,Yaui.Text.Finish (ms),600,0,0,0,0
+GridColor10.YAUI#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.032,0.03,0.037,0.108
+GridColor10.YAUI#3,UIEvents.WillRenderCanvases (ms),600,0.027,0.025,0.031,0.102
+GridColor10.YAUI#3,Canvas.BuildBatch (ms),600,0,0,0,0
+GridColor10.YAUI#3,UI.RenderOverlays (ms),600,0.006,0.005,0.007,0.081
+GridColor10.YAUI#3,Layout (ms),600,0.006,0.006,0.008,0.065
+GridColor10.YAUI#3,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.026,0.025,0.032,0.088
+GridColor10.YAUI#3,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+GridColor10.YAUI#3,UIElements.UpdateLayout (ms),600,0,0,0,0
+GridColor10.YAUI#3,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridColor10.YAUI#3,UIR.DrawChain (ms),600,0,0,0,0
+GridColor10.uGUI#3,CPU Main (ms),600,7.009,6.903,8.247,9.746
+GridColor10.uGUI#3,CPU Main Present Wait (ms),600,4.123,4.201,5.319,6.307
+GridColor10.uGUI#3,CPU Render (ms),600,1.001,0.95,1.19,4.304
+GridColor10.uGUI#3,GPU (ms),600,8.94,8.947,9.018,9.126
+GridColor10.uGUI#3,GC Alloc (bytes),600,728.007,0,0,213824
+GridColor10.uGUI#3,Batches Count,600,0,0,0,0
+GridColor10.uGUI#3,SetPass Calls Count,600,23,23,23,23
+GridColor10.uGUI#3,Draw Calls Count,600,0,0,0,0
+GridColor10.uGUI#3,Vertices Count,600,0,0,0,0
+GridColor10.uGUI#3,YauiBench.ScenarioTick (ms),600,0.175,0.171,0.211,0.278
+GridColor10.uGUI#3,Yaui.EarlySubmit (ms),600,0.003,0.002,0.003,0.064
+GridColor10.uGUI#3,Yaui.Submit (ms),600,0.008,0.007,0.009,0.04
+GridColor10.uGUI#3,Yaui.Collect (ms),600,0.02,0.019,0.025,0.101
+GridColor10.uGUI#3,Yaui.Layout (ms),600,0,0,0,0
+GridColor10.uGUI#3,Yaui.Text.Generate (ms),600,0,0,0,0
+GridColor10.uGUI#3,Yaui.Text.Finish (ms),600,0,0,0,0
+GridColor10.uGUI#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,4.211,4.12,4.826,5.901
+GridColor10.uGUI#3,UIEvents.WillRenderCanvases (ms),600,4.137,4.052,4.743,5.825
+GridColor10.uGUI#3,Canvas.BuildBatch (ms),600,0.055,0.045,0.073,0.709
+GridColor10.uGUI#3,UI.RenderOverlays (ms),600,0.476,0.437,0.703,1.617
+GridColor10.uGUI#3,Layout (ms),600,0.02,0.019,0.025,0.069
+GridColor10.uGUI#3,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.021,0.02,0.025,0.061
+GridColor10.uGUI#3,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+GridColor10.uGUI#3,UIElements.UpdateLayout (ms),600,0,0,0,0
+GridColor10.uGUI#3,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridColor10.uGUI#3,UIR.DrawChain (ms),600,0,0,0,0
+GridMove10.UITK#3,CPU Main (ms),600,4.881,4.81,5.568,7.381
+GridMove10.UITK#3,CPU Main Present Wait (ms),600,6.251,6.318,7.081,7.563
+GridMove10.UITK#3,CPU Render (ms),600,0.779,0.761,0.978,1.319
+GridMove10.UITK#3,GPU (ms),600,10.188,10.179,10.26,10.394
+GridMove10.UITK#3,GC Alloc (bytes),600,728.007,0,0,213824
+GridMove10.UITK#3,Batches Count,600,0,0,0,0
+GridMove10.UITK#3,SetPass Calls Count,600,4,4,4,4
+GridMove10.UITK#3,Draw Calls Count,600,0,0,0,0
+GridMove10.UITK#3,Vertices Count,600,0,0,0,0
+GridMove10.UITK#3,YauiBench.ScenarioTick (ms),600,0.541,0.527,0.613,1.007
+GridMove10.UITK#3,Yaui.EarlySubmit (ms),600,0.003,0.002,0.004,0.035
+GridMove10.UITK#3,Yaui.Submit (ms),600,0.009,0.009,0.012,0.049
+GridMove10.UITK#3,Yaui.Collect (ms),600,0.022,0.021,0.036,0.068
+GridMove10.UITK#3,Yaui.Layout (ms),600,0,0,0,0
+GridMove10.UITK#3,Yaui.Text.Generate (ms),600,0,0,0,0
+GridMove10.UITK#3,Yaui.Text.Finish (ms),600,0,0,0,0
+GridMove10.UITK#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.024,0.023,0.028,0.068
+GridMove10.UITK#3,UIEvents.WillRenderCanvases (ms),600,0.02,0.019,0.023,0.064
+GridMove10.UITK#3,Canvas.BuildBatch (ms),600,0,0,0,0
+GridMove10.UITK#3,UI.RenderOverlays (ms),600,0.82,0.788,1.016,1.07
+GridMove10.UITK#3,Layout (ms),600,0.004,0.004,0.006,0.009
+GridMove10.UITK#3,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.529,0.515,0.611,0.755
+GridMove10.UITK#3,PostLateUpdate.UIElementsRepaintPanels (ms),600,0.604,0.595,0.682,0.872
+GridMove10.UITK#3,UIElements.UpdateLayout (ms),600,0.013,0.012,0.016,0.084
+GridMove10.UITK#3,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridMove10.UITK#3,UIR.DrawChain (ms),600,0.69,0.654,0.874,0.942
+GridMove10.YAUI#3,CPU Main (ms),600,4.047,4.144,4.329,7.655
+GridMove10.YAUI#3,CPU Main Present Wait (ms),600,7.057,7.029,7.995,8.605
+GridMove10.YAUI#3,CPU Render (ms),600,0.838,0.818,0.956,1.053
+GridMove10.YAUI#3,GPU (ms),600,6.869,6.837,6.895,9.919
+GridMove10.YAUI#3,GC Alloc (bytes),600,728.007,0,0,213824
+GridMove10.YAUI#3,Batches Count,600,0,0,0,0
+GridMove10.YAUI#3,SetPass Calls Count,600,3.993,4,4,4
+GridMove10.YAUI#3,Draw Calls Count,600,0,0,0,0
+GridMove10.YAUI#3,Vertices Count,600,0,0,0,0
+GridMove10.YAUI#3,YauiBench.ScenarioTick (ms),600,0.171,0.173,0.19,0.307
+GridMove10.YAUI#3,Yaui.EarlySubmit (ms),600,0.005,0.004,0.006,0.008
+GridMove10.YAUI#3,Yaui.Submit (ms),600,0.024,0.023,0.028,0.093
+GridMove10.YAUI#3,Yaui.Collect (ms),600,0.326,0.33,0.379,0.575
+GridMove10.YAUI#3,Yaui.Layout (ms),600,0,0,0,0
+GridMove10.YAUI#3,Yaui.Text.Generate (ms),600,0,0,0,0
+GridMove10.YAUI#3,Yaui.Text.Finish (ms),600,0,0,0,0
+GridMove10.YAUI#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.038,0.038,0.043,0.109
+GridMove10.YAUI#3,UIEvents.WillRenderCanvases (ms),600,0.032,0.031,0.036,0.104
+GridMove10.YAUI#3,Canvas.BuildBatch (ms),600,0,0,0,0
+GridMove10.YAUI#3,UI.RenderOverlays (ms),600,0.006,0.006,0.006,0.009
+GridMove10.YAUI#3,Layout (ms),600,0.008,0.007,0.01,0.069
+GridMove10.YAUI#3,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.031,0.03,0.036,0.118
+GridMove10.YAUI#3,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+GridMove10.YAUI#3,UIElements.UpdateLayout (ms),600,0,0,0,0
+GridMove10.YAUI#3,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridMove10.YAUI#3,UIR.DrawChain (ms),600,0,0,0,0
+GridMove10.uGUI#3,CPU Main (ms),600,3.928,3.774,4.906,6.351
+GridMove10.uGUI#3,CPU Main Present Wait (ms),600,7.2,7.284,8.231,10.451
+GridMove10.uGUI#3,CPU Render (ms),600,0.796,0.775,0.953,1.767
+GridMove10.uGUI#3,GPU (ms),600,8.878,8.879,8.944,9.148
+GridMove10.uGUI#3,GC Alloc (bytes),600,728.007,0,0,213824
+GridMove10.uGUI#3,Batches Count,600,0,0,0,0
+GridMove10.uGUI#3,SetPass Calls Count,600,23,23,23,23
+GridMove10.uGUI#3,Draw Calls Count,600,0,0,0,0
+GridMove10.uGUI#3,Vertices Count,600,0,0,0,0
+GridMove10.uGUI#3,YauiBench.ScenarioTick (ms),600,0.192,0.185,0.234,0.399
+GridMove10.uGUI#3,Yaui.EarlySubmit (ms),600,0.003,0.003,0.004,0.009
+GridMove10.uGUI#3,Yaui.Submit (ms),600,0.009,0.008,0.011,0.025
+GridMove10.uGUI#3,Yaui.Collect (ms),600,0.021,0.021,0.024,0.052
+GridMove10.uGUI#3,Yaui.Layout (ms),600,0,0,0,0
+GridMove10.uGUI#3,Yaui.Text.Generate (ms),600,0,0,0,0
+GridMove10.uGUI#3,Yaui.Text.Finish (ms),600,0,0,0,0
+GridMove10.uGUI#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.958,0.904,1.293,2.012
+GridMove10.uGUI#3,UIEvents.WillRenderCanvases (ms),600,0.881,0.833,1.206,1.908
+GridMove10.uGUI#3,Canvas.BuildBatch (ms),600,0.052,0.032,0.338,0.764
+GridMove10.uGUI#3,UI.RenderOverlays (ms),600,0.357,0.349,0.439,0.99
+GridMove10.uGUI#3,Layout (ms),600,0.005,0.005,0.006,0.036
+GridMove10.uGUI#3,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.022,0.02,0.026,0.115
+GridMove10.uGUI#3,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+GridMove10.uGUI#3,UIElements.UpdateLayout (ms),600,0,0,0,0
+GridMove10.uGUI#3,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridMove10.uGUI#3,UIR.DrawChain (ms),600,0,0,0,0
+GridText10.UITK#3,CPU Main (ms),600,20.234,20.209,20.591,21.993
+GridText10.UITK#3,CPU Main Present Wait (ms),600,0.022,0.022,0.023,0.06
+GridText10.UITK#3,CPU Render (ms),600,1.93,1.93,2.289,2.389
+GridText10.UITK#3,GPU (ms),600,18.896,18.888,19.002,19.409
+GridText10.UITK#3,GC Alloc (bytes),600,728.007,0,0,213824
+GridText10.UITK#3,Batches Count,600,0,0,0,0
+GridText10.UITK#3,SetPass Calls Count,600,3.993,4,4,4
+GridText10.UITK#3,Draw Calls Count,600,0,0,0,0
+GridText10.UITK#3,Vertices Count,600,0,0,0,0
+GridText10.UITK#3,YauiBench.ScenarioTick (ms),600,2.005,2.006,2.062,2.236
+GridText10.UITK#3,Yaui.EarlySubmit (ms),600,0.002,0.002,0.004,0.046
+GridText10.UITK#3,Yaui.Submit (ms),600,0.008,0.008,0.009,0.047
+GridText10.UITK#3,Yaui.Collect (ms),600,0.016,0.016,0.02,0.053
+GridText10.UITK#3,Yaui.Layout (ms),600,0,0,0,0
+GridText10.UITK#3,Yaui.Text.Generate (ms),600,0,0,0,0
+GridText10.UITK#3,Yaui.Text.Finish (ms),600,0,0,0,0
+GridText10.UITK#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.019,0.019,0.021,0.067
+GridText10.UITK#3,UIEvents.WillRenderCanvases (ms),600,0.016,0.016,0.017,0.058
+GridText10.UITK#3,Canvas.BuildBatch (ms),600,0,0,0,0
+GridText10.UITK#3,UI.RenderOverlays (ms),600,0.972,0.891,1.22,1.971
+GridText10.UITK#3,Layout (ms),600,0.004,0.003,0.004,0.042
+GridText10.UITK#3,PreLateUpdate.UIElementsUpdatePanels (ms),600,10.386,10.349,10.686,11.134
+GridText10.UITK#3,PostLateUpdate.UIElementsRepaintPanels (ms),600,5.456,5.467,5.587,5.692
+GridText10.UITK#3,UIElements.UpdateLayout (ms),600,10.251,10.251,10.431,10.879
+GridText10.UITK#3,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridText10.UITK#3,UIR.DrawChain (ms),600,0.886,0.794,1.119,2.272
+GridText10.YAUI#3,CPU Main (ms),600,9.791,8.856,12.589,14.834
+GridText10.YAUI#3,CPU Main Present Wait (ms),600,1.34,1.249,3.308,5.933
+GridText10.YAUI#3,CPU Render (ms),600,0.619,0.587,0.794,1.273
+GridText10.YAUI#3,GPU (ms),600,5.618,6.694,6.812,6.986
+GridText10.YAUI#3,GC Alloc (bytes),600,728.007,0,0,213824
+GridText10.YAUI#3,Batches Count,600,0,0,0,0
+GridText10.YAUI#3,SetPass Calls Count,600,3.993,4,4,4
+GridText10.YAUI#3,Draw Calls Count,600,0,0,0,0
+GridText10.YAUI#3,Vertices Count,600,0,0,0,0
+GridText10.YAUI#3,YauiBench.ScenarioTick (ms),600,0.099,0.096,0.133,0.222
+GridText10.YAUI#3,Yaui.EarlySubmit (ms),600,0.294,0.279,0.336,3.908
+GridText10.YAUI#3,Yaui.Submit (ms),600,0.104,0.102,0.12,0.219
+GridText10.YAUI#3,Yaui.Collect (ms),600,7.25,6.339,9.864,11.794
+GridText10.YAUI#3,Yaui.Layout (ms),600,0.105,0.102,0.127,0.242
+GridText10.YAUI#3,Yaui.Text.Generate (ms),600,8.177,7.538,11.266,15.075
+GridText10.YAUI#3,Yaui.Text.Finish (ms),600,0.777,0.766,0.863,1.588
+GridText10.YAUI#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.022,0.021,0.026,0.046
+GridText10.YAUI#3,UIEvents.WillRenderCanvases (ms),600,0.018,0.018,0.022,0.043
+GridText10.YAUI#3,Canvas.BuildBatch (ms),600,0,0,0,0
+GridText10.YAUI#3,UI.RenderOverlays (ms),600,0.003,0.003,0.004,0.028
+GridText10.YAUI#3,Layout (ms),600,0.004,0.004,0.006,0.009
+GridText10.YAUI#3,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.025,0.018,0.025,3.589
+GridText10.YAUI#3,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+GridText10.YAUI#3,UIElements.UpdateLayout (ms),600,0,0,0,0
+GridText10.YAUI#3,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridText10.YAUI#3,UIR.DrawChain (ms),600,0,0,0,0
+GridText10.uGUI#3,CPU Main (ms),600,9.676,9.619,10.216,12.727
+GridText10.uGUI#3,CPU Main Present Wait (ms),600,1.465,1.408,3.736,5.12
+GridText10.uGUI#3,CPU Render (ms),600,0.99,0.948,1.723,3.251
+GridText10.uGUI#3,GPU (ms),600,8.947,8.953,9.039,9.179
+GridText10.uGUI#3,GC Alloc (bytes),600,728.007,0,0,213824
+GridText10.uGUI#3,Batches Count,600,0,0,0,0
+GridText10.uGUI#3,SetPass Calls Count,600,23,23,23,23
+GridText10.uGUI#3,Draw Calls Count,600,0,0,0,0
+GridText10.uGUI#3,Vertices Count,600,0,0,0,0
+GridText10.uGUI#3,YauiBench.ScenarioTick (ms),600,0.999,0.98,1.147,1.65
+GridText10.uGUI#3,Yaui.EarlySubmit (ms),600,0.002,0.002,0.004,0.009
+GridText10.uGUI#3,Yaui.Submit (ms),600,0.008,0.006,0.015,0.026
+GridText10.uGUI#3,Yaui.Collect (ms),600,0.018,0.017,0.02,0.051
+GridText10.uGUI#3,Yaui.Layout (ms),600,0,0,0,0
+GridText10.uGUI#3,Yaui.Text.Generate (ms),600,0,0,0,0
+GridText10.uGUI#3,Yaui.Text.Finish (ms),600,0,0,0,0
+GridText10.uGUI#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,6.56,6.546,6.858,8.809
+GridText10.uGUI#3,UIEvents.WillRenderCanvases (ms),600,6.493,6.482,6.796,8.735
+GridText10.uGUI#3,Canvas.BuildBatch (ms),600,0.04,0.038,0.05,0.313
+GridText10.uGUI#3,UI.RenderOverlays (ms),600,0.443,0.411,0.896,1.706
+GridText10.uGUI#3,Layout (ms),600,0.024,0.02,0.046,0.092
+GridText10.uGUI#3,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.021,0.017,0.044,0.057
+GridText10.uGUI#3,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+GridText10.uGUI#3,UIElements.UpdateLayout (ms),600,0,0,0,0
+GridText10.uGUI#3,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridText10.uGUI#3,UIR.DrawChain (ms),600,0,0,0,0
+GridHitTest.UITK#3,CPU Main (ms),600,6.095,5.995,7.062,8.583
+GridHitTest.UITK#3,CPU Main Present Wait (ms),600,5.038,5.14,6.185,7.548
+GridHitTest.UITK#3,CPU Render (ms),600,0.878,0.875,1.109,1.335
+GridHitTest.UITK#3,GPU (ms),600,10.204,10.204,10.279,10.403
+GridHitTest.UITK#3,GC Alloc (bytes),600,728.007,0,0,213824
+GridHitTest.UITK#3,Batches Count,600,0,0,0,0
+GridHitTest.UITK#3,SetPass Calls Count,600,3.993,4,4,4
+GridHitTest.UITK#3,Draw Calls Count,600,0,0,0,0
+GridHitTest.UITK#3,Vertices Count,600,0,0,0,0
+GridHitTest.UITK#3,YauiBench.ScenarioTick (ms),600,2.789,2.755,3.508,4.213
+GridHitTest.UITK#3,Yaui.EarlySubmit (ms),600,0.003,0.003,0.004,0.006
+GridHitTest.UITK#3,Yaui.Submit (ms),600,0.009,0.008,0.011,0.097
+GridHitTest.UITK#3,Yaui.Collect (ms),600,0.02,0.019,0.026,0.059
+GridHitTest.UITK#3,Yaui.Layout (ms),600,0,0,0,0
+GridHitTest.UITK#3,Yaui.Text.Generate (ms),600,0,0,0,0
+GridHitTest.UITK#3,Yaui.Text.Finish (ms),600,0,0,0,0
+GridHitTest.UITK#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.024,0.022,0.027,0.114
+GridHitTest.UITK#3,UIEvents.WillRenderCanvases (ms),600,0.02,0.018,0.023,0.107
+GridHitTest.UITK#3,Canvas.BuildBatch (ms),600,0,0,0,0
+GridHitTest.UITK#3,UI.RenderOverlays (ms),600,0.859,0.872,1.047,1.157
+GridHitTest.UITK#3,Layout (ms),600,0.004,0.004,0.005,0.008
+GridHitTest.UITK#3,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.095,0.093,0.119,0.208
+GridHitTest.UITK#3,PostLateUpdate.UIElementsRepaintPanels (ms),600,0.104,0.102,0.129,0.214
+GridHitTest.UITK#3,UIElements.UpdateLayout (ms),600,0.035,0.034,0.044,0.113
+GridHitTest.UITK#3,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridHitTest.UITK#3,UIR.DrawChain (ms),600,0.725,0.741,0.897,1.005
+GridHitTest.YAUI#3,CPU Main (ms),600,3.527,3.655,3.905,8.904
+GridHitTest.YAUI#3,CPU Main Present Wait (ms),600,7.576,7.563,8.486,9.42
+GridHitTest.YAUI#3,CPU Render (ms),600,0.721,0.712,0.802,0.989
+GridHitTest.YAUI#3,GPU (ms),600,8.84,9.533,9.714,11.814
+GridHitTest.YAUI#3,GC Alloc (bytes),600,728.007,0,0,213824
+GridHitTest.YAUI#3,Batches Count,600,0,0,0,0
+GridHitTest.YAUI#3,SetPass Calls Count,600,3.993,4,4,4
+GridHitTest.YAUI#3,Draw Calls Count,600,0,0,0,0
+GridHitTest.YAUI#3,Vertices Count,600,0,0,0,0
+GridHitTest.YAUI#3,YauiBench.ScenarioTick (ms),600,0.196,0.203,0.238,0.349
+GridHitTest.YAUI#3,Yaui.EarlySubmit (ms),600,0.005,0.005,0.006,0.055
+GridHitTest.YAUI#3,Yaui.Submit (ms),600,0.021,0.021,0.025,0.141
+GridHitTest.YAUI#3,Yaui.Collect (ms),600,0.031,0.031,0.037,0.164
+GridHitTest.YAUI#3,Yaui.Layout (ms),600,0,0,0,0
+GridHitTest.YAUI#3,Yaui.Text.Generate (ms),600,0,0,0,0
+GridHitTest.YAUI#3,Yaui.Text.Finish (ms),600,0,0,0,0
+GridHitTest.YAUI#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.037,0.037,0.042,0.113
+GridHitTest.YAUI#3,UIEvents.WillRenderCanvases (ms),600,0.031,0.031,0.036,0.101
+GridHitTest.YAUI#3,Canvas.BuildBatch (ms),600,0,0,0,0
+GridHitTest.YAUI#3,UI.RenderOverlays (ms),600,0.006,0.006,0.006,0.086
+GridHitTest.YAUI#3,Layout (ms),600,0.007,0.007,0.009,0.071
+GridHitTest.YAUI#3,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.028,0.028,0.033,0.107
+GridHitTest.YAUI#3,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+GridHitTest.YAUI#3,UIElements.UpdateLayout (ms),600,0,0,0,0
+GridHitTest.YAUI#3,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridHitTest.YAUI#3,UIR.DrawChain (ms),600,0,0,0,0
+GridHitTest.uGUI#3,CPU Main (ms),600,10.395,10.363,10.709,12.368
+GridHitTest.uGUI#3,CPU Main Present Wait (ms),600,0.746,0.659,2.139,4.175
+GridHitTest.uGUI#3,CPU Render (ms),600,1.545,1.54,1.731,1.998
+GridHitTest.uGUI#3,GPU (ms),600,8.969,8.967,9.006,9.115
+GridHitTest.uGUI#3,GC Alloc (bytes),600,728.007,0,0,213824
+GridHitTest.uGUI#3,Batches Count,600,0,0,0,0
+GridHitTest.uGUI#3,SetPass Calls Count,600,62.895,63,63,63
+GridHitTest.uGUI#3,Draw Calls Count,600,0,0,0,0
+GridHitTest.uGUI#3,Vertices Count,600,0,0,0,0
+GridHitTest.uGUI#3,YauiBench.ScenarioTick (ms),600,8.314,8.319,8.517,8.953
+GridHitTest.uGUI#3,Yaui.EarlySubmit (ms),600,0.002,0.002,0.002,0.005
+GridHitTest.uGUI#3,Yaui.Submit (ms),600,0.006,0.006,0.007,0.041
+GridHitTest.uGUI#3,Yaui.Collect (ms),600,0.016,0.016,0.017,0.05
+GridHitTest.uGUI#3,Yaui.Layout (ms),600,0,0,0,0
+GridHitTest.uGUI#3,Yaui.Text.Generate (ms),600,0,0,0,0
+GridHitTest.uGUI#3,Yaui.Text.Finish (ms),600,0,0,0,0
+GridHitTest.uGUI#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.108,0.106,0.113,0.158
+GridHitTest.uGUI#3,UIEvents.WillRenderCanvases (ms),600,0.047,0.046,0.052,0.082
+GridHitTest.uGUI#3,Canvas.BuildBatch (ms),600,0,0,0,0
+GridHitTest.uGUI#3,UI.RenderOverlays (ms),600,0.969,0.952,1.094,1.372
+GridHitTest.uGUI#3,Layout (ms),600,0.004,0.004,0.004,0.007
+GridHitTest.uGUI#3,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.018,0.018,0.021,0.051
+GridHitTest.uGUI#3,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+GridHitTest.uGUI#3,UIElements.UpdateLayout (ms),600,0,0,0,0
+GridHitTest.uGUI#3,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridHitTest.uGUI#3,UIR.DrawChain (ms),600,0,0,0,0
+ListScroll.UITK#3,CPU Main (ms),600,4.142,4.114,4.446,8.002
+ListScroll.UITK#3,CPU Main Present Wait (ms),600,6.963,6.929,7.768,8.901
+ListScroll.UITK#3,CPU Render (ms),600,0.848,0.846,0.934,1.289
+ListScroll.UITK#3,GPU (ms),600,9.411,9.534,9.722,10.815
+ListScroll.UITK#3,GC Alloc (bytes),600,728.007,0,0,213824
+ListScroll.UITK#3,Batches Count,600,0,0,0,0
+ListScroll.UITK#3,SetPass Calls Count,600,3.993,4,4,4
+ListScroll.UITK#3,Draw Calls Count,600,0,0,0,0
+ListScroll.UITK#3,Vertices Count,600,0,0,0,0
+ListScroll.UITK#3,YauiBench.ScenarioTick (ms),600,0.373,0.368,0.417,0.504
+ListScroll.UITK#3,Yaui.EarlySubmit (ms),600,0.003,0.003,0.005,0.038
+ListScroll.UITK#3,Yaui.Submit (ms),600,0.011,0.011,0.014,0.064
+ListScroll.UITK#3,Yaui.Collect (ms),600,0.025,0.024,0.029,0.124
+ListScroll.UITK#3,Yaui.Layout (ms),600,0,0,0,0
+ListScroll.UITK#3,Yaui.Text.Generate (ms),600,0,0,0,0
+ListScroll.UITK#3,Yaui.Text.Finish (ms),600,0,0,0,0
+ListScroll.UITK#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.031,0.03,0.036,0.085
+ListScroll.UITK#3,UIEvents.WillRenderCanvases (ms),600,0.026,0.025,0.03,0.079
+ListScroll.UITK#3,Canvas.BuildBatch (ms),600,0,0,0,0
+ListScroll.UITK#3,UI.RenderOverlays (ms),600,0.673,0.645,0.828,1.618
+ListScroll.UITK#3,Layout (ms),600,0.006,0.006,0.007,0.059
+ListScroll.UITK#3,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.127,0.125,0.147,0.191
+ListScroll.UITK#3,PostLateUpdate.UIElementsRepaintPanels (ms),600,0.242,0.231,0.293,0.381
+ListScroll.UITK#3,UIElements.UpdateLayout (ms),600,0.013,0.013,0.016,0.072
+ListScroll.UITK#3,TextGenerator.GenerateText (ms),600,0,0,0,0
+ListScroll.UITK#3,UIR.DrawChain (ms),600,0.543,0.518,0.688,1.407
+ListScroll.YAUI#3,CPU Main (ms),600,3.527,3.609,3.847,6.96
+ListScroll.YAUI#3,CPU Main Present Wait (ms),600,7.598,7.598,8.51,9.303
+ListScroll.YAUI#3,CPU Render (ms),600,0.929,0.916,1.086,1.977
+ListScroll.YAUI#3,GPU (ms),600,7.797,7.8,7.843,7.977
+ListScroll.YAUI#3,GC Alloc (bytes),600,728.007,0,0,213824
+ListScroll.YAUI#3,Batches Count,600,0,0,0,0
+ListScroll.YAUI#3,SetPass Calls Count,600,3.993,4,4,4
+ListScroll.YAUI#3,Draw Calls Count,600,0,0,0,0
+ListScroll.YAUI#3,Vertices Count,600,0,0,0,0
+ListScroll.YAUI#3,YauiBench.ScenarioTick (ms),600,0.052,0.051,0.06,0.134
+ListScroll.YAUI#3,Yaui.EarlySubmit (ms),600,0.004,0.004,0.005,0.058
+ListScroll.YAUI#3,Yaui.Submit (ms),600,0.018,0.018,0.022,0.073
+ListScroll.YAUI#3,Yaui.Collect (ms),600,0.408,0.43,0.491,0.848
+ListScroll.YAUI#3,Yaui.Layout (ms),600,0,0,0,0
+ListScroll.YAUI#3,Yaui.Text.Generate (ms),600,0,0,0,0
+ListScroll.YAUI#3,Yaui.Text.Finish (ms),600,0,0,0,0
+ListScroll.YAUI#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.031,0.03,0.036,0.095
+ListScroll.YAUI#3,UIEvents.WillRenderCanvases (ms),600,0.026,0.025,0.031,0.091
+ListScroll.YAUI#3,Canvas.BuildBatch (ms),600,0,0,0,0
+ListScroll.YAUI#3,UI.RenderOverlays (ms),600,0.006,0.005,0.007,0.05
+ListScroll.YAUI#3,Layout (ms),600,0.006,0.006,0.008,0.071
+ListScroll.YAUI#3,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.027,0.025,0.031,0.087
+ListScroll.YAUI#3,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+ListScroll.YAUI#3,UIElements.UpdateLayout (ms),600,0,0,0,0
+ListScroll.YAUI#3,TextGenerator.GenerateText (ms),600,0,0,0,0
+ListScroll.YAUI#3,UIR.DrawChain (ms),600,0,0,0,0
+ListScroll.uGUI#3,CPU Main (ms),600,8.424,8.257,9.805,12.921
+ListScroll.uGUI#3,CPU Main Present Wait (ms),600,2.705,2.833,4.345,6.759
+ListScroll.uGUI#3,CPU Render (ms),600,0.716,0.672,1.108,1.548
+ListScroll.uGUI#3,GPU (ms),600,6.199,6.195,6.233,6.449
+ListScroll.uGUI#3,GC Alloc (bytes),600,728.007,0,0,213824
+ListScroll.uGUI#3,Batches Count,600,0,0,0,0
+ListScroll.uGUI#3,SetPass Calls Count,600,4.992,5,5,5
+ListScroll.uGUI#3,Draw Calls Count,600,0,0,0,0
+ListScroll.uGUI#3,Vertices Count,600,0,0,0,0
+ListScroll.uGUI#3,YauiBench.ScenarioTick (ms),600,0.246,0.2,0.438,0.987
+ListScroll.uGUI#3,Yaui.EarlySubmit (ms),600,0.002,0.002,0.003,0.011
+ListScroll.uGUI#3,Yaui.Submit (ms),600,0.008,0.007,0.009,0.059
+ListScroll.uGUI#3,Yaui.Collect (ms),600,0.02,0.019,0.023,0.06
+ListScroll.uGUI#3,Yaui.Layout (ms),600,0,0,0,0
+ListScroll.uGUI#3,Yaui.Text.Generate (ms),600,0,0,0,0
+ListScroll.uGUI#3,Yaui.Text.Finish (ms),600,0,0,0,0
+ListScroll.uGUI#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,6.057,5.937,7.231,9.939
+ListScroll.uGUI#3,UIEvents.WillRenderCanvases (ms),600,6.009,5.892,7.191,9.899
+ListScroll.uGUI#3,Canvas.BuildBatch (ms),600,0.048,0.046,0.065,0.109
+ListScroll.uGUI#3,UI.RenderOverlays (ms),600,0.168,0.151,0.286,0.604
+ListScroll.uGUI#3,Layout (ms),600,0.006,0.004,0.005,0.544
+ListScroll.uGUI#3,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.019,0.018,0.022,0.075
+ListScroll.uGUI#3,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+ListScroll.uGUI#3,UIElements.UpdateLayout (ms),600,0,0,0,0
+ListScroll.uGUI#3,TextGenerator.GenerateText (ms),600,0,0,0,0
+ListScroll.uGUI#3,UIR.DrawChain (ms),600,0,0,0,0
+ListResize10.UITK#3,CPU Main (ms),600,11.448,11.428,11.673,13.792
+ListResize10.UITK#3,CPU Main Present Wait (ms),600,0.017,0.017,0.018,0.095
+ListResize10.UITK#3,CPU Render (ms),600,0.893,0.859,1.113,1.465
+ListResize10.UITK#3,GPU (ms),600,8.591,8.588,8.615,8.886
+ListResize10.UITK#3,GC Alloc (bytes),600,728.007,0,0,213824
+ListResize10.UITK#3,Batches Count,600,0,0,0,0
+ListResize10.UITK#3,SetPass Calls Count,600,3.993,4,4,4
+ListResize10.UITK#3,Draw Calls Count,600,0,0,0,0
+ListResize10.UITK#3,Vertices Count,600,0,0,0,0
+ListResize10.UITK#3,YauiBench.ScenarioTick (ms),600,0.719,0.715,0.757,0.781
+ListResize10.UITK#3,Yaui.EarlySubmit (ms),600,0.002,0.002,0.003,0.005
+ListResize10.UITK#3,Yaui.Submit (ms),600,0.007,0.007,0.01,0.031
+ListResize10.UITK#3,Yaui.Collect (ms),600,0.015,0.015,0.016,0.06
+ListResize10.UITK#3,Yaui.Layout (ms),600,0,0,0,0
+ListResize10.UITK#3,Yaui.Text.Generate (ms),600,0,0,0,0
+ListResize10.UITK#3,Yaui.Text.Finish (ms),600,0,0,0,0
+ListResize10.UITK#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.019,0.019,0.023,0.061
+ListResize10.UITK#3,UIEvents.WillRenderCanvases (ms),600,0.016,0.015,0.019,0.057
+ListResize10.UITK#3,Canvas.BuildBatch (ms),600,0,0,0,0
+ListResize10.UITK#3,UI.RenderOverlays (ms),600,0.603,0.684,1.026,1.259
+ListResize10.UITK#3,Layout (ms),600,0.003,0.003,0.004,0.008
+ListResize10.UITK#3,PreLateUpdate.UIElementsUpdatePanels (ms),600,5.911,5.902,6.063,6.203
+ListResize10.UITK#3,PostLateUpdate.UIElementsRepaintPanels (ms),600,2.794,2.792,2.928,3.047
+ListResize10.UITK#3,UIElements.UpdateLayout (ms),600,5.824,5.815,5.975,6.118
+ListResize10.UITK#3,TextGenerator.GenerateText (ms),600,0,0,0,0
+ListResize10.UITK#3,UIR.DrawChain (ms),600,0.574,0.598,0.906,1.189
+ListResize10.YAUI#3,CPU Main (ms),600,18.413,18.326,21.89,24.974
+ListResize10.YAUI#3,CPU Main Present Wait (ms),600,0.226,0.027,0.659,6.676
+ListResize10.YAUI#3,CPU Render (ms),600,0.87,0.836,1.134,1.539
+ListResize10.YAUI#3,GPU (ms),600,7.923,7.936,7.984,8.015
+ListResize10.YAUI#3,GC Alloc (bytes),600,728.007,0,0,213824
+ListResize10.YAUI#3,Batches Count,600,0,0,0,0
+ListResize10.YAUI#3,SetPass Calls Count,600,3.993,4,4,4
+ListResize10.YAUI#3,Draw Calls Count,600,0,0,0,0
+ListResize10.YAUI#3,Vertices Count,600,0,0,0,0
+ListResize10.YAUI#3,YauiBench.ScenarioTick (ms),600,0.041,0.037,0.065,0.117
+ListResize10.YAUI#3,Yaui.EarlySubmit (ms),600,0.156,0.144,0.233,0.366
+ListResize10.YAUI#3,Yaui.Submit (ms),600,0.064,0.059,0.092,0.149
+ListResize10.YAUI#3,Yaui.Collect (ms),600,15.924,15.842,19.08,22.653
+ListResize10.YAUI#3,Yaui.Layout (ms),600,0.06,0.058,0.082,0.154
+ListResize10.YAUI#3,Yaui.Text.Generate (ms),600,9.418,9.187,11.505,15.998
+ListResize10.YAUI#3,Yaui.Text.Finish (ms),600,3.153,3.102,3.501,4.335
+ListResize10.YAUI#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.022,0.02,0.032,0.064
+ListResize10.YAUI#3,UIEvents.WillRenderCanvases (ms),600,0.019,0.017,0.028,0.061
+ListResize10.YAUI#3,Canvas.BuildBatch (ms),600,0,0,0,0
+ListResize10.YAUI#3,UI.RenderOverlays (ms),600,0.003,0.003,0.005,0.008
+ListResize10.YAUI#3,Layout (ms),600,0.004,0.004,0.006,0.048
+ListResize10.YAUI#3,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.021,0.018,0.035,0.081
+ListResize10.YAUI#3,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+ListResize10.YAUI#3,UIElements.UpdateLayout (ms),600,0,0,0,0
+ListResize10.YAUI#3,TextGenerator.GenerateText (ms),600,0,0,0,0
+ListResize10.YAUI#3,UIR.DrawChain (ms),600,0,0,0,0
+ListResize10.uGUI#3,CPU Main (ms),600,127.908,127.917,128.531,131.079
+ListResize10.uGUI#3,CPU Main Present Wait (ms),600,0.021,0.023,0.025,0.058
+ListResize10.uGUI#3,CPU Render (ms),600,0.85,0.827,1.07,4.031
+ListResize10.uGUI#3,GPU (ms),600,6.224,6.221,6.256,6.372
+ListResize10.uGUI#3,GC Alloc (bytes),600,728.007,0,0,213824
+ListResize10.uGUI#3,Batches Count,600,0,0,0,0
+ListResize10.uGUI#3,SetPass Calls Count,600,5,5,5,5
+ListResize10.uGUI#3,Draw Calls Count,600,0,0,0,0
+ListResize10.uGUI#3,Vertices Count,600,0,0,0,0
+ListResize10.uGUI#3,YauiBench.ScenarioTick (ms),600,0.511,0.507,0.553,0.582
+ListResize10.uGUI#3,Yaui.EarlySubmit (ms),600,0.002,0.002,0.002,0.003
+ListResize10.uGUI#3,Yaui.Submit (ms),600,0.006,0.006,0.007,0.045
+ListResize10.uGUI#3,Yaui.Collect (ms),600,0.017,0.017,0.018,0.049
+ListResize10.uGUI#3,Yaui.Layout (ms),600,0,0,0,0
+ListResize10.uGUI#3,Yaui.Text.Generate (ms),600,0,0,0,0
+ListResize10.uGUI#3,Yaui.Text.Finish (ms),600,0,0,0,0
+ListResize10.uGUI#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,125.416,125.43,126.009,126.466
+ListResize10.uGUI#3,UIEvents.WillRenderCanvases (ms),600,125.372,125.387,125.97,126.422
+ListResize10.uGUI#3,Canvas.BuildBatch (ms),600,0.034,0.034,0.038,0.063
+ListResize10.uGUI#3,UI.RenderOverlays (ms),600,0.202,0.176,0.293,0.863
+ListResize10.uGUI#3,Layout (ms),600,115.268,115.273,115.811,116.115
+ListResize10.uGUI#3,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.024,0.017,0.018,0.27
+ListResize10.uGUI#3,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+ListResize10.uGUI#3,UIElements.UpdateLayout (ms),600,0,0,0,0
+ListResize10.uGUI#3,TextGenerator.GenerateText (ms),600,0,0,0,0
+ListResize10.uGUI#3,UIR.DrawChain (ms),600,0,0,0,0
+Empty+Ballast#3,CPU Main (ms),600,2.827,2.775,3.184,6.682
+Empty+Ballast#3,CPU Main Present Wait (ms),600,24.722,24.754,25.533,49.399
+Empty+Ballast#3,CPU Render (ms),600,0.759,0.737,0.931,1.484
+Empty+Ballast#3,GPU (ms),600,27.383,27.563,27.603,27.611
+Empty+Ballast#3,GC Alloc (bytes),600,728.007,0,0,213824
+Empty+Ballast#3,Batches Count,600,0,0,0,0
+Empty+Ballast#3,SetPass Calls Count,600,4,4,4,4
+Empty+Ballast#3,Draw Calls Count,600,0,0,0,0
+Empty+Ballast#3,Vertices Count,600,0,0,0,0
+Empty+Ballast#3,YauiBench.ScenarioTick (ms),600,0.006,0.006,0.007,0.066
+Empty+Ballast#3,Yaui.EarlySubmit (ms),600,0.004,0.003,0.004,0.005
+Empty+Ballast#3,Yaui.Submit (ms),600,0.01,0.01,0.012,0.049
+Empty+Ballast#3,Yaui.Collect (ms),600,0.026,0.026,0.028,0.236
+Empty+Ballast#3,Yaui.Layout (ms),600,0,0,0,0
+Empty+Ballast#3,Yaui.Text.Generate (ms),600,0,0,0,0
+Empty+Ballast#3,Yaui.Text.Finish (ms),600,0,0,0,0
+Empty+Ballast#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.031,0.03,0.034,0.093
+Empty+Ballast#3,UIEvents.WillRenderCanvases (ms),600,0.026,0.025,0.029,0.088
+Empty+Ballast#3,Canvas.BuildBatch (ms),600,0,0,0,0
+Empty+Ballast#3,UI.RenderOverlays (ms),600,-0.039,0.006,0.008,0.065
+Empty+Ballast#3,Layout (ms),600,0.006,0.006,0.007,0.067
+Empty+Ballast#3,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.025,0.024,0.027,0.084
+Empty+Ballast#3,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+Empty+Ballast#3,UIElements.UpdateLayout (ms),600,0,0,0,0
+Empty+Ballast#3,TextGenerator.GenerateText (ms),600,0,0,0,0
+Empty+Ballast#3,UIR.DrawChain (ms),600,0,0,0,0
+GridNone+Ballast.UITK#3,CPU Main (ms),600,4.134,4.036,4.69,9.491
+GridNone+Ballast.UITK#3,CPU Main Present Wait (ms),600,32.116,32.079,65.14,65.811
+GridNone+Ballast.UITK#3,CPU Render (ms),600,1.01,0.992,1.176,2.009
+GridNone+Ballast.UITK#3,GPU (ms),600,30.047,36.269,36.318,36.362
+GridNone+Ballast.UITK#3,GC Alloc (bytes),600,728.007,0,0,213824
+GridNone+Ballast.UITK#3,Batches Count,600,0,0,0,0
+GridNone+Ballast.UITK#3,SetPass Calls Count,600,4.992,5,5,5
+GridNone+Ballast.UITK#3,Draw Calls Count,600,0,0,0,0
+GridNone+Ballast.UITK#3,Vertices Count,600,0,0,0,0
+GridNone+Ballast.UITK#3,YauiBench.ScenarioTick (ms),600,0.007,0.007,0.008,0.078
+GridNone+Ballast.UITK#3,Yaui.EarlySubmit (ms),600,0.004,0.004,0.005,0.042
+GridNone+Ballast.UITK#3,Yaui.Submit (ms),600,0.011,0.011,0.013,0.047
+GridNone+Ballast.UITK#3,Yaui.Collect (ms),600,0.025,0.025,0.028,0.076
+GridNone+Ballast.UITK#3,Yaui.Layout (ms),600,0,0,0,0
+GridNone+Ballast.UITK#3,Yaui.Text.Generate (ms),600,0,0,0,0
+GridNone+Ballast.UITK#3,Yaui.Text.Finish (ms),600,0,0,0,0
+GridNone+Ballast.UITK#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.031,0.03,0.034,0.078
+GridNone+Ballast.UITK#3,UIEvents.WillRenderCanvases (ms),600,0.026,0.025,0.028,0.072
+GridNone+Ballast.UITK#3,Canvas.BuildBatch (ms),600,0,0,0,0
+GridNone+Ballast.UITK#3,UI.RenderOverlays (ms),600,1.306,1.344,1.797,5.248
+GridNone+Ballast.UITK#3,Layout (ms),600,0.006,0.006,0.007,0.008
+GridNone+Ballast.UITK#3,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.127,0.123,0.147,0.23
+GridNone+Ballast.UITK#3,PostLateUpdate.UIElementsRepaintPanels (ms),600,0.127,0.121,0.162,0.255
+GridNone+Ballast.UITK#3,UIElements.UpdateLayout (ms),600,0.015,0.014,0.017,0.053
+GridNone+Ballast.UITK#3,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridNone+Ballast.UITK#3,UIR.DrawChain (ms),600,1.162,1.207,1.64,4.516
+GridNone+Ballast.YAUI#3,CPU Main (ms),600,3.05,2.932,3.57,6.748
+GridNone+Ballast.YAUI#3,CPU Main Present Wait (ms),600,27.505,27.61,28.292,54.09
+GridNone+Ballast.YAUI#3,CPU Render (ms),600,0.885,0.841,1.086,1.948
+GridNone+Ballast.YAUI#3,GPU (ms),600,30.521,30.571,30.61,30.625
+GridNone+Ballast.YAUI#3,GC Alloc (bytes),600,728.007,0,0,213824
+GridNone+Ballast.YAUI#3,Batches Count,600,0,0,0,0
+GridNone+Ballast.YAUI#3,SetPass Calls Count,600,5,5,5,5
+GridNone+Ballast.YAUI#3,Draw Calls Count,600,0,0,0,0
+GridNone+Ballast.YAUI#3,Vertices Count,600,0,0,0,0
+GridNone+Ballast.YAUI#3,YauiBench.ScenarioTick (ms),600,0.008,0.007,0.009,0.049
+GridNone+Ballast.YAUI#3,Yaui.EarlySubmit (ms),600,0.004,0.004,0.005,0.045
+GridNone+Ballast.YAUI#3,Yaui.Submit (ms),600,0.02,0.019,0.024,0.142
+GridNone+Ballast.YAUI#3,Yaui.Collect (ms),600,0.032,0.031,0.039,0.08
+GridNone+Ballast.YAUI#3,Yaui.Layout (ms),600,0,0,0,0
+GridNone+Ballast.YAUI#3,Yaui.Text.Generate (ms),600,0,0,0,0
+GridNone+Ballast.YAUI#3,Yaui.Text.Finish (ms),600,0,0,0,0
+GridNone+Ballast.YAUI#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.031,0.03,0.035,0.134
+GridNone+Ballast.YAUI#3,UIEvents.WillRenderCanvases (ms),600,0.026,0.025,0.029,0.128
+GridNone+Ballast.YAUI#3,Canvas.BuildBatch (ms),600,0,0,0,0
+GridNone+Ballast.YAUI#3,UI.RenderOverlays (ms),600,-0.044,0.006,0.009,0.012
+GridNone+Ballast.YAUI#3,Layout (ms),600,0.006,0.006,0.007,0.01
+GridNone+Ballast.YAUI#3,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.025,0.024,0.029,0.094
+GridNone+Ballast.YAUI#3,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+GridNone+Ballast.YAUI#3,UIElements.UpdateLayout (ms),600,0,0,0,0
+GridNone+Ballast.YAUI#3,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridNone+Ballast.YAUI#3,UIR.DrawChain (ms),600,0,0,0,0
+GridNone+Ballast.uGUI#3,CPU Main (ms),600,3.793,3.666,4.349,7.753
+GridNone+Ballast.uGUI#3,CPU Main Present Wait (ms),600,26.753,26.857,27.544,53.972
+GridNone+Ballast.uGUI#3,CPU Render (ms),600,1.576,1.527,1.92,2.986
+GridNone+Ballast.uGUI#3,GPU (ms),600,30.466,30.568,30.613,30.642
+GridNone+Ballast.uGUI#3,GC Alloc (bytes),600,728.007,0,0,213824
+GridNone+Ballast.uGUI#3,Batches Count,600,0,0,0,0
+GridNone+Ballast.uGUI#3,SetPass Calls Count,600,64,64,64,128
+GridNone+Ballast.uGUI#3,Draw Calls Count,600,0,0,0,0
+GridNone+Ballast.uGUI#3,Vertices Count,600,0,0,0,0
+GridNone+Ballast.uGUI#3,YauiBench.ScenarioTick (ms),600,0.007,0.007,0.008,0.051
+GridNone+Ballast.uGUI#3,Yaui.EarlySubmit (ms),600,0.004,0.004,0.005,0.046
+GridNone+Ballast.uGUI#3,Yaui.Submit (ms),600,0.011,0.011,0.012,0.101
+GridNone+Ballast.uGUI#3,Yaui.Collect (ms),600,0.027,0.026,0.03,0.084
+GridNone+Ballast.uGUI#3,Yaui.Layout (ms),600,0,0,0,0
+GridNone+Ballast.uGUI#3,Yaui.Text.Generate (ms),600,0,0,0,0
+GridNone+Ballast.uGUI#3,Yaui.Text.Finish (ms),600,0,0,0,0
+GridNone+Ballast.uGUI#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.219,0.206,0.272,0.537
+GridNone+Ballast.uGUI#3,UIEvents.WillRenderCanvases (ms),600,0.078,0.071,0.1,0.377
+GridNone+Ballast.uGUI#3,Canvas.BuildBatch (ms),600,0,0,0,0
+GridNone+Ballast.uGUI#3,UI.RenderOverlays (ms),600,1.029,1.071,1.282,2.556
+GridNone+Ballast.uGUI#3,Layout (ms),600,0.007,0.007,0.008,0.191
+GridNone+Ballast.uGUI#3,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.025,0.024,0.028,0.255
+GridNone+Ballast.uGUI#3,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+GridNone+Ballast.uGUI#3,UIElements.UpdateLayout (ms),600,0,0,0,0
+GridNone+Ballast.uGUI#3,TextGenerator.GenerateText (ms),600,0,0,0,0
+GridNone+Ballast.uGUI#3,UIR.DrawChain (ms),600,0,0,0,0
+ListScroll+Ballast.UITK#3,CPU Main (ms),600,4.294,4.075,4.989,8.498
+ListScroll+Ballast.UITK#3,CPU Main Present Wait (ms),600,26.252,26.411,53.582,54.932
+ListScroll+Ballast.UITK#3,CPU Render (ms),600,1.024,0.991,1.275,2.046
+ListScroll+Ballast.UITK#3,GPU (ms),600,30744573447.638,30.609,30.673,18446744052999.8
+ListScroll+Ballast.UITK#3,GC Alloc (bytes),600,728.007,0,0,213824
+ListScroll+Ballast.UITK#3,Batches Count,600,0,0,0,0
+ListScroll+Ballast.UITK#3,SetPass Calls Count,600,5,5,5,5
+ListScroll+Ballast.UITK#3,Draw Calls Count,600,0,0,0,0
+ListScroll+Ballast.UITK#3,Vertices Count,600,0,0,0,0
+ListScroll+Ballast.UITK#3,YauiBench.ScenarioTick (ms),600,0.363,0.337,0.445,2.343
+ListScroll+Ballast.UITK#3,Yaui.EarlySubmit (ms),600,0.004,0.003,0.004,0.066
+ListScroll+Ballast.UITK#3,Yaui.Submit (ms),600,0.011,0.011,0.013,0.018
+ListScroll+Ballast.UITK#3,Yaui.Collect (ms),600,0.027,0.025,0.03,0.126
+ListScroll+Ballast.UITK#3,Yaui.Layout (ms),600,0,0,0,0
+ListScroll+Ballast.UITK#3,Yaui.Text.Generate (ms),600,0,0,0,0
+ListScroll+Ballast.UITK#3,Yaui.Text.Finish (ms),600,0,0,0,0
+ListScroll+Ballast.UITK#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.032,0.03,0.035,0.124
+ListScroll+Ballast.UITK#3,UIEvents.WillRenderCanvases (ms),600,0.026,0.025,0.029,0.117
+ListScroll+Ballast.UITK#3,Canvas.BuildBatch (ms),600,0,0,0,0
+ListScroll+Ballast.UITK#3,UI.RenderOverlays (ms),600,0.735,0.701,0.889,1.493
+ListScroll+Ballast.UITK#3,Layout (ms),600,0.006,0.006,0.007,0.082
+ListScroll+Ballast.UITK#3,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.123,0.117,0.152,0.223
+ListScroll+Ballast.UITK#3,PostLateUpdate.UIElementsRepaintPanels (ms),600,0.225,0.205,0.318,0.45
+ListScroll+Ballast.UITK#3,UIElements.UpdateLayout (ms),600,0.014,0.013,0.016,0.094
+ListScroll+Ballast.UITK#3,TextGenerator.GenerateText (ms),600,0,0,0,0
+ListScroll+Ballast.UITK#3,UIR.DrawChain (ms),600,0.585,0.554,0.7,1.251
+ListScroll+Ballast.YAUI#3,CPU Main (ms),600,3.449,3.378,3.862,7.219
+ListScroll+Ballast.YAUI#3,CPU Main Present Wait (ms),600,26.347,26.419,27.041,27.372
+ListScroll+Ballast.YAUI#3,CPU Render (ms),600,0.998,0.984,1.189,1.844
+ListScroll+Ballast.YAUI#3,GPU (ms),600,29.812,29.811,29.853,29.875
+ListScroll+Ballast.YAUI#3,GC Alloc (bytes),600,728.007,0,0,213824
+ListScroll+Ballast.YAUI#3,Batches Count,600,0,0,0,0
+ListScroll+Ballast.YAUI#3,SetPass Calls Count,600,5,5,5,5
+ListScroll+Ballast.YAUI#3,Draw Calls Count,600,0,0,0,0
+ListScroll+Ballast.YAUI#3,Vertices Count,600,0,0,0,0
+ListScroll+Ballast.YAUI#3,YauiBench.ScenarioTick (ms),600,0.049,0.047,0.056,0.125
+ListScroll+Ballast.YAUI#3,Yaui.EarlySubmit (ms),600,0.004,0.004,0.005,0.043
+ListScroll+Ballast.YAUI#3,Yaui.Submit (ms),600,0.018,0.017,0.02,0.079
+ListScroll+Ballast.YAUI#3,Yaui.Collect (ms),600,0.433,0.425,0.491,0.628
+ListScroll+Ballast.YAUI#3,Yaui.Layout (ms),600,0,0,0,0
+ListScroll+Ballast.YAUI#3,Yaui.Text.Generate (ms),600,0,0,0,0
+ListScroll+Ballast.YAUI#3,Yaui.Text.Finish (ms),600,0,0,0,0
+ListScroll+Ballast.YAUI#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.031,0.03,0.035,0.082
+ListScroll+Ballast.YAUI#3,UIEvents.WillRenderCanvases (ms),600,0.026,0.025,0.029,0.075
+ListScroll+Ballast.YAUI#3,Canvas.BuildBatch (ms),600,0,0,0,0
+ListScroll+Ballast.YAUI#3,UI.RenderOverlays (ms),600,0.006,0.006,0.009,0.066
+ListScroll+Ballast.YAUI#3,Layout (ms),600,0.006,0.006,0.007,0.053
+ListScroll+Ballast.YAUI#3,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.024,0.023,0.027,0.064
+ListScroll+Ballast.YAUI#3,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+ListScroll+Ballast.YAUI#3,UIElements.UpdateLayout (ms),600,0,0,0,0
+ListScroll+Ballast.YAUI#3,TextGenerator.GenerateText (ms),600,0,0,0,0
+ListScroll+Ballast.YAUI#3,UIR.DrawChain (ms),600,0,0,0,0
+ListScroll+Ballast.uGUI#3,CPU Main (ms),600,11.777,11.65,13.079,17.866
+ListScroll+Ballast.uGUI#3,CPU Main Present Wait (ms),600,17.222,17.398,18.485,19.441
+ListScroll+Ballast.uGUI#3,CPU Render (ms),600,0.981,0.944,1.268,2.179
+ListScroll+Ballast.uGUI#3,GPU (ms),600,28.965,29.012,29.052,29.067
+ListScroll+Ballast.uGUI#3,GC Alloc (bytes),600,728.007,0,0,213824
+ListScroll+Ballast.uGUI#3,Batches Count,600,0,0,0,0
+ListScroll+Ballast.uGUI#3,SetPass Calls Count,600,6,6,6,12
+ListScroll+Ballast.uGUI#3,Draw Calls Count,600,0,0,0,0
+ListScroll+Ballast.uGUI#3,Vertices Count,600,0,0,0,0
+ListScroll+Ballast.uGUI#3,YauiBench.ScenarioTick (ms),600,0.347,0.323,0.482,0.942
+ListScroll+Ballast.uGUI#3,Yaui.EarlySubmit (ms),600,0.003,0.003,0.004,0.066
+ListScroll+Ballast.uGUI#3,Yaui.Submit (ms),600,0.01,0.01,0.012,0.099
+ListScroll+Ballast.uGUI#3,Yaui.Collect (ms),600,0.024,0.023,0.028,0.116
+ListScroll+Ballast.uGUI#3,Yaui.Layout (ms),600,0,0,0,0
+ListScroll+Ballast.uGUI#3,Yaui.Text.Generate (ms),600,0,0,0,0
+ListScroll+Ballast.uGUI#3,Yaui.Text.Finish (ms),600,0,0,0,0
+ListScroll+Ballast.uGUI#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,8.393,8.3,9.28,13.054
+ListScroll+Ballast.uGUI#3,UIEvents.WillRenderCanvases (ms),600,8.322,8.231,9.204,12.997
+ListScroll+Ballast.uGUI#3,Canvas.BuildBatch (ms),600,0.057,0.055,0.067,0.451
+ListScroll+Ballast.uGUI#3,UI.RenderOverlays (ms),600,0.209,0.21,0.369,0.89
+ListScroll+Ballast.uGUI#3,Layout (ms),600,0.006,0.006,0.007,0.065
+ListScroll+Ballast.uGUI#3,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.024,0.023,0.028,0.193
+ListScroll+Ballast.uGUI#3,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+ListScroll+Ballast.uGUI#3,UIElements.UpdateLayout (ms),600,0,0,0,0
+ListScroll+Ballast.uGUI#3,TextGenerator.GenerateText (ms),600,0,0,0,0
+ListScroll+Ballast.uGUI#3,UIR.DrawChain (ms),600,0,0,0,0
+Empty+Ballast2#3,CPU Main (ms),600,2.922,2.799,3.347,6.763
+Empty+Ballast2#3,CPU Main Present Wait (ms),600,24.625,24.691,25.56,25.991
+Empty+Ballast2#3,CPU Render (ms),600,0.791,0.748,0.98,1.415
+Empty+Ballast2#3,GPU (ms),600,27.427,27.56,27.602,27.619
+Empty+Ballast2#3,GC Alloc (bytes),600,728.007,0,0,213824
+Empty+Ballast2#3,Batches Count,600,0,0,0,0
+Empty+Ballast2#3,SetPass Calls Count,600,4,4,4,8
+Empty+Ballast2#3,Draw Calls Count,600,0,0,0,0
+Empty+Ballast2#3,Vertices Count,600,0,0,0,0
+Empty+Ballast2#3,YauiBench.ScenarioTick (ms),600,0.007,0.006,0.008,0.048
+Empty+Ballast2#3,Yaui.EarlySubmit (ms),600,0.004,0.004,0.005,0.008
+Empty+Ballast2#3,Yaui.Submit (ms),600,0.011,0.01,0.013,0.02
+Empty+Ballast2#3,Yaui.Collect (ms),600,0.027,0.026,0.029,0.075
+Empty+Ballast2#3,Yaui.Layout (ms),600,0,0,0,0
+Empty+Ballast2#3,Yaui.Text.Generate (ms),600,0,0,0,0
+Empty+Ballast2#3,Yaui.Text.Finish (ms),600,0,0,0,0
+Empty+Ballast2#3,PostLateUpdate.PlayerUpdateCanvases (ms),600,0.031,0.03,0.035,0.114
+Empty+Ballast2#3,UIEvents.WillRenderCanvases (ms),600,0.026,0.025,0.03,0.109
+Empty+Ballast2#3,Canvas.BuildBatch (ms),600,0,0,0,0
+Empty+Ballast2#3,UI.RenderOverlays (ms),600,0.006,0.006,0.009,0.011
+Empty+Ballast2#3,Layout (ms),600,0.006,0.006,0.007,0.083
+Empty+Ballast2#3,PreLateUpdate.UIElementsUpdatePanels (ms),600,0.025,0.024,0.029,0.08
+Empty+Ballast2#3,PostLateUpdate.UIElementsRepaintPanels (ms),600,0,0,0,0
+Empty+Ballast2#3,UIElements.UpdateLayout (ms),600,0,0,0,0
+Empty+Ballast2#3,TextGenerator.GenerateText (ms),600,0,0,0,0
+Empty+Ballast2#3,UIR.DrawChain (ms),600,0,0,0,0

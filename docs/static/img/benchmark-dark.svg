@@ -26,53 +26,55 @@
 <line x1="750.0" y1="132" x2="750.0" y2="545" stroke="#2c2c2a" stroke-width="1"/>
 <text x="750.0" y="561" font-size="11" text-anchor="middle" fill="#898781">14</text>
 <text x="178" y="165.5" font-size="13" text-anchor="end" fill="#c3c2b7">Grid: no changes</text>
-<text x="195.0" y="151.0" font-size="11" fill="#ffffff">0.0</text>
-<path d="M190.0,155.0 H210.2 Q214.2,155.0 214.2,159.0 V164.0 Q214.2,168.0 210.2,168.0 H190.0 Z" fill="#d95926"/>
-<text x="219.2" y="166.0" font-size="11" fill="#ffffff">0.6</text>
-<path d="M190.0,170.0 H201.9 Q205.9,170.0 205.9,174.0 V179.0 Q205.9,183.0 201.9,183.0 H190.0 Z" fill="#199e70"/>
-<text x="210.9" y="181.0" font-size="11" fill="#ffffff">0.4</text>
+<path d="M190.0,140.0 H190.0 Q191.8,140.0 191.8,141.8 V151.2 Q191.8,153.0 190.0,153.0 H190.0 Z" fill="#3987e5"/>
+<text x="196.8" y="151.0" font-size="11" fill="#ffffff">0.0</text>
+<path d="M190.0,155.0 H213.6 Q217.6,155.0 217.6,159.0 V164.0 Q217.6,168.0 213.6,168.0 H190.0 Z" fill="#d95926"/>
+<text x="222.6" y="166.0" font-size="11" fill="#ffffff">0.7</text>
+<path d="M190.0,170.0 H219.6 Q223.6,170.0 223.6,174.0 V179.0 Q223.6,183.0 219.6,183.0 H190.0 Z" fill="#199e70"/>
+<text x="228.6" y="181.0" font-size="11" fill="#ffffff">0.8</text>
 <text x="178" y="224.5" font-size="13" text-anchor="end" fill="#c3c2b7">Grid: 10% change color</text>
-<path d="M190.0,199.0 H190.0 Q192.3,199.0 192.3,201.3 V209.7 Q192.3,212.0 190.0,212.0 H190.0 Z" fill="#3987e5"/>
-<text x="197.3" y="210.0" font-size="11" fill="#ffffff">0.1</text>
-<path d="M190.0,214.0 H308.0 Q312.0,214.0 312.0,218.0 V223.0 Q312.0,227.0 308.0,227.0 H190.0 Z" fill="#d95926"/>
-<text x="317.0" y="225.0" font-size="11" fill="#ffffff">3.1</text>
-<path d="M190.0,229.0 H234.2 Q238.2,229.0 238.2,233.0 V238.0 Q238.2,242.0 234.2,242.0 H190.0 Z" fill="#199e70"/>
-<text x="243.2" y="240.0" font-size="11" fill="#ffffff">1.2</text>
+<path d="M190.0,199.0 H206.1 Q210.1,199.0 210.1,203.0 V208.0 Q210.1,212.0 206.1,212.0 H190.0 Z" fill="#3987e5"/>
+<text x="215.1" y="210.0" font-size="11" fill="#ffffff">0.5</text>
+<path d="M190.0,214.0 H304.0 Q308.0,214.0 308.0,218.0 V223.0 Q308.0,227.0 304.0,227.0 H190.0 Z" fill="#d95926"/>
+<text x="313.0" y="225.0" font-size="11" fill="#ffffff">2.9</text>
+<path d="M190.0,229.0 H235.0 Q239.0,229.0 239.0,233.0 V238.0 Q239.0,242.0 235.0,242.0 H190.0 Z" fill="#199e70"/>
+<text x="244.0" y="240.0" font-size="11" fill="#ffffff">1.2</text>
 <text x="178" y="283.5" font-size="13" text-anchor="end" fill="#c3c2b7">Grid: 10% move</text>
-<path d="M190.0,258.0 H194.5 Q198.5,258.0 198.5,262.0 V267.0 Q198.5,271.0 194.5,271.0 H190.0 Z" fill="#3987e5"/>
-<text x="203.5" y="269.0" font-size="11" fill="#ffffff">0.2</text>
-<path d="M190.0,273.0 H260.0 Q264.0,273.0 264.0,277.0 V282.0 Q264.0,286.0 260.0,286.0 H190.0 Z" fill="#d95926"/>
-<text x="269.0" y="284.0" font-size="11" fill="#ffffff">1.8</text>
-<path d="M190.0,288.0 H258.0 Q262.0,288.0 262.0,292.0 V297.0 Q262.0,301.0 258.0,301.0 H190.0 Z" fill="#199e70"/>
-<text x="267.0" y="299.0" font-size="11" fill="#ffffff">1.8</text>
+<path d="M190.0,258.0 H203.0 Q207.0,258.0 207.0,262.0 V267.0 Q207.0,271.0 203.0,271.0 H190.0 Z" fill="#3987e5"/>
+<text x="212.0" y="269.0" font-size="11" fill="#ffffff">0.4</text>
+<path d="M190.0,273.0 H256.0 Q260.0,273.0 260.0,277.0 V282.0 Q260.0,286.0 256.0,286.0 H190.0 Z" fill="#d95926"/>
+<text x="265.0" y="284.0" font-size="11" fill="#ffffff">1.8</text>
+<path d="M190.0,288.0 H253.6 Q257.6,288.0 257.6,292.0 V297.0 Q257.6,301.0 253.6,301.0 H190.0 Z" fill="#199e70"/>
+<text x="262.6" y="299.0" font-size="11" fill="#ffffff">1.7</text>
 <text x="178" y="342.5" font-size="13" text-anchor="end" fill="#c3c2b7">Grid: 10% change text</text>
-<path d="M190.0,317.0 H275.9 Q279.9,317.0 279.9,321.0 V326.0 Q279.9,330.0 275.9,330.0 H190.0 Z" fill="#3987e5"/>
-<text x="284.9" y="328.0" font-size="11" fill="#ffffff">2.2</text>
-<path d="M190.0,332.0 H362.2 Q366.2,332.0 366.2,336.0 V341.0 Q366.2,345.0 362.2,345.0 H190.0 Z" fill="#d95926"/>
-<text x="371.2" y="343.0" font-size="11" fill="#ffffff">4.4</text>
-<path d="M190.0,347.0 H682.4 Q686.4,347.0 686.4,351.0 V356.0 Q686.4,360.0 682.4,360.0 H190.0 Z" fill="#199e70"/>
-<text x="691.4" y="358.0" font-size="11" fill="#ffffff">12.4</text>
+<path d="M190.0,317.0 H385.1 Q389.1,317.0 389.1,321.0 V326.0 Q389.1,330.0 385.1,330.0 H190.0 Z" fill="#3987e5"/>
+<text x="394.1" y="328.0" font-size="11" fill="#ffffff">5.0</text>
+<path d="M190.0,332.0 H379.9 Q383.9,332.0 383.9,336.0 V341.0 Q383.9,345.0 379.9,345.0 H190.0 Z" fill="#d95926"/>
+<text x="388.9" y="343.0" font-size="11" fill="#ffffff">4.8</text>
+<path d="M190.0,347.0 H709.7 Q713.7,347.0 713.7,351.0 V356.0 Q713.7,360.0 709.7,360.0 H190.0 Z" fill="#199e70"/>
+<text x="718.7" y="358.0" font-size="11" fill="#ffffff">13.1</text>
 <text x="178" y="401.5" font-size="13" text-anchor="end" fill="#c3c2b7">Grid: 10 hit tests</text>
-<text x="195.0" y="387.0" font-size="11" fill="#ffffff">0.0</text>
-<path d="M190.0,391.0 H396.4 Q400.4,391.0 400.4,395.0 V400.0 Q400.4,404.0 396.4,404.0 H190.0 Z" fill="#d95926"/>
-<text x="405.4" y="402.0" font-size="11" fill="#ffffff">5.3</text>
-<path d="M190.0,406.0 H276.0 Q280.0,406.0 280.0,410.0 V415.0 Q280.0,419.0 276.0,419.0 H190.0 Z" fill="#199e70"/>
-<text x="285.0" y="417.0" font-size="11" fill="#ffffff">2.2</text>
+<path d="M190.0,376.0 H195.6 Q199.6,376.0 199.6,380.0 V385.0 Q199.6,389.0 195.6,389.0 H190.0 Z" fill="#3987e5"/>
+<text x="204.6" y="387.0" font-size="11" fill="#ffffff">0.2</text>
+<path d="M190.0,391.0 H420.3 Q424.3,391.0 424.3,395.0 V400.0 Q424.3,404.0 420.3,404.0 H190.0 Z" fill="#d95926"/>
+<text x="429.3" y="402.0" font-size="11" fill="#ffffff">5.9</text>
+<path d="M190.0,406.0 H302.0 Q306.0,406.0 306.0,410.0 V415.0 Q306.0,419.0 302.0,419.0 H190.0 Z" fill="#199e70"/>
+<text x="311.0" y="417.0" font-size="11" fill="#ffffff">2.9</text>
 <text x="178" y="460.5" font-size="13" text-anchor="end" fill="#c3c2b7">List: scroll</text>
-<path d="M190.0,435.0 H209.6 Q213.6,435.0 213.6,439.0 V444.0 Q213.6,448.0 209.6,448.0 H190.0 Z" fill="#3987e5"/>
-<text x="218.6" y="446.0" font-size="11" fill="#ffffff">0.6</text>
-<path d="M190.0,450.0 H360.4 Q364.4,450.0 364.4,454.0 V459.0 Q364.4,463.0 360.4,463.0 H190.0 Z" fill="#d95926"/>
-<text x="369.4" y="461.0" font-size="11" fill="#ffffff">4.4</text>
-<path d="M190.0,465.0 H220.3 Q224.3,465.0 224.3,469.0 V474.0 Q224.3,478.0 220.3,478.0 H190.0 Z" fill="#199e70"/>
-<text x="229.3" y="476.0" font-size="11" fill="#ffffff">0.9</text>
+<path d="M190.0,435.0 H211.6 Q215.6,435.0 215.6,439.0 V444.0 Q215.6,448.0 211.6,448.0 H190.0 Z" fill="#3987e5"/>
+<text x="220.6" y="446.0" font-size="11" fill="#ffffff">0.6</text>
+<path d="M190.0,450.0 H374.7 Q378.7,450.0 378.7,454.0 V459.0 Q378.7,463.0 374.7,463.0 H190.0 Z" fill="#d95926"/>
+<text x="383.7" y="461.0" font-size="11" fill="#ffffff">4.7</text>
+<path d="M190.0,465.0 H229.9 Q233.9,465.0 233.9,469.0 V474.0 Q233.9,478.0 229.9,478.0 H190.0 Z" fill="#199e70"/>
+<text x="238.9" y="476.0" font-size="11" fill="#ffffff">1.1</text>
 <text x="178" y="519.5" font-size="13" text-anchor="end" fill="#c3c2b7">List: 10% relayout</text>
-<path d="M190.0,494.0 H612.8 Q616.8,494.0 616.8,498.0 V503.0 Q616.8,507.0 612.8,507.0 H190.0 Z" fill="#3987e5"/>
-<text x="621.8" y="505.0" font-size="11" fill="#ffffff">10.7</text>
+<path d="M190.0,494.0 H654.4 Q658.4,494.0 658.4,498.0 V503.0 Q658.4,507.0 654.4,507.0 H190.0 Z" fill="#3987e5"/>
+<text x="663.4" y="505.0" font-size="11" fill="#ffffff">11.7</text>
 <path d="M190.0,509.0 H746.0 Q750.0,509.0 750.0,513.0 V518.0 Q750.0,522.0 746.0,522.0 H190.0 Z" fill="#d95926"/>
 <path d="M732.0,523.0 L737.0,508.0" stroke="#1a1a19" stroke-width="3"/>
-<text x="755.0" y="520.0" font-size="11" fill="#ffffff">74.2</text>
-<path d="M190.0,524.0 H444.2 Q448.2,524.0 448.2,528.0 V533.0 Q448.2,537.0 444.2,537.0 H190.0 Z" fill="#199e70"/>
-<text x="453.2" y="535.0" font-size="11" fill="#ffffff">6.5</text>
+<text x="755.0" y="520.0" font-size="11" fill="#ffffff">78.6</text>
+<path d="M190.0,524.0 H461.9 Q465.9,524.0 465.9,528.0 V533.0 Q465.9,537.0 461.9,537.0 H190.0 Z" fill="#199e70"/>
+<text x="470.9" y="535.0" font-size="11" fill="#ffffff">6.9</text>
 <text x="24" y="597" font-size="14" font-weight="600" fill="#ffffff">GPU</text>
 <line x1="190.0" y1="611" x2="190.0" y2="729" stroke="#2c2c2a" stroke-width="1"/>
 <text x="190.0" y="745" font-size="11" text-anchor="middle" fill="#898781">0</text>
@@ -91,19 +93,19 @@
 <line x1="750.0" y1="611" x2="750.0" y2="729" stroke="#2c2c2a" stroke-width="1"/>
 <text x="750.0" y="745" font-size="11" text-anchor="middle" fill="#898781">14</text>
 <text x="178" y="644.5" font-size="13" text-anchor="end" fill="#c3c2b7">Grid</text>
-<path d="M190.0,619.0 H394.0 Q398.0,619.0 398.0,623.0 V628.0 Q398.0,632.0 394.0,632.0 H190.0 Z" fill="#3987e5"/>
-<text x="403.0" y="630.0" font-size="11" fill="#ffffff">5.2</text>
-<path d="M190.0,634.0 H305.1 Q309.1,634.0 309.1,638.0 V643.0 Q309.1,647.0 305.1,647.0 H190.0 Z" fill="#d95926"/>
-<text x="314.1" y="645.0" font-size="11" fill="#ffffff">3.0</text>
-<path d="M190.0,649.0 H533.6 Q537.6,649.0 537.6,653.0 V658.0 Q537.6,662.0 533.6,662.0 H190.0 Z" fill="#199e70"/>
-<text x="542.6" y="660.0" font-size="11" fill="#ffffff">8.7</text>
+<path d="M190.0,619.0 H305.1 Q309.1,619.0 309.1,623.0 V628.0 Q309.1,632.0 305.1,632.0 H190.0 Z" fill="#3987e5"/>
+<text x="314.1" y="630.0" font-size="11" fill="#ffffff">3.0</text>
+<path d="M190.0,634.0 H305.2 Q309.2,634.0 309.2,638.0 V643.0 Q309.2,647.0 305.2,647.0 H190.0 Z" fill="#d95926"/>
+<text x="314.2" y="645.0" font-size="11" fill="#ffffff">3.0</text>
+<path d="M190.0,649.0 H532.9 Q536.9,649.0 536.9,653.0 V658.0 Q536.9,662.0 532.9,662.0 H190.0 Z" fill="#199e70"/>
+<text x="541.9" y="660.0" font-size="11" fill="#ffffff">8.7</text>
 <text x="178" y="703.5" font-size="13" text-anchor="end" fill="#c3c2b7">List</text>
-<path d="M190.0,678.0 H318.3 Q322.3,678.0 322.3,682.0 V687.0 Q322.3,691.0 318.3,691.0 H190.0 Z" fill="#3987e5"/>
-<text x="327.3" y="689.0" font-size="11" fill="#ffffff">3.3</text>
-<path d="M190.0,693.0 H244.0 Q248.0,693.0 248.0,697.0 V702.0 Q248.0,706.0 244.0,706.0 H190.0 Z" fill="#d95926"/>
-<text x="253.0" y="704.0" font-size="11" fill="#ffffff">1.4</text>
-<path d="M190.0,708.0 H306.6 Q310.6,708.0 310.6,712.0 V717.0 Q310.6,721.0 306.6,721.0 H190.0 Z" fill="#199e70"/>
-<text x="315.6" y="719.0" font-size="11" fill="#ffffff">3.0</text>
+<path d="M190.0,678.0 H274.8 Q278.8,678.0 278.8,682.0 V687.0 Q278.8,691.0 274.8,691.0 H190.0 Z" fill="#3987e5"/>
+<text x="283.8" y="689.0" font-size="11" fill="#ffffff">2.2</text>
+<path d="M190.0,693.0 H243.3 Q247.3,693.0 247.3,697.0 V702.0 Q247.3,706.0 243.3,706.0 H190.0 Z" fill="#d95926"/>
+<text x="252.3" y="704.0" font-size="11" fill="#ffffff">1.4</text>
+<path d="M190.0,708.0 H307.0 Q311.0,708.0 311.0,712.0 V717.0 Q311.0,721.0 307.0,721.0 H190.0 Z" fill="#199e70"/>
+<text x="316.0" y="719.0" font-size="11" fill="#ffffff">3.0</text>
 <text x="24" y="767" font-size="11" fill="#898781">Grid: 1,500 cells (4,500 elements). List: 500 rows in a scroll view. Time added to an empty scene; median of 3 runs.</text>
 <text x="24" y="783" font-size="11" fill="#898781">GPU: measured at a fixed clock under a full screen load. uGUI uses nested canvases, no extra raycast targets and static TMP scale.</text>
 </svg>

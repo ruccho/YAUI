@@ -33,7 +33,7 @@ Every box, image and glyph is a quad in a GPU buffer, drawn in **one draw call p
   <img src="docs/static/img/benchmark-light.svg" alt="Time added by the UI per frame on a Pixel 5: YAUI, uGUI and UI Toolkit" width="800">
 </picture>
 
-The same screens built with YAUI, uGUI and UI Toolkit, measured on a Pixel 5. YAUI has the lowest main thread cost in most scenarios; its GPU cost is higher than uGUI's. See the [benchmarks](https://ruccho.com/YAUI/benchmarks) for the details.
+The same screens built with YAUI, uGUI and UI Toolkit, measured on a Pixel 5. YAUI has the lowest main thread cost in most scenarios; its GPU cost is about the same as uGUI's to 1.5 times. See the [benchmarks](https://ruccho.com/YAUI/benchmarks) for the details.
 
 ### Advanced layouts
 
