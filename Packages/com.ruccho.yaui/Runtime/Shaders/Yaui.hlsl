@@ -32,7 +32,15 @@ TEXTURE2D(_YauiTex4);
 TEXTURE2D(_YauiTex5);
 TEXTURE2D(_YauiTex6);
 TEXTURE2D(_YauiTex7);
+// Each slot samples with its texture's own filter and wrap modes (point-filtered atlas pages, clamped sprites).
 SAMPLER(sampler_YauiTex0);
+SAMPLER(sampler_YauiTex1);
+SAMPLER(sampler_YauiTex2);
+SAMPLER(sampler_YauiTex3);
+SAMPLER(sampler_YauiTex4);
+SAMPLER(sampler_YauiTex5);
+SAMPLER(sampler_YauiTex6);
+SAMPLER(sampler_YauiTex7);
 
 // Per texture slot. x: width in texels, y: distance field spread in texels, z: height in texels.
 float4 _YauiAtlasParams[8];
@@ -261,19 +269,19 @@ float4 SampleTexture(uint slot, float2 uv)
     [branch] if (slot == 0u)
         c = SAMPLE_TEXTURE2D_LOD(_YauiTex0, sampler_YauiTex0, uv, 0);
     else if (slot == 1u)
-        c = SAMPLE_TEXTURE2D_LOD(_YauiTex1, sampler_YauiTex0, uv, 0);
+        c = SAMPLE_TEXTURE2D_LOD(_YauiTex1, sampler_YauiTex1, uv, 0);
     else if (slot == 2u)
-        c = SAMPLE_TEXTURE2D_LOD(_YauiTex2, sampler_YauiTex0, uv, 0);
+        c = SAMPLE_TEXTURE2D_LOD(_YauiTex2, sampler_YauiTex2, uv, 0);
     else if (slot == 3u)
-        c = SAMPLE_TEXTURE2D_LOD(_YauiTex3, sampler_YauiTex0, uv, 0);
+        c = SAMPLE_TEXTURE2D_LOD(_YauiTex3, sampler_YauiTex3, uv, 0);
     else if (slot == 4u)
-        c = SAMPLE_TEXTURE2D_LOD(_YauiTex4, sampler_YauiTex0, uv, 0);
+        c = SAMPLE_TEXTURE2D_LOD(_YauiTex4, sampler_YauiTex4, uv, 0);
     else if (slot == 5u)
-        c = SAMPLE_TEXTURE2D_LOD(_YauiTex5, sampler_YauiTex0, uv, 0);
+        c = SAMPLE_TEXTURE2D_LOD(_YauiTex5, sampler_YauiTex5, uv, 0);
     else if (slot == 6u)
-        c = SAMPLE_TEXTURE2D_LOD(_YauiTex6, sampler_YauiTex0, uv, 0);
+        c = SAMPLE_TEXTURE2D_LOD(_YauiTex6, sampler_YauiTex6, uv, 0);
     else
-        c = SAMPLE_TEXTURE2D_LOD(_YauiTex7, sampler_YauiTex0, uv, 0);
+        c = SAMPLE_TEXTURE2D_LOD(_YauiTex7, sampler_YauiTex7, uv, 0);
     return c;
 }
 
