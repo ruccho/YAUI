@@ -94,6 +94,15 @@ namespace Yaui.Core
         // The transforms changed since the order was last reordered.
         private bool _transformsChanged;
 
+        // Some region has draws of the same material to merge (PlanRegions).
+        private bool _canMergeMaterials;
+
+        // Some draw of the uber shader uses heavy features, which draws may split by (UpdateFeatures).
+        private bool _hasHeavyFeatures;
+
+        // The draws are those of the painter's order.
+        private bool _painterShown = true;
+
         // The draw order changed since it was last uploaded.
         private bool _orderChanged;
         private int _drawCount;
@@ -339,6 +348,7 @@ namespace Yaui.Core
             while (SegmentProperties.Count < Segments.Count) SegmentProperties.Add(new MaterialPropertyBlock());
 
             _drawCount = _order.Length;
+            _painterShown = true;
             PlanRegions();
             if (_reorderable)
             {
@@ -392,6 +402,14 @@ namespace Yaui.Core
         public void ScheduleReorder()
         {
             if (!_reorderable || !(ReorderDirty || _transformsChanged)) return;
+
+            // Moving panels without draws to merge or heavy features to split off stay as they are, without a job.
+            if (_painterShown && !_canMergeMaterials && !(YauiBatching.SplitByShaderFeatures && _hasHeavyFeatures))
+            {
+                ReorderDirty = false;
+                _transformsChanged = false;
+                return;
+            }
 
             var costs = ReorderCosts();
             ReorderDirty = false;
@@ -458,6 +476,18 @@ namespace Yaui.Core
             _reorderScheduled = false;
             using (ReorderWaitMarker.Auto()) _reorderJob.Complete();
 
+            // The painter's order again: the order (copied when scheduled), the draws and their features stay.
+            var reordered = false;
+            foreach (var drawCount in _reorderDrawCounts)
+            {
+                reordered |= drawCount >= 0;
+                if (drawCount == DrawReorder.Deferred) ReorderDirty = true;
+            }
+
+            if (!reordered && _painterShown) return;
+
+            _painterShown = !reordered;
+
             Segments.Clear();
             SegmentTextures.Clear();
             var mergeable = 0;
@@ -477,8 +507,6 @@ namespace Yaui.Core
                 // The painter's order (as copied when scheduled) costs the least, or does while the panel moves.
                 if (drawCount < 0)
                 {
-                    if (drawCount == DrawReorder.Deferred) ReorderDirty = true;
-
                     for (var i = region.Start; i < region.End; i++) CopySegment(_naiveSegments[i]);
                     continue;
                 }
@@ -537,6 +565,7 @@ namespace Yaui.Core
             _reorderSegments.Clear();
             _jobRegions.Clear();
             _reorderable = false;
+            _canMergeMaterials = false;
             for (var s = 0; s < Segments.Count;)
             {
                 var e = RegionEnd(Segments, s);
@@ -544,6 +573,7 @@ namespace Yaui.Core
 
                 // Some draws could merge, or split by shader features (in draws of the uber shader).
                 var merge = CanMerge(Segments, s, e);
+                _canMergeMaterials |= merge;
                 region.Mergeable = merge || (YauiBatching.SplitByShaderFeatures &&
                                              Segments[s].Kind == SegmentKind.Draw &&
                                              _reorderMaterials.Contains(null));
@@ -849,11 +879,14 @@ namespace Yaui.Core
                 Result = _features.AsArray()
             }.Run();
 
+            _hasHeavyFeatures = false;
             for (var i = 0; i < Segments.Count; i++)
             {
                 var segment = Segments[i];
                 segment.Features = _features[i];
                 Segments[i] = segment;
+                _hasHeavyFeatures |= segment.Material == null && segment.Kind == SegmentKind.Draw &&
+                                     (segment.Features & (ShaderFeatures.Shadow | ShaderFeatures.Border)) != 0;
             }
         }
 

@@ -378,8 +378,8 @@ namespace Yaui.Core
             // Reordering runs while the render pipeline records the cameras, until the draws are recorded.
             foreach (var panel in Panels)
             {
-                using (ReorderMarker.Auto()) panel.ScheduleReorder();
                 using (FeaturesMarker.Auto()) panel.UpdateFeatures();
+                using (ReorderMarker.Auto()) panel.ScheduleReorder();
             }
 
             JobHandle.ScheduleBatchedJobs();
