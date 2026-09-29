@@ -150,6 +150,21 @@ namespace Yaui.Tests
         }
 
         [Test]
+        public void SelectablesDisabledAfterAShutdownLeaveTheStoresAlone()
+        {
+            // A domain reload shuts the system down before the elements are disabled; the selectables then reset
+            // the tint of their elements.
+            var button = Add<YauiButton>(Root, 100f, 40f);
+            button.Interactable = false;
+            YauiPanel.ForceUpdate();
+            Assert.Greater(button.Element.NodeSlot, 0);
+
+            Core.YauiSystem.Shutdown();
+            Assert.AreEqual(0, button.Element.NodeSlot);
+            Assert.DoesNotThrow(() => button.gameObject.SetActive(false));
+        }
+
+        [Test]
         public void TogglesOfAGroupAreExclusive()
         {
             var group = Root.gameObject.AddComponent<YauiToggleGroup>();

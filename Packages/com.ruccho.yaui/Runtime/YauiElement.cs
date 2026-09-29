@@ -51,6 +51,9 @@ namespace Yaui
         [NonSerialized] private PanelState _panel;
         [NonSerialized] private YogaNode _yoga;
         [NonSerialized] private int _nodeSlot;
+
+        // The initialization of the system the slots were allocated in.
+        [NonSerialized] private int _slotGeneration;
         [NonSerialized] private int _boxSlot;
         [NonSerialized] private int _extSlot;
         [NonSerialized] private int _clipSlot;
@@ -79,7 +82,12 @@ namespace Yaui
         /// <summary>Index in the depth-first order of the panel, or -1.</summary>
         [NonSerialized] internal int DfsIndex = -1;
 
-        internal int NodeSlot => _nodeSlot;
+        /// <summary>
+        /// The slot of the node, or 0 if unregistered. Slots go away with the stores at a shutdown (before a domain
+        /// reload, or when quitting), which can come before the element is disabled.
+        /// </summary>
+        internal int NodeSlot =>
+            _nodeSlot > 0 && YauiSystem.IsInitialized && _slotGeneration == YauiSystem.Generation ? _nodeSlot : 0;
         internal int BoxSlot => _boxSlot;
 
         internal YogaNode Yoga => _yoga.IsNull ? _yoga = Pools.RentNode() : _yoga;
@@ -336,6 +344,7 @@ namespace Yaui
             if (owner == null || !owner.enabled) return;
 
             _panel = owner.State;
+            _slotGeneration = YauiSystem.Generation;
             _nodeSlot = YauiSystem.Nodes.Allocate();
             _boxSlot = YauiSystem.Primitives.Allocate();
             _layoutApplied = false;
@@ -677,12 +686,13 @@ namespace Yaui
 
         internal void Unregister()
         {
-            if (NodeSlot <= 0) return;
-
-            OnUnregistering();
+            if (_nodeSlot <= 0) return;
 
             // The stores are gone after a shutdown (domain reload), and so are the slots.
-            if (YauiSystem.IsInitialized)
+            var live = NodeSlot > 0;
+            OnUnregistering();
+
+            if (live)
             {
                 if (_extSlot > 0) YauiSystem.Exts.Free(_extSlot);
 

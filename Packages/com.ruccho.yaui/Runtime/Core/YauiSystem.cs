@@ -96,7 +96,7 @@ namespace Yaui.Core
         }
 #endif
 
-        private static void Shutdown()
+        internal static void Shutdown()
         {
             if (!_initialized) return;
 
