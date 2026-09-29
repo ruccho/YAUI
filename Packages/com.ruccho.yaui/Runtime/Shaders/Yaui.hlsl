@@ -24,6 +24,23 @@
 #define YAUI_TEXTURE_SLOT_SHIFT 8u
 #define YAUI_TEXTURE_ID_SHIFT 16u
 
+// The features compiled into the shader (the flags above, without the u suffix for the preprocessor). A shader that
+// defines YAUI_FEATURES before the include leaves out the others, with their varyings; primitives that use them are
+// drawn without them.
+#define YAUI_FEATURE_TEXT 1
+#define YAUI_FEATURE_BORDER 2
+#define YAUI_FEATURE_SHADOW 4
+#define YAUI_FEATURE_IMAGE 32
+#define YAUI_FEATURE_RADIAL_FILL 64
+#ifndef YAUI_FEATURES
+#define YAUI_FEATURES 127
+#endif
+#define YAUI_HAS_UV (YAUI_FEATURES & (YAUI_FEATURE_TEXT | YAUI_FEATURE_IMAGE))
+#define YAUI_HAS_BORDER_COLOR (YAUI_FEATURES & (YAUI_FEATURE_BORDER | YAUI_FEATURE_RADIAL_FILL))
+#define YAUI_HAS_SHADOW (YAUI_FEATURES & YAUI_FEATURE_SHADOW)
+// Flags with the features left out cleared, so that the compiler folds their branches.
+#define YAUI_FLAG_MASK ((uint)YAUI_FEATURES | YAUI_FLAG_TEXT_BOLD | 0xffffff00u)
+
 TEXTURE2D(_YauiTex0);
 TEXTURE2D(_YauiTex1);
 TEXTURE2D(_YauiTex2);
@@ -103,7 +120,9 @@ StructuredBuffer<ClipData> _YauiClips;
 struct Varyings
 {
     float4 positionCS : SV_POSITION;
+    #if YAUI_HAS_UV
     float2 uv : TEXCOORD0;
+    #endif
     // xy: position relative to the shape center (local space), zw: half size of the shape.
     float4 local : TEXCOORD1;
     nointerpolation float4 color : COLOR;
@@ -111,10 +130,14 @@ struct Varyings
     nointerpolation float4 radii : TEXCOORD2;
     // x: largest radius, y: flags, z: border width, w: texels per local unit (text).
     nointerpolation float4 params : TEXCOORD3;
+    #if YAUI_HAS_BORDER_COLOR
     nointerpolation float4 borderColor : TEXCOORD4;
+    #endif
+    #if YAUI_HAS_SHADOW
     nointerpolation float4 shadowColor : TEXCOORD5;
     // xy: offset, z: blur sigma, w: spread.
     nointerpolation float4 shadow : TEXCOORD6;
+    #endif
     // xy: canvas position (for per-pixel clips), z: local units per screen pixel (overlay), w: per-pixel clip.
     float4 canvasMisc : TEXCOORD7;
     #if defined(YAUI_PIXEL_CLIP)
@@ -171,23 +194,26 @@ Varyings VertImpl(uint vertexId, bool world)
     float4 borderColor = UnpackHalf4(p.borderColor);
     float4 radii = UnpackHalf4(p.radii);
     float2 widthAndSkew = UnpackHalf2(p.borderWidthAndSkew);
+    uint featureFlags = p.flags & YAUI_FLAG_MASK;
     float4 shadowColor = 0.0;
     float4 shadow = 0.0;
+    #if YAUI_HAS_SHADOW
     [branch] if (p.ext != 0u)
     {
         PrimitiveExt x = _YauiExts[p.ext];
         shadowColor = UnpackHalf4(x.shadowColor);
         shadow = UnpackHalf4(x.shadow);
     }
+    #endif
 
     tint.a *= opacity;
     color *= tint;
     // A radial fill keeps its parameters in the border color.
-    borderColor *= (p.flags & YAUI_FLAG_RADIAL_FILL) ? 1.0 : tint;
+    borderColor *= (featureFlags & YAUI_FLAG_RADIAL_FILL) ? 1.0 : tint;
     shadowColor *= tint;
 
     // Expand the quad to cover the drop shadow.
-    float2 extent = (p.flags & YAUI_FLAG_SHADOW) ? abs(shadow.xy) + shadow.z * 3.0 + shadow.w : 0.0;
+    float2 extent = (featureFlags & YAUI_FLAG_SHADOW) ? abs(shadow.xy) + shadow.z * 3.0 + shadow.w : 0.0;
     float2 halfSize = rect.zw * 0.5;
     float2 center = rect.xy + halfSize;
     float2 localMin = center - halfSize - extent;
@@ -220,10 +246,13 @@ Varyings VertImpl(uint vertexId, bool world)
     canvasPosition += mul(m, float2(widthAndSkew.y * (rect.y + rect.w - localPosition.y), 0.0));
 
     // The slot of the primitive's texture in this draw.
+    uint slot = 0u;
+    #if YAUI_HAS_UV
     float textureId = (float)(p.flags >> YAUI_TEXTURE_ID_SHIFT);
-    uint slot = (uint)(dot(float4(_YauiTexIds0 == textureId), float4(0.0, 1.0, 2.0, 3.0)) +
+    slot = (uint)(dot(float4(_YauiTexIds0 == textureId), float4(0.0, 1.0, 2.0, 3.0)) +
         dot(float4(_YauiTexIds1 == textureId), float4(4.0, 5.0, 6.0, 7.0)));
-    uint flags = (p.flags & 0xffu) | (slot << YAUI_TEXTURE_SLOT_SHIFT);
+    #endif
+    uint flags = (featureFlags & 0xffu) | (slot << YAUI_TEXTURE_SLOT_SHIFT);
     Varyings o;
     float localPixelSize = 0.0;
     if (world)
@@ -235,16 +264,24 @@ Varyings VertImpl(uint vertexId, bool world)
         o.positionCS = mul(UNITY_MATRIX_VP, float4(canvasPosition, 0.0, 1.0));
         localPixelSize = _YauiPixelSize / sqrt(max(abs(determinant(m)), 1e-12));
     }
+    #if YAUI_HAS_UV
     o.uv = lerp(uvRect.xy, uvRect.zw, (localPosition - rect.xy) / max(rect.zw, 1e-4));
+    #endif
     o.local = float4(localPosition - center, halfSize);
     o.color = color;
     o.radii = radii;
     // uvRect: UV at the min corner (xy) and at the max corner (zw) of the rect.
     o.params = float4(max(max(radii.x, radii.y), max(radii.z, radii.w)), flags, widthAndSkew.x,
-                      abs(uvRect.z - uvRect.x) * _YauiAtlasParams[slot].x / max(rect.z, 1e-4));
+                      (YAUI_FEATURES & YAUI_FEATURE_TEXT)
+                          ? abs(uvRect.z - uvRect.x) * _YauiAtlasParams[slot].x / max(rect.z, 1e-4)
+                          : 0.0);
+    #if YAUI_HAS_BORDER_COLOR
     o.borderColor = borderColor;
+    #endif
+    #if YAUI_HAS_SHADOW
     o.shadowColor = shadowColor;
     o.shadow = shadow;
+    #endif
     o.canvasMisc = float4(canvasPosition, localPixelSize, (!axisAligned || clip.rounded.z > 0.0) ? 1.0 : 0.0);
     #if defined(YAUI_PIXEL_CLIP)
     o.clipRect = clipRect;
@@ -379,9 +416,26 @@ float4 ShadeShape(float2 local, float2 halfSize, float4 color, float radius, uin
 
 half4 FragImpl(Varyings i, bool world)
 {
-    uint flags = (uint)i.params.y;
+    uint flags = (uint)i.params.y & YAUI_FLAG_MASK;
     float2 local = i.local.xy;
     float2 halfSize = i.local.zw;
+    #if YAUI_HAS_UV
+    float2 uv = i.uv;
+    #else
+    float2 uv = 0.0;
+    #endif
+    #if YAUI_HAS_BORDER_COLOR
+    float4 borderColor = i.borderColor;
+    #else
+    float4 borderColor = 0.0;
+    #endif
+    #if YAUI_HAS_SHADOW
+    float4 shadowColor = i.shadowColor;
+    float4 shadow = i.shadow;
+    #else
+    float4 shadowColor = 0.0;
+    float4 shadow = 0.0;
+    #endif
     // Perspective (world space): the pixel size varies over the quad.
     float pixelSize = world ? max(length(fwidth(local)) * 0.70710678, 1e-5) : i.canvasMisc.z;
     float4 color = i.color;
@@ -405,7 +459,7 @@ half4 FragImpl(Varyings i, bool world)
     if (flags & YAUI_FLAG_TEXT)
     {
         uint slot = TextureSlot(flags);
-        float d = SampleTexture(slot, i.uv).a;
+        float d = SampleTexture(slot, uv).a;
         // Synthesized bold dilates the glyph outline.
         float bias = (flags & YAUI_FLAG_TEXT_BOLD) ? 0.08 : 0.0;
         // Signed distance to the glyph outline in local units (positive inside).
@@ -424,7 +478,7 @@ half4 FragImpl(Varyings i, bool world)
         if (flags & YAUI_FLAG_BORDER)
         {
             float outer = saturate((units + dilate) / pixelSize + 0.5);
-            result += Premultiply(i.borderColor) * (outer - fill);
+            result += Premultiply(borderColor) * (outer - fill);
         }
 
         return half4(result * clipCoverage);
@@ -432,12 +486,12 @@ half4 FragImpl(Varyings i, bool world)
 
     if (flags & YAUI_FLAG_IMAGE)
     {
-        color *= SampleTexture(TextureSlot(flags), i.uv);
+        color *= SampleTexture(TextureSlot(flags), uv);
     }
 
     if (flags & YAUI_FLAG_RADIAL_FILL)
     {
-        color.a *= RadialFillCoverage(local, halfSize, i.borderColor, pixelSize);
+        color.a *= RadialFillCoverage(local, halfSize, borderColor, pixelSize);
     }
 
     float borderWidth = i.params.z;
@@ -449,8 +503,8 @@ half4 FragImpl(Varyings i, bool world)
     if (flags & YAUI_FLAG_SHADOW)
     {
         // Three sigmas inside the shadow, its coverage is above 99.8%.
-        float shadowMargin = maxRadius + i.shadow.z * 3.0;
-        interior = interior && all(abs(local - i.shadow.xy) <= halfSize - shadowMargin);
+        float shadowMargin = maxRadius + shadow.z * 3.0;
+        interior = interior && all(abs(local - shadow.xy) <= halfSize - shadowMargin);
     }
 
     float4 result;
@@ -459,14 +513,14 @@ half4 FragImpl(Varyings i, bool world)
         result = Premultiply(color);
         if (flags & YAUI_FLAG_SHADOW)
         {
-            result += Premultiply(i.shadowColor) * (1.0 - result.a);
+            result += Premultiply(shadowColor) * (1.0 - result.a);
         }
     }
     else
     {
         float radius = min(CornerRadius(local, i.radii), min(halfSize.x, halfSize.y));
-        result = ShadeShape(local, halfSize, color, radius, flags, borderWidth, i.borderColor,
-                            i.shadowColor, i.shadow, pixelSize);
+        result = ShadeShape(local, halfSize, color, radius, flags, borderWidth, borderColor,
+                            shadowColor, shadow, pixelSize);
     }
 
     return half4(result * clipCoverage);
