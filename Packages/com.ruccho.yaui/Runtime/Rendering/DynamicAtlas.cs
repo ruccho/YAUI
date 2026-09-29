@@ -38,6 +38,10 @@ namespace Yaui.Rendering
             this._registry = registry;
         }
 
+        public List<Page> Pages => _pages;
+
+        public List<Entry> Entries => _entries;
+
         public sealed class Page
         {
             public RenderTexture Texture;

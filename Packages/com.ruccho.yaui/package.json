@@ -35,6 +35,11 @@
             "displayName": "Particles",
             "description": "ParticleSystems in the draw order of the UI with YauiParticle, clipped and masked.",
             "path": "Samples~/Particles"
+        },
+        {
+            "displayName": "Dynamic Atlas",
+            "description": "Images of small sprites packed into shared textures at run time, with the atlas pages shown.",
+            "path": "Samples~/DynamicAtlas"
         }
     ]
 }

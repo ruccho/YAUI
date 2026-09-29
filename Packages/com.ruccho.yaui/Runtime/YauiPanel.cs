@@ -149,6 +149,25 @@ namespace Yaui
         /// <summary>Size of the panel in canvas units.</summary>
         public Vector2 CanvasSize => _state != null ? (Vector2)_state.CanvasSize : Vector2.zero;
 
+        /// <summary>
+        /// The draw calls of the panel's elements as last built, not counting the meshes of custom draws. Changes
+        /// apply by the next render.
+        /// </summary>
+        public int DrawCallCount
+        {
+            get
+            {
+                if (_state == null) return 0;
+
+                var count = 0;
+                foreach (var segment in _state.Segments)
+                    if (segment.Kind != SegmentKind.Custom)
+                        count++;
+
+                return count;
+            }
+        }
+
         internal PanelState State => _state ??= YauiSystem.CreatePanel(this);
 
         /// <summary>The state if the panel is active, without creating it.</summary>

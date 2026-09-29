@@ -1,0 +1,16 @@
+{
+    "name": "Yaui.Samples.DynamicAtlas",
+    "rootNamespace": "Yaui.Samples.DynamicAtlas",
+    "references": [
+        "Yaui"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
