@@ -83,6 +83,7 @@ namespace Yaui.Core
 
             InstallPlayerLoop();
             RenderPipelineManager.beginContextRendering += OnBeginContextRendering;
+            RenderPipelineManager.endContextRendering += OnEndContextRendering;
             Application.quitting += Shutdown;
 #if UNITY_EDITOR
             UnityEditor.AssemblyReloadEvents.beforeAssemblyReload += Shutdown;
@@ -107,6 +108,7 @@ namespace Yaui.Core
             TextPipeline.Unsubscribe();
             Tickers.Clear();
             RenderPipelineManager.beginContextRendering -= OnBeginContextRendering;
+            RenderPipelineManager.endContextRendering -= OnEndContextRendering;
             Application.quitting -= Shutdown;
 #if UNITY_EDITOR
             UnityEditor.AssemblyReloadEvents.beforeAssemblyReload -= Shutdown;
@@ -160,6 +162,20 @@ namespace Yaui.Core
 
             Submit();
             Collect();
+            CompleteReorders();
+        }
+
+        /// <summary>
+        /// Completes the reordering of every panel: it reads the stores, which scripts write after rendering.
+        /// </summary>
+        private static void CompleteReorders()
+        {
+            foreach (var panel in Panels) panel.CompleteReorder();
+        }
+
+        private static void OnEndContextRendering(ScriptableRenderContext context, List<Camera> cameras)
+        {
+            CompleteReorders();
         }
 
         public static void DestroyPanel(PanelState state)
@@ -330,6 +346,7 @@ namespace Yaui.Core
 
             _submittedSinceCollect = false;
             using var _ = CollectMarker.Auto();
+            CompleteReorders();
             CompleteLayout();
             TextPipeline.Complete();
             foreach (var panel in Panels)
@@ -341,14 +358,21 @@ namespace Yaui.Core
             {
                 if (panel.OrderDirty) panel.RebuildOrder();
 
-                var transformsChanged = panel.UpdateTransforms();
-                using (ReorderMarker.Auto()) panel.Reorder(transformsChanged);
-                using (FeaturesMarker.Auto()) panel.UpdateFeatures();
+                panel.UpdateTransforms();
             }
 
             // After the transforms: custom draws place their meshes on the nodes as rendered.
             // By index: user code may enable or disable custom draws.
             for (var i = 0; i < CustomDraws.Count; i++) CustomDraws[i].Collect();
+
+            // Reordering runs while the render pipeline records the cameras, until the draws are recorded.
+            foreach (var panel in Panels)
+            {
+                using (ReorderMarker.Auto()) panel.ScheduleReorder();
+                using (FeaturesMarker.Auto()) panel.UpdateFeatures();
+            }
+
+            JobHandle.ScheduleBatchedJobs();
 
             Primitives.Upload();
             Exts.Upload();

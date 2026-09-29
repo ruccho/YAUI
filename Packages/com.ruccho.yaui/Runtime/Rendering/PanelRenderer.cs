@@ -175,8 +175,12 @@ namespace Yaui.Rendering
             EnsureIndices(maxQuads);
             _worldBlocks.Reset();
             foreach (var panel in YauiSystem.AllPanels)
-                if (panel.HasDraws && panel.OrderBuffer != null && panel.Panel.RenderMode == PanelRenderMode.World)
-                    RenderWorld(panel);
+            {
+                if (panel.Panel.RenderMode != PanelRenderMode.World) continue;
+
+                panel.FlushOrder();
+                if (panel.HasDraws && panel.OrderBuffer != null) RenderWorld(panel);
+            }
         }
 
         private static int MaxDrawCount()
@@ -452,9 +456,12 @@ namespace Yaui.Rendering
             using var _ = PrepareOverlayMarker.Auto();
             _sorted.Clear();
             foreach (var panel in YauiSystem.AllPanels)
-                if (panel.HasDraws && panel.OrderBuffer != null &&
-                    panel.Panel.RenderMode == PanelRenderMode.Overlay)
-                    _sorted.Add(panel);
+            {
+                if (panel.Panel.RenderMode != PanelRenderMode.Overlay) continue;
+
+                panel.FlushOrder();
+                if (panel.HasDraws && panel.OrderBuffer != null) _sorted.Add(panel);
+            }
 
             _sorted.Sort(SortOrderComparer.Instance);
             _draws.Clear();
@@ -633,9 +640,10 @@ namespace Yaui.Rendering
                 _blocks.Reset();
                 foreach (var panel in YauiSystem.AllPanels)
                 {
-                    if (!panel.HasDraws || panel.OrderBuffer == null ||
-                        panel.Panel.RenderMode != PanelRenderMode.Overlay)
-                        continue;
+                    if (panel.Panel.RenderMode != PanelRenderMode.Overlay) continue;
+
+                    panel.FlushOrder();
+                    if (!panel.HasDraws || panel.OrderBuffer == null) continue;
 
                     var matrix = panel.Panel.SceneViewCanvasToWorld;
                     for (var i = 0; i < panel.Segments.Count; i++)

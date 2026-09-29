@@ -7,8 +7,8 @@ using Yaui.Rendering;
 namespace Yaui.Core
 {
     /// <summary>
-    /// Reorders a region of the draw order so that primitives of the same batch key (the material of their draw) are
-    /// drawn together, keeping the order of every pair that overlaps (on their canvas bounds), and splits the result
+    /// Reorders regions of the draw order so that primitives of the same batch key (the material of their draw) are
+    /// drawn together, keeping the order of every pair that overlaps (on their canvas bounds), and splits the results
     /// into draws.
     /// </summary>
     /// <remarks>
@@ -18,6 +18,8 @@ namespace Yaui.Core
     /// to draw take the latest layer of their key. Per primitive rather than per element: a glyph that overflows its
     /// text would lift the whole text a layer, and every element after it in a row (60 draws instead of 6 on a grid
     /// of overflowing labels).
+    /// <para>Scheduled at collection and completed before the stores are written again (PanelState.CompleteReorder):
+    /// it reads the primitive, node and clip stores in place.</para>
     /// </remarks>
     [BurstCompile]
     internal struct DrawReorder : IJob
@@ -27,14 +29,30 @@ namespace Yaui.Core
         // Primitives covering more cells are tested against every primitive instead.
         private const int MaxCellsPerPrimitive = 32;
 
-        /// <summary>Primitive slots of the region in the painter's order.</summary>
-        [ReadOnly] public NativeArray<uint> Order;
+        /// <summary>A run of the draw order reordered as a whole.</summary>
+        public struct Region
+        {
+            /// <summary>Draw positions of the region.</summary>
+            public int Start;
+
+            public int Count;
+
+            /// <summary>Its draws in the painter's order in <see cref="Segments"/>.</summary>
+            public int SegmentsStart;
+
+            public int SegmentCount;
+
+            /// <summary>Keys are numbered from zero by first appearance in each region.</summary>
+            public int KeyCount;
+        }
+
+        [ReadOnly] public NativeArray<Region> Regions;
+
+        /// <summary>Primitive slots of the panel in the painter's order.</summary>
+        [ReadOnly] public NativeArray<uint> PainterOrder;
 
         /// <summary>The draws of the painter's order (x: start in the region, y: count, z: key).</summary>
         [ReadOnly] public NativeArray<int3> Segments;
-
-        /// <summary>Keys are numbered by first appearance.</summary>
-        public int KeyCount;
 
         public float2 CanvasSize;
 
@@ -43,27 +61,45 @@ namespace Yaui.Core
         [ReadOnly] public NativeArray<NodeGpuData> Nodes;
         [ReadOnly] public NativeArray<ClipGpuData> Clips;
 
-        /// <summary>Output: the region's primitive slots in their new order.</summary>
-        public NativeArray<uint> Reordered;
+        /// <summary>Output: the draw order, written over the regions (a copy of the painter's order elsewhere).</summary>
 
-        /// <summary>Output: the draws (x: start in the region, y: count, z: key, w: number of textures).</summary>
+        public NativeArray<uint> Order;
+
+        /// <summary>
+        /// Output: the draws of the regions in turn (x: start in the region, y: count, z: key, w: number of
+        /// textures).
+        /// </summary>
         public NativeList<int4> Draws;
+
+        /// <summary>Output: the number of draws of each region.</summary>
+        public NativeList<int> DrawCounts;
 
         /// <summary>Output: the textures of the draws in turn.</summary>
         public NativeList<int> Textures;
 
         public void Execute()
         {
-            var count = Order.Length;
+            foreach (var region in Regions)
+            {
+                var draws = Draws.Length;
+                Reorder(region);
+                DrawCounts.Add(Draws.Length - draws);
+            }
+        }
+
+        private void Reorder(Region region)
+        {
+            var count = region.Count;
+            var order = PainterOrder.GetSubArray(region.Start, count);
             var keys = new NativeArray<int>(count, Allocator.Temp, NativeArrayOptions.UninitializedMemory);
             var bounds = new NativeArray<float4>(count, Allocator.Temp, NativeArrayOptions.UninitializedMemory);
-            foreach (var segment in Segments)
+            foreach (var segment in Segments.GetSubArray(region.SegmentsStart, region.SegmentCount))
             {
                 var lastNode = uint.MaxValue;
                 var node = default(NodeGpuData);
                 for (var i = segment.x; i < segment.x + segment.y; i++)
                 {
-                    var p = Primitives[(int)Order[i]];
+                    var p = Primitives[(int)order[i]];
                     if (p.Node != lastNode)
                     {
                         lastNode = p.Node;
@@ -76,7 +112,7 @@ namespace Yaui.Core
             }
 
             var layers = new NativeArray<int>(count, Allocator.Temp, NativeArrayOptions.UninitializedMemory);
-            var lastLayer = new NativeArray<int>(KeyCount, Allocator.Temp);
+            var lastLayer = new NativeArray<int>(region.KeyCount, Allocator.Temp);
             var heads = new NativeArray<int>(GridCells * GridCells, Allocator.Temp);
             for (var c = 0; c < heads.Length; c++) heads[c] = -1;
 
@@ -126,15 +162,17 @@ namespace Yaui.Core
             }
 
             // Counting sort by (layer, key), stable in position.
-            var buckets = new NativeArray<int>((maxLayer + 1) * KeyCount + 1, Allocator.Temp);
-            for (var i = 0; i < count; i++) buckets[layers[i] * KeyCount + keys[i] + 1]++;
+            var keyCount = region.KeyCount;
+            var buckets = new NativeArray<int>((maxLayer + 1) * keyCount + 1, Allocator.Temp);
+            for (var i = 0; i < count; i++) buckets[layers[i] * keyCount + keys[i] + 1]++;
 
             for (var b = 1; b < buckets.Length; b++) buckets[b] += buckets[b - 1];
 
             var sorted = new NativeArray<int>(count, Allocator.Temp, NativeArrayOptions.UninitializedMemory);
-            for (var i = 0; i < count; i++) sorted[buckets[layers[i] * KeyCount + keys[i]]++] = i;
+            for (var i = 0; i < count; i++) sorted[buckets[layers[i] * keyCount + keys[i]]++] = i;
 
             // The new order, split where the key changes or a draw would need a ninth texture.
+            var reordered = Order.GetSubArray(region.Start, count);
             var position = 0;
             var drawKey = -1;
             var drawStart = 0;
@@ -142,7 +180,7 @@ namespace Yaui.Core
             foreach (var i in sorted)
             {
                 var key = keys[i];
-                var slot = Order[i];
+                var slot = order[i];
                 var texture = PrimitiveTexture.IdOf(Primitives[(int)slot].Flags);
                 if (key != drawKey || !AddTexture(texture, drawTextures))
                 {
@@ -155,7 +193,7 @@ namespace Yaui.Core
                     AddTexture(texture, drawTextures);
                 }
 
-                Reordered[position++] = slot;
+                reordered[position++] = slot;
             }
 
             if (position > drawStart)
