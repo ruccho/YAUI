@@ -8,7 +8,7 @@ sidebar_position: 9
 The uber shader covers most looks. When you need something else, set a custom material in `YauiElement.Material`. It draws the element's own primitives (its box and content, not its children).
 
 :::note
-A change of material between elements splits the draw call. Elements with the same material that are next to each other in the draw order are drawn together.
+A change of material between elements splits the draw call. Elements with the same material are drawn together when they are next to each other in the draw order, or when the elements between them do not overlap them.
 :::
 
 ## Writing a shader

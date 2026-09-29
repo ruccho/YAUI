@@ -13,7 +13,10 @@ A panel is drawn in **one draw call**, except where:
 
 - **the material changes** between elements in the draw order ([custom materials](./custom-shaders.mdx)),
 - **a mask** starts or ends ([`YauiMask`](./clipping-and-masks.mdx#yauimask)),
-- **more than 8 textures** are used by consecutive elements. Font atlases, sprite textures, dynamic atlas pages and raw image textures all count.
+- **more than 8 textures** are used by consecutive elements. Font atlases, sprite textures, dynamic atlas pages and raw image textures all count,
+- YAUI draws elements **without heavy features** apart, so that they use a lighter shader ([see below](#shader-variants)).
+
+Elements with the same material are drawn together even when other elements come between them in the draw order, as long as those do not overlap them: YAUI reorders the draws where the result stays the same, like uGUI's batching.
 
 To keep draw calls low:
 
@@ -40,6 +43,22 @@ The uber shader has a cost for its many features: the GPU time of YAUI is about 
 - Avoid large overlapping transparent areas (overdraw), as with any UI.
 - Large shadow blurs enlarge the quads that are drawn.
 - `YAUI_PIXEL_CLIP` in custom shaders costs GPU time on mobile. Enable it only when needed.
+
+### Shader variants {#shader-variants}
+
+Each draw call uses a variant of the uber shader with only the features its elements use: text, images, borders (with radial fills) and shadows. Features that no element uses cost nothing, even though the uber shader has them.
+
+One element with a shadow would make its whole draw call pay for shadows. When it pays off, YAUI draws the elements with shadows (or borders) in draw calls of their own, so that the others use a lighter variant. It weighs the fixed cost of the extra draw calls, on the GPU and the CPU, against the GPU time saved on pixels. `YauiBatching` sets the balance:
+
+| Property | Default | Description |
+|---|---|---|
+| `SplitByShaderFeatures` | `true` | Whether draws split by heavy features. |
+| `GpuWeight`, `CpuWeight` | `1` | The weights of GPU and CPU time. The default minimizes the total work, which saves power and heat at a capped frame rate. Raise `GpuWeight` in a project bound by the GPU, or `CpuWeight` in one bound by the CPU, for instance per quality level. |
+| `SplitMargin` | `2` | How many times its cost a split has to save. |
+
+The estimates of these costs come from a mid-range Android device. While a panel moves, YAUI chooses its draws again every frame on a worker thread; when that costs more than a split saves, it keeps one draw until the panel stops.
+
+The first draw with a variant can stall while the GPU creates its pipeline state. YAUI does not warm them up, since the states a project needs depend on the project: warm them up in your project if needed (for instance with `GraphicsStateCollection`). The variants are the keywords `YAUI_TEXT`, `YAUI_IMAGE`, `YAUI_BORDER`, `YAUI_SHADOW` and `YAUI_PIXEL_CLIP` of `Hidden/Yaui/Uber`.
 
 ## Scroll views
 
