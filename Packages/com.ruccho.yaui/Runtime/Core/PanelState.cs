@@ -83,7 +83,7 @@ namespace Yaui.Core
         private readonly List<int> _naiveTextures = new();
         private readonly List<Material> _reorderMaterials = new();
         private NativeList<DrawReorder.Region> _jobRegions;
-        private NativeList<int3> _reorderSegments;
+        private NativeList<int4> _reorderSegments;
         private NativeList<int4> _reorderDraws;
         private NativeList<int> _reorderDrawCounts;
         private NativeList<int> _reorderTextures;
@@ -174,7 +174,7 @@ namespace Yaui.Core
             _order = new NativeList<uint>(64, Allocator.Persistent);
             _naiveOrder = new NativeList<uint>(64, Allocator.Persistent);
             _jobRegions = new NativeList<DrawReorder.Region>(4, Allocator.Persistent);
-            _reorderSegments = new NativeList<int3>(16, Allocator.Persistent);
+            _reorderSegments = new NativeList<int4>(16, Allocator.Persistent);
             _reorderDraws = new NativeList<int4>(16, Allocator.Persistent);
             _reorderDrawCounts = new NativeList<int>(4, Allocator.Persistent);
             _reorderTextures = new NativeList<int>(16, Allocator.Persistent);
@@ -374,14 +374,13 @@ namespace Yaui.Core
         /// <summary>Whether a region has more draws than materials: reordering may merge some of them.</summary>
         private bool CanMerge(List<DrawSegment> segments, int start, int end)
         {
-            if (end - start < 3) return false;
-
+            // The materials of the region, in _reorderMaterials.
             _reorderMaterials.Clear();
             for (var i = start; i < end; i++)
                 if (!_reorderMaterials.Contains(segments[i].Material))
                     _reorderMaterials.Add(segments[i].Material);
 
-            return end - start > _reorderMaterials.Count;
+            return end - start >= 3 && end - start > _reorderMaterials.Count;
         }
 
         /// <summary>
@@ -394,6 +393,7 @@ namespace Yaui.Core
         {
             if (!_reorderable || !(ReorderDirty || _transformsChanged)) return;
 
+            var costs = ReorderCosts();
             ReorderDirty = false;
             _transformsChanged = false;
             _order.CopyFrom(_naiveOrder);
@@ -406,6 +406,7 @@ namespace Yaui.Core
                 PainterOrder = _naiveOrder.AsArray(),
                 Segments = _reorderSegments.AsArray(),
                 CanvasSize = CanvasSize,
+                Cost = costs,
                 Primitives = YauiSystem.Primitives.AsArray(),
                 Exts = YauiSystem.Exts.AsArray(),
                 Nodes = YauiSystem.Nodes.Gpu.AsArray(),
@@ -416,6 +417,34 @@ namespace Yaui.Core
                 Textures = _reorderTextures
             }.Schedule();
             _reorderScheduled = true;
+        }
+
+        private DrawReorder.Costs ReorderCosts()
+        {
+            var costs = new DrawReorder.Costs
+            {
+                DrawGpu = YauiBatching.DrawGpuMicroseconds,
+                DrawCpu = YauiBatching.DrawCpuMicroseconds,
+                GpuWeight = YauiBatching.GpuWeight,
+                CpuWeight = YauiBatching.CpuWeight,
+                Margin = YauiBatching.SplitMargin,
+                SplitByFeatures = YauiBatching.SplitByShaderFeatures,
+                Moving = _transformsChanged,
+                LayeringPerPrimitive = YauiBatching.LayeringMicroseconds,
+                PixelsPerUnitSquared = ScaleFactor * ScaleFactor
+            };
+            for (var i = 0; i < ShaderFeaturesExtensions.Count; i++)
+            {
+                var features = (ShaderFeatures)i;
+                var cost = YauiBatching.PixelBaseMicroseconds;
+                if ((features & ShaderFeatures.Text) != 0) cost += YauiBatching.PixelTextMicroseconds;
+                if ((features & ShaderFeatures.Image) != 0) cost += YauiBatching.PixelImageMicroseconds;
+                if ((features & ShaderFeatures.Border) != 0) cost += YauiBatching.PixelBorderMicroseconds;
+                if ((features & ShaderFeatures.Shadow) != 0) cost += YauiBatching.PixelShadowMicroseconds;
+                costs.Pixel.Add(cost);
+            }
+
+            return costs;
         }
 
         /// <summary>
@@ -444,31 +473,32 @@ namespace Yaui.Core
 
                 var drawCount = _reorderDrawCounts[mergeable];
                 var job = _jobRegions[mergeable++];
-                var accept = drawCount < region.End - region.Start;
+
+                // The painter's order (as copied when scheduled) costs the least, or does while the panel moves.
+                if (drawCount < 0)
+                {
+                    if (drawCount == DrawReorder.Deferred) ReorderDirty = true;
+
+                    for (var i = region.Start; i < region.End; i++) CopySegment(_naiveSegments[i]);
+                    continue;
+                }
+
                 for (var d = draw; d < draw + drawCount; d++)
                 {
                     var info = _reorderDraws[d];
-                    if (accept)
+                    Segments.Add(new DrawSegment
                     {
-                        Segments.Add(new DrawSegment
-                        {
-                            Start = job.Start + info.x, Count = info.y,
-                            Material = _regionMaterials[region.MaterialsStart + info.z], Kind = SegmentKind.Draw,
-                            StencilDepth = _naiveSegments[region.Start].StencilDepth,
-                            TextureStart = SegmentTextures.Count, TextureCount = info.w
-                        });
-                        for (var i = 0; i < info.w; i++) SegmentTextures.Add(_reorderTextures[texture + i]);
-                    }
+                        Start = job.Start + info.x, Count = info.y,
+                        Material = _regionMaterials[region.MaterialsStart + info.z / DrawReorder.FeatureKeys],
+                        Kind = SegmentKind.Draw, StencilDepth = _naiveSegments[region.Start].StencilDepth,
+                        TextureStart = SegmentTextures.Count, TextureCount = info.w
+                    });
+                    for (var i = 0; i < info.w; i++) SegmentTextures.Add(_reorderTextures[texture + i]);
 
                     texture += info.w;
                 }
 
                 draw += drawCount;
-                if (accept) continue;
-
-                // No fewer draws: the painter's order.
-                NativeArray<uint>.Copy(_naiveOrder.AsArray(), job.Start, _order.AsArray(), job.Start, job.Count);
-                for (var i = region.Start; i < region.End; i++) CopySegment(_naiveSegments[i]);
             }
 
             while (SegmentProperties.Count < Segments.Count) SegmentProperties.Add(new MaterialPropertyBlock());
@@ -484,7 +514,10 @@ namespace Yaui.Core
             public int Start;
             public int End;
 
-            /// <summary>Some of its draws could merge. Mergeable regions are those of _jobRegions, in turn.</summary>
+            /// <summary>
+            /// Its draws could merge or split (<see cref="DrawReorder"/>). These regions are those of _jobRegions, in
+            /// turn.
+            /// </summary>
             public bool Mergeable;
 
             /// <summary>Mergeable: the materials of its keys in _regionMaterials.</summary>
@@ -507,7 +540,13 @@ namespace Yaui.Core
             for (var s = 0; s < Segments.Count;)
             {
                 var e = RegionEnd(Segments, s);
-                var region = new Region { Start = s, End = e, Mergeable = CanMerge(Segments, s, e) };
+                var region = new Region { Start = s, End = e };
+
+                // Some draws could merge, or split by shader features (in draws of the uber shader).
+                var merge = CanMerge(Segments, s, e);
+                region.Mergeable = merge || (YauiBatching.SplitByShaderFeatures &&
+                                             Segments[s].Kind == SegmentKind.Draw &&
+                                             _reorderMaterials.Contains(null));
                 if (region.Mergeable)
                 {
                     _reorderable = true;
@@ -520,13 +559,13 @@ namespace Yaui.Core
                     _jobRegions.Add(new DrawReorder.Region
                     {
                         Start = from, Count = last.Start + last.Count - from, SegmentsStart = _reorderSegments.Length,
-                        SegmentCount = e - s, KeyCount = _reorderMaterials.Count
+                        SegmentCount = e - s, MaterialCount = _reorderMaterials.Count
                     });
                     for (var i = s; i < e; i++)
                     {
                         var segment = Segments[i];
-                        _reorderSegments.Add(new int3(segment.Start - from, segment.Count,
-                            _reorderMaterials.IndexOf(segment.Material)));
+                        _reorderSegments.Add(new int4(segment.Start - from, segment.Count,
+                            _reorderMaterials.IndexOf(segment.Material), segment.Material == null ? 1 : 0));
                     }
                 }
 

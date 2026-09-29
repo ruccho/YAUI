@@ -165,6 +165,16 @@ namespace Yaui.Core
             CompleteReorders();
         }
 
+        /// <summary>The choice of draws changed (<see cref="YauiBatching"/>): every panel plans its draws again.</summary>
+        public static void InvalidateDraws()
+        {
+            if (!_initialized) return;
+
+            foreach (var panel in Panels) panel.OrderDirty = true;
+
+            RequestUpdate();
+        }
+
         /// <summary>
         /// Completes the reordering of every panel: it reads the stores, which scripts write after rendering.
         /// </summary>

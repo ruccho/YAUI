@@ -460,6 +460,96 @@ namespace Yaui.Tests
             Object.DestroyImmediate(custom);
         }
 
+        private static List<ShaderFeatures> SegmentFeatures(YauiPanel panel)
+        {
+            var features = new List<ShaderFeatures>();
+            foreach (var segment in panel.CurrentState.Segments) features.Add(segment.Features);
+
+            return features;
+        }
+
+        /// <summary>A 5x5 grid of boxes, the one at <paramref name="shadowed"/> with a shadow.</summary>
+        private List<YauiElement> BoxGrid(YauiPanel panel, float size, int shadowed)
+        {
+            var root = panel.GetComponent<YauiElement>();
+            var boxes = new List<YauiElement>();
+            for (var i = 0; i < 25; i++)
+            {
+                var box = PlacedBox(root, i % 5 * (size + 10f), i / 5 * (size + 10f), null);
+                var layout = box.Layout;
+                layout.width = size;
+                layout.height = size;
+                box.Layout = layout;
+                if (i == shadowed)
+                {
+                    var style = box.Box;
+                    style.shadowColor = Color.black;
+                    style.shadowBlur = 2f;
+                    box.Box = style;
+                }
+
+                boxes.Add(box);
+            }
+
+            return boxes;
+        }
+
+        [Test]
+        public void DrawsSplitByShadowsWhenThePixelsPayForIt()
+        {
+            var panel = CreatePanel();
+            BoxGrid(panel, 190f, 12);
+            YauiPanel.ForceUpdate();
+            CollectionAssert.AreEquivalent(new[] { ShaderFeatures.None, ShaderFeatures.Shadow },
+                SegmentFeatures(panel));
+
+            try
+            {
+                YauiBatching.SplitByShaderFeatures = false;
+                YauiPanel.ForceUpdate();
+                CollectionAssert.AreEqual(new[] { ShaderFeatures.Shadow }, SegmentFeatures(panel));
+
+                // Only the GPU gains from a split.
+                YauiBatching.SplitByShaderFeatures = true;
+                YauiBatching.GpuWeight = 0f;
+                YauiPanel.ForceUpdate();
+                CollectionAssert.AreEqual(new[] { ShaderFeatures.Shadow }, SegmentFeatures(panel));
+            }
+            finally
+            {
+                YauiBatching.SplitByShaderFeatures = true;
+                YauiBatching.GpuWeight = 1f;
+            }
+        }
+
+        [Test]
+        public void SmallDrawsDoNotSplit()
+        {
+            var panel = CreatePanel();
+            BoxGrid(panel, 10f, 12);
+            YauiPanel.ForceUpdate();
+            CollectionAssert.AreEqual(new[] { ShaderFeatures.Shadow }, SegmentFeatures(panel));
+        }
+
+        [Test]
+        public void SplitsKeepOverlappingBoxesInOrder()
+        {
+            var panel = CreatePanel();
+            BoxGrid(panel, 190f, 0);
+
+            // Over the shadowed box: drawn after it, so the plain boxes before take a draw of their own.
+            PlacedBox(panel.GetComponent<YauiElement>(), 50f, 50f, null);
+            YauiPanel.ForceUpdate();
+            var state = panel.CurrentState;
+            var order = state.DrawOrder.ToArray();
+            var position = new Dictionary<uint, int>();
+            for (var i = 0; i < order.Length; i++) position[order[i]] = i;
+
+            var painter = state.PainterOrder.ToArray();
+            Assert.Less(position[painter[0]], position[painter[^1]]);
+            Assert.Contains(ShaderFeatures.Shadow, SegmentFeatures(panel));
+        }
+
         /// <summary>The canvas bounds of a primitive as the reordering sees them (axis-aligned nodes, no shadows).</summary>
         private static Rect CanvasBounds(PrimitiveData p)
         {
