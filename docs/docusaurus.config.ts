@@ -98,7 +98,19 @@ const config: Config = {
       onBrokenMarkdownLinks: 'warn',
     },
   },
-  themes: ['@docusaurus/theme-mermaid'],
+  themes: [
+    '@docusaurus/theme-mermaid',
+    [
+      '@easyops-cn/docusaurus-search-local',
+      {
+        hashed: true,
+        language: ['en', 'ja'],
+        indexBlog: false,
+        docsRouteBasePath: ['/', 'api'],
+        docsDir: ['docs', 'api'],
+      },
+    ],
+  ],
 };
 
 export default config;
