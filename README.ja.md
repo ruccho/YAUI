@@ -23,6 +23,31 @@ YAUI は GameObject によるオーサリングを保ったまま uGUI との互
 
 <img src="docs/static/img/screenshot.png" width="800">
 
+<table>
+  <tr>
+    <td width="50%">
+      <a href="docs/static/img/showcase-battle-hud.png"><img src="docs/static/img/showcase-battle-hud.png" alt="3D シーンに重ねたレイド戦の HUD"></a><br>
+      <sub><b>バトル HUD</b>: 数百個のダメージ数字、World Space のネームプレート、パーティクル、カスタムシェーダー。</sub>
+    </td>
+    <td width="50%">
+      <a href="docs/static/img/showcase-dashboard.png"><img src="docs/static/img/showcase-dashboard.png" alt="分析ダッシュボード"></a><br>
+      <sub><b>ダッシュボード</b>: 240 行のスクロールするテーブル、チャート、操作できるコントロール。</sub>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <a href="docs/static/img/showcase-inventory.png"><img src="docs/static/img/showcase-inventory.png" alt="RPG のインベントリ・装備画面"></a><br>
+      <sub><b>インベントリ</b>: 352 マスのグリッド。アイコンは動的アトラスにまとめられます。</sub>
+    </td>
+    <td width="50%">
+      <a href="docs/static/img/showcase-shop.png"><img src="docs/static/img/showcase-shop.png" alt="ガチャバナーとバトルパスのあるモバイルゲームのショップ"></a><br>
+      <sub><b>ショップ</b>: マスクで斜めに切り抜いたバナー、グラデーション、報酬トラック。</sub>
+    </td>
+  </tr>
+</table>
+
+各画面には、エディタで計測したクアッド数・要素数・draw call 数を表示しています。
+
 ### 高速
 
 ボックス・画像・グリフはすべて GPU バッファ上の Quad であり、**パネルごとに 1 ドローコール**で描かれます。角丸・ボーダー・ドロップシャドウ・SDF テキストはすべて 1 つの Uber シェーダーで描かれ、バッチを切りません。テキスト生成とレイアウトは**ワーカースレッド上のジョブ**として実行され、変更のないフレームのコストはほぼゼロです。

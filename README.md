@@ -24,6 +24,31 @@ YAUI keeps the GameObject authoring model and drops compatibility with uGUI to g
 
 <img src="docs/static/img/screenshot.png" width="800">
 
+<table>
+  <tr>
+    <td width="50%">
+      <a href="docs/static/img/showcase-battle-hud.png"><img src="docs/static/img/showcase-battle-hud.png" alt="A raid battle HUD over a 3D scene"></a><br>
+      <sub><b>Battle HUD</b>: hundreds of damage numbers, world space nameplates, particles and custom shaders.</sub>
+    </td>
+    <td width="50%">
+      <a href="docs/static/img/showcase-dashboard.png"><img src="docs/static/img/showcase-dashboard.png" alt="An analytics dashboard"></a><br>
+      <sub><b>Dashboard</b>: a scrolling table of 240 rows, charts, and working controls.</sub>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <a href="docs/static/img/showcase-inventory.png"><img src="docs/static/img/showcase-inventory.png" alt="An RPG inventory and equipment screen"></a><br>
+      <sub><b>Inventory</b>: a grid of 352 slots with icons packed into the dynamic atlas.</sub>
+    </td>
+    <td width="50%">
+      <a href="docs/static/img/showcase-shop.png"><img src="docs/static/img/showcase-shop.png" alt="The shop of a mobile game with a gacha banner and a battle pass"></a><br>
+      <sub><b>Shop</b>: a banner cut to a slanted shape by a mask, gradients and a reward track.</sub>
+    </td>
+  </tr>
+</table>
+
+Each screen shows its own counts of quads, elements and draw calls, as measured in the editor.
+
 ### Fast
 
 Every box, image and glyph is a quad in a GPU buffer, drawn in **one draw call per panel**. Rounded corners, borders, drop shadows and SDF text are all drawn by one uber shader, without breaking the batch. Text generation and layout run as **jobs on worker threads**, and a frame without changes costs almost nothing.
