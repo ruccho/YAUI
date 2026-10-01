@@ -352,6 +352,10 @@ namespace Yaui.Text
                 var atlasIndices = _textElementIndicesByMesh[processedMeshIndex];
                 for (var atlasIndex = 0; atlasIndex < atlasIndices.Count; atlasIndex++)
                 {
+                    // The lists are reused (cleared, not removed): a generation whose font at this mesh had more
+                    // atlases leaves empty lists beyond the atlases of this font.
+                    if (atlasIndices[atlasIndex].Count == 0) continue;
+
                     var atlas = fontAsset.atlasTextures[atlasIndex];
                     foreach (var elementIndex in atlasIndices[atlasIndex])
                     {
