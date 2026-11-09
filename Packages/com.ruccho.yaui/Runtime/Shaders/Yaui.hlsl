@@ -23,6 +23,10 @@
 // the texture in the draw (0..7) at bit 8 of the flags it passes on.
 #define YAUI_TEXTURE_SLOT_SHIFT 8u
 #define YAUI_TEXTURE_ID_SHIFT 16u
+// Bits 11..15: the shader module that shades the primitive (1..31, 0: none; Yaui.YauiShaderModules). Kept in the flags
+// the vertex shader passes on.
+#define YAUI_MODULE_SHIFT 11u
+#define YAUI_MODULE_MASK (31u << YAUI_MODULE_SHIFT)
 
 // The features compiled into the shader (the flags above, without the u suffix for the preprocessor). A shader that
 // defines YAUI_FEATURES before the include leaves out the others, with their varyings; primitives that use them are
@@ -287,7 +291,7 @@ Varyings VertImpl(uint vertexId, bool world)
     slot = (uint)(dot(float4(_YauiTexIds0 == textureId), float4(0.0, 1.0, 2.0, 3.0)) +
         dot(float4(_YauiTexIds1 == textureId), float4(4.0, 5.0, 6.0, 7.0)));
     #endif
-    uint flags = (featureFlags & 0xffu) | (slot << YAUI_TEXTURE_SLOT_SHIFT);
+    uint flags = (featureFlags & 0xffu) | (featureFlags & YAUI_MODULE_MASK) | (slot << YAUI_TEXTURE_SLOT_SHIFT);
     Varyings o;
     float localPixelSize = 0.0;
     if (world)
@@ -449,6 +453,13 @@ float4 ShadeShape(float2 local, float2 halfSize, float4 color, float radius, uin
     return result;
 }
 
+// Shader modules (Yaui.YauiShaderModule): an uber shader generated with modules (YauiShaderSettings) defines
+// YAUI_MODULES and this function after the include, which calls the module of the primitive. Its draws enable the
+// keyword YAUI_MODULE when some primitive uses a module.
+#if defined(YAUI_MODULES) && defined(YAUI_MODULE)
+half4 YauiModuleFrag(uint module, Varyings i, bool world);
+#endif
+
 half4 FragImpl(Varyings i, bool world)
 {
     uint flags = (uint)i.params.y & YAUI_FLAG_MASK;
@@ -487,6 +498,15 @@ half4 FragImpl(Varyings i, bool world)
         {
             return 0;
         }
+    }
+
+    #endif
+
+    #if defined(YAUI_MODULES) && defined(YAUI_MODULE)
+    uint module = (flags & YAUI_MODULE_MASK) >> YAUI_MODULE_SHIFT;
+    [branch] if (module != 0u)
+    {
+        return YauiModuleFrag(module, i, world) * clipCoverage;
     }
 
     #endif
@@ -618,6 +638,27 @@ Varyings VertOverlay(uint vertexId : SV_VertexID) { return VertImpl(vertexId, fa
 half4 FragOverlay(Varyings i) : SV_Target { return FragImpl(i, false); }
 Varyings VertWorld(uint vertexId : SV_VertexID) { return VertImpl(vertexId, true); }
 half4 FragWorld(Varyings i) : SV_Target { return FragImpl(i, true); }
+
+// The vertices of a mask shape (Mask.shader): like VertImpl, but a fully transparent element (its tint and inherited
+// opacity) masks nothing, like the masks of uGUI, which clip the alpha of the mask graphic (a mask faded out with its
+// graphic hides its children). The quad leaves the clip space. Pushes and pops of a mask take the same path, so the
+// stencil stays balanced.
+Varyings VertMaskImpl(uint vertexId, bool world)
+{
+    Varyings o = VertImpl(vertexId, world);
+    PrimitiveData p = _YauiPrimitives[_YauiOrder[(vertexId >> 2) + _YauiOrderOffset]];
+    NodeData n = _YauiNodes[p.node];
+    float alpha = UnpackUnorm8x4(n.tint).a * f16tof32(n.opacityClip & 0xffffu);
+    if (alpha <= 0.001)
+    {
+        o.positionCS = float4(2.0, 2.0, 2.0, 1.0);
+    }
+
+    return o;
+}
+
+Varyings VertMaskOverlay(uint vertexId : SV_VertexID) { return VertMaskImpl(vertexId, false); }
+Varyings VertMaskWorld(uint vertexId : SV_VertexID) { return VertMaskImpl(vertexId, true); }
 
 half4 FragMaskOverlay(Varyings i) : SV_Target { return FragMaskImpl(i, false); }
 half4 FragMaskWorld(Varyings i) : SV_Target { return FragMaskImpl(i, true); }

@@ -24,6 +24,7 @@ Primitives use the shapes of the uber shader: rectangles with rounded corners an
 | `WithRadialFill(center, start, sweep)` | Only a sector of a rectangle or an image, like the radial fills of `YauiImage` |
 | `WithSkew(skew)` | A horizontal slant, like italics |
 | `WithBold()` | A dilated glyph |
+| `WithModule(id)` | Shaded by a [shader module](./custom-shaders.mdx#shader-modules) instead of the uber shader |
 
 Rects are in the local space of the element's box: canvas units, origin at the top-left, Y down. `ContentBox` is the box inside the padding and the border. UV rects are in the texture's space, with the origin at the bottom-left.
 

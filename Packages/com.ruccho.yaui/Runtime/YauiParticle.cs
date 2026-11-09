@@ -23,6 +23,9 @@ namespace Yaui
 
         private readonly List<ParticleSystem> _systems = new();
         private readonly List<ParticleSystemRenderer> _renderers = new();
+
+        // Whether each system draws trails, read when the systems are found (reading the module is a native call).
+        private readonly List<bool> _trails = new();
         private readonly List<Mesh> _meshes = new();
         private readonly List<Mesh> _trailMeshes = new();
 
@@ -80,16 +83,26 @@ namespace Yaui
         {
             if (_systemsDirty) FindSystems();
 
-            var camera = BakeCamera;
-            var size = Element.LayoutRect.size;
-            // Y up in the systems, Y down on the canvas.
-            var toBox = Matrix4x4.Translate(new Vector3(size.x * 0.5f, size.y * 0.5f, 0f)) *
-                        Matrix4x4.Scale(new Vector3(scale, -scale, scale)) * transform.worldToLocalMatrix;
+            Camera camera = null;
+            var toBox = default(Matrix4x4);
             for (var i = 0; i < _systems.Count; i++)
             {
                 var system = _systems[i];
                 var renderer = _renderers[i];
-                if (system == null || renderer == null || !system.gameObject.activeInHierarchy) continue;
+                if (system == null || renderer == null) continue;
+
+                // Idle systems (no particles, no trails) cost nothing more: most of the time for effects.
+                if (system.particleCount == 0 && !_trails[i]) continue;
+                if (!system.gameObject.activeInHierarchy) continue;
+
+                if (camera == null)
+                {
+                    camera = BakeCamera;
+                    var size = Element.LayoutRect.size;
+                    // Y up in the systems, Y down on the canvas.
+                    toBox = Matrix4x4.Translate(new Vector3(size.x * 0.5f, size.y * 0.5f, 0f)) *
+                            Matrix4x4.Scale(new Vector3(scale, -scale, scale)) * transform.worldToLocalMatrix;
+                }
 
                 // The meshes are in the local space of each system.
                 var local = toBox * system.transform.localToWorldMatrix;
@@ -100,7 +113,7 @@ namespace Yaui
                     draws.DrawMesh(mesh, renderer.sharedMaterial, local);
                 }
 
-                if (system.trails.enabled && renderer.trailMaterial != null)
+                if (_trails[i] && renderer.trailMaterial != null)
                 {
                     var mesh = MeshAt(_trailMeshes, i);
                     renderer.BakeTrailsMesh(mesh, camera, ParticleSystemBakeMeshOptions.Default);
@@ -115,6 +128,7 @@ namespace Yaui
             RestoreRenderers();
             _systems.Clear();
             _renderers.Clear();
+            _trails.Clear();
             FindIn(transform);
             foreach (var renderer in _renderers)
             {
@@ -139,6 +153,7 @@ namespace Yaui
             {
                 _systems.Add(system);
                 _renderers.Add(system.GetComponent<ParticleSystemRenderer>());
+                _trails.Add(system.trails.enabled);
             }
 
             for (var i = 0; i < t.childCount; i++)

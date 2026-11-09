@@ -120,6 +120,22 @@ namespace Yaui
         }
 
         /// <summary>Synthesized bold: dilates a distance field glyph.</summary>
+        /// <summary>The largest id of a shader module (<see cref="YauiShaderModules"/>).</summary>
+        public const int MaxModuleId = 31;
+
+        /// <summary>
+        /// Shades the primitive with the shader module of <paramref name="id"/> (<see cref="YauiShaderModules.IdOf"/>)
+        /// instead of the uber shader's own shading; 0 removes it. The primitive keeps its other data, which the module
+        /// reads (its UV, colors, border width).
+        /// </summary>
+        public readonly YauiPrimitive WithModule(int id)
+        {
+            var p = this;
+            p.Data.Flags = (p.Data.Flags & ~PrimitiveFlags.ModuleMask) |
+                           (PrimitiveFlags)((uint)math.clamp(id, 0, MaxModuleId) << 11);
+            return p;
+        }
+
         public readonly YauiPrimitive WithBold()
         {
             var p = this;

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
 using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
@@ -32,6 +33,13 @@ namespace Yaui.Core
 
         /// <summary>A custom material, or null for the uber shader. Always null for mask shapes.</summary>
         public Material Material;
+
+        /// <summary>
+        /// Mask shapes (screen panels only): the custom material of the mask element when its shader has a
+        /// "MaskOverlay" pass, which writes the stencil in the shape it draws (for example, a dissolving shape);
+        /// otherwise null for the box (or image) of the element.
+        /// </summary>
+        public Material MaskMaterial;
 
         public SegmentKind Kind;
 
@@ -130,6 +138,13 @@ namespace Yaui.Core
         public bool NeedsPixelClip;
 
         private NativeArray<int> _scanResult;
+        private NativeList<int2> _visibilityRanges;
+
+        // The scan of the primitives for Transparent, and what it was made from: redone when the draw order or the
+        // transforms of the panel changed, or when any primitive was written.
+        private bool _visibilityDirty = true;
+        private int _visibilityVersion;
+        private bool _primitivesTransparent;
 
         // Scratch of the feature scan, per segment.
         private NativeList<int2> _featureRanges;
@@ -207,6 +222,23 @@ namespace Yaui.Core
 
         /// <summary>Whether anything is drawn: primitives, or the meshes of custom draws.</summary>
         public bool HasDraws => Segments.Count > 0;
+
+        /// <summary>
+        /// Whether the root element is fully transparent (its opacity is zero): nothing of the panel is visible, so
+        /// the renderer skips it (no draws, no passes, no backdrop copies). Layout and transforms still update.
+        /// </summary>
+        public bool Hidden => Root != null && Root.Opacity <= 0f;
+
+        /// <summary>
+        /// Whether nothing the panel draws is visible this frame, although its root is not transparent: every
+        /// primitive is transparent (its alpha, or the opacity or tint of its element, is zero) and no custom draw
+        /// drew anything. The renderer skips it like a <see cref="Hidden"/> panel. Updated at each collection
+        /// (<see cref="UpdateVisibility"/>); the primitives are scanned again only if something changed.
+        /// </summary>
+        public bool Transparent { get; private set; }
+
+        /// <summary>Whether the panel has draws to render this frame.</summary>
+        public bool Visible => HasDraws && !Hidden && !Transparent;
 
         public void MarkStructureDirty()
         {
@@ -361,6 +393,7 @@ namespace Yaui.Core
             }
 
             _orderChanged = true;
+            _visibilityDirty = true;
         }
 
         /// <summary>
@@ -459,6 +492,8 @@ namespace Yaui.Core
                 if ((features & ShaderFeatures.Image) != 0) cost += YauiBatching.PixelImageMicroseconds;
                 if ((features & ShaderFeatures.Border) != 0) cost += YauiBatching.PixelBorderMicroseconds;
                 if ((features & ShaderFeatures.Shadow) != 0) cost += YauiBatching.PixelShadowMicroseconds;
+                // Shader modules decode their own data, at about the cost of sampling an image.
+                if ((features & ShaderFeatures.Module) != 0) cost += YauiBatching.PixelImageMicroseconds;
                 costs.Pixel.Add(cost);
             }
 
@@ -639,16 +674,23 @@ namespace Yaui.Core
             });
         }
 
+        /// <summary>The pass of a custom material that draws its shape into the stencil of a mask.</summary>
+        internal const string MaskOverlayPass = "MaskOverlay";
+
         private void AddShape(YauiElement element, SegmentKind kind)
         {
             var start = _order.Length;
             element.AppendMaskShape(_order);
             for (var i = start; i < _order.Length; i++) AddTexture(TextureOf(i));
 
+            var maskMaterial = element.Material;
+            if (maskMaterial != null && maskMaterial.FindPass(MaskOverlayPass) < 0) maskMaterial = null;
+
             Segments.Add(new DrawSegment
             {
                 Start = start, Count = _order.Length - start, Kind = kind, StencilDepth = _stencilDepth,
-                TextureStart = _textureStart, TextureCount = SegmentTextures.Count - _textureStart
+                TextureStart = _textureStart, TextureCount = SegmentTextures.Count - _textureStart,
+                MaskMaterial = maskMaterial
             });
             _segmentStart = _order.Length;
             _textureStart = SegmentTextures.Count;
@@ -890,6 +932,54 @@ namespace Yaui.Core
             }
         }
 
+        /// <summary>
+        /// Main thread, at collection, after the transforms and the custom draws and before the reordering: updates
+        /// <see cref="Transparent"/>. Custom draws count as visible if they drew anything; the primitives of the draw
+        /// segments are scanned until a visible one is found.
+        /// </summary>
+        public void UpdateVisibility()
+        {
+            if (Hidden || !HasDraws || _reorderScheduled)
+            {
+                if (!_reorderScheduled) Transparent = false;
+                return;
+            }
+
+            // Custom draws are collected every frame.
+            foreach (var segment in Segments)
+                if (segment.Kind == SegmentKind.Custom && segment.CustomDraw != null &&
+                    segment.CustomDraw.Draws.Items.Count > 0)
+                {
+                    Transparent = false;
+                    return;
+                }
+
+            var version = YauiSystem.Primitives.Version;
+            if (_visibilityDirty || version != _visibilityVersion)
+            {
+                _visibilityDirty = false;
+                _visibilityVersion = version;
+                _primitivesTransparent = ScanTransparent();
+            }
+
+            Transparent = _primitivesTransparent;
+        }
+
+        private unsafe bool ScanTransparent()
+        {
+            if (!_visibilityRanges.IsCreated) _visibilityRanges = new NativeList<int2>(8, Allocator.Persistent);
+
+            _visibilityRanges.Clear();
+            foreach (var segment in Segments)
+                if (segment.Kind == SegmentKind.Draw && segment.Count > 0)
+                    _visibilityRanges.Add(new int2(segment.Start, segment.Count));
+
+            return VisibilityScan.AnyVisible((uint*)_order.GetUnsafeReadOnlyPtr(),
+                (PrimitiveData*)YauiSystem.Primitives.AsArray().GetUnsafeReadOnlyPtr(),
+                (NodeGpuData*)YauiSystem.Nodes.Gpu.AsArray().GetUnsafeReadOnlyPtr(),
+                (int2*)_visibilityRanges.GetUnsafeReadOnlyPtr(), _visibilityRanges.Length) == 0;
+        }
+
         /// <summary>Main thread, at collection: propagates transforms if anything changed. Returns whether it did.</summary>
         public bool UpdateTransforms()
         {
@@ -955,6 +1045,7 @@ namespace Yaui.Core
             }.Run();
             NeedsPixelClip = _scanResult[0] != 0;
             _transformsChanged = true;
+            _visibilityDirty = true;
             return true;
         }
 
@@ -1065,6 +1156,7 @@ namespace Yaui.Core
             _reorderJob.Complete();
             _hitTest.Dispose();
             if (_scanResult.IsCreated) _scanResult.Dispose();
+            if (_visibilityRanges.IsCreated) _visibilityRanges.Dispose();
             if (_featureRanges.IsCreated)
             {
                 _featureRanges.Dispose();

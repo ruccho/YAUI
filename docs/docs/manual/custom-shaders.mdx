@@ -104,3 +104,72 @@ Rotated quads and rounded [clips](./clipping-and-masks.mdx#clipchildren) need a 
 ## Masks
 
 To be masked by a [`YauiMask`](./clipping-and-masks.mdx#yauimask), the shader declares the `_YauiStencilRef`, `_YauiStencilComp` and `_YauiStencilPass` properties and the `Stencil` block, as in the example above. The renderer sets them.
+
+## Mask shapes {#mask-shapes}
+
+By default, a `YauiMask` masks with the box of its element or the alpha of its image. When the element has a custom material with a pass named `MaskOverlay`, the mask draws its shape with that pass instead (in overlay and camera panels), so that a shape made by the material, such as a dissolve, also hides the children.
+
+The pass writes no color, keeps the `Stencil` block of the shader, and discards the pixels outside the shape. Its vertex function is `VertMaskOverlay`, which also makes a fully transparent mask element mask nothing:
+
+```hlsl
+// In HLSLINCLUDE: Shape returns the alpha of the element's shape.
+half4 FragShapeMask(Varyings i) : SV_Target
+{
+    clip(Shape(i) - 0.5);
+    return 0;
+}
+
+// In the SubShader, next to the Overlay and World passes:
+Pass
+{
+    Name "MaskOverlay"
+    ZTest Always
+    ColorMask 0
+
+    HLSLPROGRAM
+    #pragma vertex VertMaskOverlay
+    #pragma fragment FragShapeMask
+    ENDHLSL
+}
+```
+
+## Backdrop blur {#backdrop-blur}
+
+The `Yaui/Backdrop Blur` shader shows what is drawn behind the element, blurred, inside the shape of the element and multiplied by its color, like `backdrop-filter: blur()` in CSS. Create a material with it, set **Blur** (`_YauiBlur`, the standard deviation in pixels of the target), and use it as the element's material.
+
+Before a draw whose shader has the tag `"YauiBackdrop" = "True"`, the panel's pass ends, the target is copied and blurred, and the next pass binds the result as `_YauiBackdropTexture`. Elements next to each other with the same material share one copy. To write a shader of your own, add the tag and sample the texture at the pixel's position:
+
+```hlsl
+TEXTURE2D(_YauiBackdropTexture);
+SAMPLER(sampler_YauiBackdropTexture);
+float4 _YauiBackdropParams; // xy: one pixel of the target in UV
+
+half4 FragFrostedOverlay(Varyings i) : SV_Target
+{
+    half4 shape = FragImpl(i, false);
+    float2 uv = i.positionCS.xy * _YauiBackdropParams.xy;
+    half3 backdrop = SAMPLE_TEXTURE2D(_YauiBackdropTexture, sampler_YauiBackdropTexture, uv).rgb;
+    return half4(backdrop * shape.rgb, shape.a);
+}
+```
+
+The target has to be readable: a camera panel drawn before the final blit, or a panel on a camera that renders to a texture. On the back buffer (for instance, overlay panels of a camera that renders to the screen) and in world space panels, backdrops show their color only.
+
+Each backdrop costs a copy of the target, the blur, and a split of the draws. See [Performance](./performance.mdx#backdrop-blur).
+
+## Shader modules {#shader-modules}
+
+A custom material splits the draw calls of a panel. A package that shades some primitives in its own way, such as glyphs with effects, can instead provide a **shader module**: a fragment function that the uber shader calls for the primitives that select it. These primitives are then drawn together with the boxes, images and texts around them.
+
+A package provides a module:
+
+1. An HLSL file that defines `half4 Name(Varyings i, bool world)`. It returns the premultiplied color of the pixel; clipping is applied after it. The file is included after `Yaui.hlsl`, so it can use its types and functions. It reads the varyings of the features its primitives use (the UV of images, the colors).
+2. A `YauiShaderModule` asset (**Create > YAUI > Shader Module**) with a `Key`, the include path of the file and the name of the function.
+3. Code that gets the id of the module with `YauiShaderModules.IdOf(key)` and builds its primitives with `WithModule(id)` (see [Custom Elements](./custom-elements.mdx#primitives)). The id is 0 when the project does not use the module; draw without it then, for example with a material of your own.
+
+A project uses modules:
+
+1. Create a `YauiShaderSettings` asset (**Create > YAUI > Shader Settings**) named `YauiShaderSettings` in a `Resources` folder, and list the modules.
+2. Press **Generate Uber Shader** in its Inspector. It writes the uber shader with the modules next to the asset, and YAUI uses it instead of its own.
+
+A module's id is its position in the list, so generate the shader again after changing the list. A project can use up to 31 modules. The keyword `YAUI_MODULE` is enabled only for the draws that contain primitives with a module. A primitive with a module that is used as a mask shape is drawn as an image there.

@@ -31,8 +31,15 @@ namespace Yaui.Core
         private static readonly ProfilerMarker EarlySubmitMarker = new("Yaui.EarlySubmit");
         private static readonly ProfilerMarker CollectMarker = new("Yaui.Collect");
         private static readonly ProfilerMarker FeaturesMarker = new("Yaui.Collect.Features");
+        private static readonly ProfilerMarker VisibilityMarker = new("Yaui.Collect.Visibility");
         private static readonly ProfilerMarker ReorderMarker = new("Yaui.Collect.Reorder");
         private static readonly ProfilerMarker LayoutMarker = new("Yaui.Layout");
+        private static readonly ProfilerMarker RelayoutMarker = new("Yaui.Relayout");
+        private static readonly ProfilerMarker TransformsMarker = new("Yaui.Collect.Transforms");
+        private static readonly ProfilerMarker UploadMarker = new("Yaui.Collect.Upload");
+        private static readonly ProfilerMarker PrepareLayoutMarker = new("Yaui.Submit.PrepareLayout");
+        private static readonly ProfilerMarker ApplyLayoutMarker = new("Yaui.Collect.ApplyLayout");
+        private static readonly ProfilerMarker CustomDrawsMarker = new("Yaui.Collect.CustomDraws");
 
         private static bool _initialized;
         private static readonly List<PanelState> Panels = new();
@@ -296,38 +303,88 @@ namespace Yaui.Core
             _layoutRoots.Clear();
             _layoutBoundaries.Clear();
             _parallelBoundaries.Clear();
-            foreach (var panel in Panels)
-            {
-                if (panel.Root == null) continue;
-
-                panel.Panel.UpdateCanvas(panel);
-                if (panel.StructureDirty) panel.RebuildStructure();
-
-                if (panel.PrepareLayout())
+            using (PrepareLayoutMarker.Auto())
+                foreach (var panel in Panels)
                 {
-                    panel.LayoutScheduled = true;
-                    LayoutPanels.Add(panel);
-                    _layoutRoots.Add(panel.RootLayout);
+                    if (panel.Root == null) continue;
+
+                    panel.Panel.UpdateCanvas(panel);
+                    if (panel.StructureDirty) panel.RebuildStructure();
+
+                    if (panel.PrepareLayout())
+                    {
+                        panel.LayoutScheduled = true;
+                        LayoutPanels.Add(panel);
+                        _layoutRoots.Add(panel.RootLayout);
+                    }
                 }
-            }
 
             Renderer.QueueWorldPanels();
             if (LayoutPanels.Count == 0) return;
 
             _layoutJobPanels = GCHandle.Alloc(LayoutPanels);
             // Measuring texts reads their generation.
-            // Measures of changed texts (managed; they may dirty layout boundaries), then the layout (Burst).
-            _layoutJob = new LayoutJob { Panels = _layoutJobPanels, Boundaries = _layoutBoundaries }
-                .Schedule(TextPipeline.Handle);
-            _layoutJob = new TreeLayoutJob
-            {
-                Roots = _layoutRoots, Boundaries = _layoutBoundaries, Parallel = _parallelBoundaries
-            }.Schedule(_layoutJob);
-            _layoutJob = new BoundaryLayoutJob { Boundaries = _parallelBoundaries.AsDeferredJobArray() }
-                .Schedule(_parallelBoundaries, 4, _layoutJob);
-            _layoutJob = new BoundaryFixupJob { Boundaries = _layoutBoundaries }.Schedule(_layoutJob);
+            _layoutJob = ScheduleLayout(_layoutJobPanels, TextPipeline.Handle);
             JobHandle.ScheduleBatchedJobs();
             _layoutInFlight = true;
+        }
+
+        /// <summary>
+        /// Schedules the layout of <see cref="LayoutPanels"/>: the measures of changed texts (managed; they may dirty
+        /// layout boundaries), then the layout (Burst).
+        /// </summary>
+        private static JobHandle ScheduleLayout(GCHandle panels, JobHandle dependency)
+        {
+            var handle = new LayoutJob { Panels = panels, Boundaries = _layoutBoundaries }.Schedule(dependency);
+            handle = new TreeLayoutJob
+            {
+                Roots = _layoutRoots, Boundaries = _layoutBoundaries, Parallel = _parallelBoundaries
+            }.Schedule(handle);
+            handle = new BoundaryLayoutJob { Boundaries = _parallelBoundaries.AsDeferredJobArray() }
+                .Schedule(_parallelBoundaries, 4, handle);
+            return new BoundaryFixupJob { Boundaries = _layoutBoundaries }.Schedule(handle);
+        }
+
+        /// <summary>
+        /// Main thread, at collection, after the layout was applied: lays out again, synchronously, the panels whose
+        /// elements asked for a new measure while it was applied (a wrapped text measured on the main thread learns
+        /// its width only from the layout), so that the frame shows the final sizes instead of the next one. Up to
+        /// <paramref name="passes"/> times, so that elements that keep asking do not stall the frame.
+        /// </summary>
+        private static void RelayoutDirtied(int passes)
+        {
+            for (var pass = 0; pass < passes; pass++)
+            {
+                LayoutPanels.Clear();
+                _layoutRoots.Clear();
+                _layoutBoundaries.Clear();
+                _parallelBoundaries.Clear();
+                foreach (var panel in Panels)
+                {
+                    if (panel.Root == null || panel.LayoutDirtyElements.Count == 0 || !panel.PrepareLayout()) continue;
+
+                    panel.LayoutScheduled = true;
+                    LayoutPanels.Add(panel);
+                    _layoutRoots.Add(panel.RootLayout);
+                }
+
+                if (LayoutPanels.Count == 0) return;
+
+                using (RelayoutMarker.Auto())
+                {
+                    var panels = GCHandle.Alloc(LayoutPanels);
+                    try
+                    {
+                        ScheduleLayout(panels, default).Complete();
+                    }
+                    finally
+                    {
+                        panels.Free();
+                    }
+
+                    foreach (var panel in LayoutPanels) panel.ApplyLayout();
+                }
+            }
         }
 
         private static void CompleteLayout()
@@ -359,36 +416,52 @@ namespace Yaui.Core
             CompleteReorders();
             CompleteLayout();
             TextPipeline.Complete();
-            foreach (var panel in Panels)
-                if (panel.LayoutScheduled)
-                    panel.ApplyLayout();
+            using (ApplyLayoutMarker.Auto())
+                foreach (var panel in Panels)
+                    if (panel.LayoutScheduled)
+                        panel.ApplyLayout();
 
+            RelayoutDirtied(2);
             TextPipeline.Finish();
-            foreach (var panel in Panels)
-            {
-                if (panel.OrderDirty) panel.RebuildOrder();
+            using (TransformsMarker.Auto())
+                foreach (var panel in Panels)
+                {
+                    if (panel.OrderDirty) panel.RebuildOrder();
 
-                panel.UpdateTransforms();
-            }
+                    panel.UpdateTransforms();
+                }
 
             // After the transforms: custom draws place their meshes on the nodes as rendered.
             // By index: user code may enable or disable custom draws.
-            for (var i = 0; i < CustomDraws.Count; i++) CustomDraws[i].Collect();
+            using (CustomDrawsMarker.Auto())
+                for (var i = 0; i < CustomDraws.Count; i++)
+                    CustomDraws[i].Collect();
+
+            // The scans read the stores that the reordering jobs read: run them all before scheduling any, or each
+            // would wait for the jobs of the panels before it.
+            foreach (var panel in Panels)
+                using (FeaturesMarker.Auto())
+                    panel.UpdateFeatures();
+
+            using (VisibilityMarker.Auto())
+                foreach (var panel in Panels)
+                    panel.UpdateVisibility();
 
             // Reordering runs while the render pipeline records the cameras, until the draws are recorded.
             foreach (var panel in Panels)
-            {
-                using (FeaturesMarker.Auto()) panel.UpdateFeatures();
-                using (ReorderMarker.Auto()) panel.ScheduleReorder();
-            }
+                using (ReorderMarker.Auto())
+                    panel.ScheduleReorder();
 
             JobHandle.ScheduleBatchedJobs();
 
-            Primitives.Upload();
-            Exts.Upload();
-            Nodes.Gpu.Upload();
-            Clips.Upload();
-            Renderer.Prepare();
+            using (UploadMarker.Auto())
+            {
+                Primitives.Upload();
+                Exts.Upload();
+                Nodes.Gpu.Upload();
+                Clips.Upload();
+                Renderer.Prepare();
+            }
         }
 
         /// <summary>Resolves the measures of changed texts and collects the dirty layout boundaries (managed).</summary>

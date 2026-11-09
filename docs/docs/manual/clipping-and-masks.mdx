@@ -33,6 +33,10 @@ Add `YauiMask` to an element to mask its descendants with the stencil buffer:
 
 Masks nest to any depth. `ShowMaskGraphic` decides whether the element itself (its box, image or text) is drawn, or only used as the mask.
 
+While the element is fully transparent (the alpha of its `Tint`, or its inherited opacity, is 0), the mask masks nothing and hides all its descendants, like a uGUI mask whose graphic faded out. Fading out the mask element fades out the masked content with it. The background color does not count: an element without a background still masks with its box.
+
+In overlay and camera panels, an element whose custom material has a `MaskOverlay` pass masks with the shape that the pass draws, for example the shape of a dissolve. See [Custom Shaders](./custom-shaders.mdx#mask-shapes).
+
 Hit tests are clipped to the bounding rectangle of the mask.
 
 Custom materials inside a mask must support the stencil. See [Custom Shaders](./custom-shaders.mdx#masks).

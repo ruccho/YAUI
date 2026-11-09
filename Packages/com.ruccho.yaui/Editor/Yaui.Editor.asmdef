@@ -3,7 +3,9 @@
     "rootNamespace": "Yaui.Editor",
     "references": [
         "Yaui",
-        "Unity.Mathematics"
+        "Unity.Mathematics",
+        "Unity.RenderPipelines.Core.Runtime",
+        "Unity.RenderPipelines.Universal.Runtime"
     ],
     "includePlatforms": [
         "Editor"

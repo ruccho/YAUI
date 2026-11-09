@@ -120,6 +120,9 @@ namespace Yaui
             get => layout;
             set
             {
+                // Setting the same value (animations and code that set every frame) changes nothing.
+                if (layout.Equals(value)) return;
+
                 layout = value;
                 SyncLayout();
             }
@@ -142,6 +145,8 @@ namespace Yaui
             get => box.backgroundColor;
             set
             {
+                if (box.backgroundColor == value) return;
+
                 box.backgroundColor = value;
                 SyncBox();
             }
@@ -152,6 +157,9 @@ namespace Yaui
             get => renderTransform;
             set
             {
+                if (renderTransform.translate == value.translate && renderTransform.rotation == value.rotation &&
+                    renderTransform.scale == value.scale && renderTransform.pivot == value.pivot) return;
+
                 renderTransform = value;
                 SyncNode();
             }
@@ -162,6 +170,8 @@ namespace Yaui
             get => renderTransform.translate;
             set
             {
+                if (renderTransform.translate == value) return;
+
                 renderTransform.translate = value;
                 SyncNode();
             }
@@ -173,6 +183,8 @@ namespace Yaui
             get => renderTransform.rotation;
             set
             {
+                if (renderTransform.rotation == value) return;
+
                 renderTransform.rotation = value;
                 SyncNode();
             }
@@ -183,6 +195,8 @@ namespace Yaui
             get => renderTransform.scale;
             set
             {
+                if (renderTransform.scale == value) return;
+
                 renderTransform.scale = value;
                 SyncNode();
             }
@@ -194,6 +208,8 @@ namespace Yaui
             get => opacity;
             set
             {
+                if (opacity == value) return;
+
                 opacity = value;
                 SyncNode();
             }
@@ -222,6 +238,8 @@ namespace Yaui
             get => _tint;
             set
             {
+                if (_tint == value) return;
+
                 _tint = value;
                 SyncNode();
             }
@@ -524,6 +542,10 @@ namespace Yaui
                 _contentStart = capacity > 0 ? primitives.AllocateRange(capacity) : 0;
                 _contentCapacity = capacity;
                 _panel.OrderDirty = true;
+
+                // A new block keeps the data of its previous owner, and the draw order covers the whole block:
+                // the unused slots must be empty quads.
+                for (var i = count; i < capacity; i++) WriteContent(i, default);
             }
             else
             {

@@ -23,7 +23,7 @@ namespace Yaui
 
         /// <summary>Overlay panels are not seen through a camera; world space panels are.</summary>
         public override Camera eventCamera =>
-            Panel != null && Panel.RenderMode == PanelRenderMode.World ? Panel.EventCamera : null;
+            Panel != null && Panel.RenderMode != PanelRenderMode.Overlay ? Panel.EventCamera : null;
 
         public override int sortOrderPriority =>
             Panel != null && Panel.RenderMode == PanelRenderMode.Overlay ? Panel.SortOrder : int.MinValue;
@@ -55,7 +55,7 @@ namespace Yaui
                     screenPosition = eventData.position,
                     index = resultAppendList.Count,
                     depth = depth,
-                    sortingOrder = Panel.RenderMode == PanelRenderMode.Overlay ? Panel.SortOrder : 0
+                    sortingOrder = Panel.RenderMode != PanelRenderMode.World ? Panel.SortOrder : 0
                 });
         }
     }

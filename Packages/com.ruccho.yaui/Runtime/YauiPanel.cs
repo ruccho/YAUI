@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 using Yaui.Core;
@@ -14,7 +15,17 @@ namespace Yaui
         /// A quad in the scene at this GameObject's Transform, sorted and depth tested with transparent objects.
         /// The canvas size is <see cref="YauiPanel.ReferenceResolution"/>.
         /// </summary>
-        World
+        World,
+
+        /// <summary>
+        /// Drawn over the target of <see cref="YauiPanel.WorldCamera"/> by a render pass of that camera at
+        /// <see cref="YauiPanel.InjectionPoint"/>, filling its view. A <see cref="YauiRendererFeature"/> of the
+        /// camera's renderer gives the injection point an event. The canvas is sized from the pixel size of the
+        /// camera (its target texture when it renders to one) with the scale mode. Panels of the same camera and
+        /// injection point are drawn in <see cref="YauiPanel.SortOrder"/>. The panel is drawn between the passes of the camera, so
+        /// it is not sorted with the transparent objects (uGUI canvases included) of the pass it follows.
+        /// </summary>
+        Camera
     }
 
     public enum PanelScaleMode
@@ -57,6 +68,15 @@ namespace Yaui
         /// <summary>World space: the camera pointer events are seen through (the main camera when null).</summary>
         [SerializeField] private Camera eventCamera;
 
+        /// <summary>Camera mode: the camera that draws the panel.</summary>
+        [SerializeField] private Camera worldCamera;
+
+        /// <summary>
+        /// Camera mode: where the panel is drawn among the passes of the camera. A <see cref="YauiRendererFeature"/>
+        /// of the camera's renderer gives it an event.
+        /// </summary>
+        [SerializeField] private YauiInjectionPoint injectionPoint;
+
         [NonSerialized] private PanelState _state;
         [NonSerialized] private YauiElement _element;
 
@@ -78,8 +98,34 @@ namespace Yaui
 
         public Camera EventCamera
         {
-            get => eventCamera != null ? eventCamera : Camera.main;
+            get
+            {
+                if (renderMode == PanelRenderMode.Camera) return worldCamera;
+
+                return eventCamera != null ? eventCamera : Camera.main;
+            }
             set => eventCamera = value;
+        }
+
+        /// <summary>Camera mode: the camera that draws the panel.</summary>
+        public Camera WorldCamera
+        {
+            get => worldCamera;
+            set
+            {
+                worldCamera = value;
+                YauiSystem.RequestUpdate();
+            }
+        }
+
+        /// <summary>
+        /// Camera mode: where the panel is drawn among the passes of the camera. A <see cref="YauiRendererFeature"/>
+        /// of the camera's renderer gives it an event; without one, the panel is not drawn.
+        /// </summary>
+        public YauiInjectionPoint InjectionPoint
+        {
+            get => injectionPoint;
+            set => injectionPoint = value;
         }
 
         /// <summary>
@@ -202,6 +248,16 @@ namespace Yaui
                 return screen.z > 0f;
             }
 
+            if (renderMode == PanelRenderMode.Camera)
+            {
+                if (worldCamera == null) return false;
+
+                var size = (Vector2)_state.CanvasSize;
+                var viewport = new Vector3(canvas.x / size.x, 1f - canvas.y / size.y, 0f);
+                screenPosition = worldCamera.ViewportToScreenPoint(viewport);
+                return true;
+            }
+
             var scale = _state.ScaleFactor;
             screenPosition = new Vector2(canvas.x * scale, _state.CanvasSize.y * scale - canvas.y * scale);
             return true;
@@ -230,6 +286,16 @@ namespace Yaui
                 return true;
             }
 
+            if (renderMode == PanelRenderMode.Camera)
+            {
+                if (worldCamera == null) return false;
+
+                // Screen positions as seen by the camera (pixels of its target when it renders to a texture).
+                var viewport = worldCamera.ScreenToViewportPoint(screenPosition);
+                canvas = new float2(viewport.x, 1f - viewport.y) * _state.CanvasSize;
+                return true;
+            }
+
             var screenHeight = _state.CanvasSize.y * _state.ScaleFactor;
             canvas = new float2(screenPosition.x, screenHeight - screenPosition.y) / _state.ScaleFactor;
             return true;
@@ -243,6 +309,13 @@ namespace Yaui
         {
             return _state?.HitTest(screenPosition);
         }
+
+        /// <summary>
+        /// Whether the panel was drawn at the last collection (right before rendering): it has draws, its root is not
+        /// transparent, and something it draws is visible. A script can enable a camera only while its panels are
+        /// drawn; the value it reads in the next frame describes the frame that was rendered.
+        /// </summary>
+        public bool IsDrawn => _state != null && _state.Visible;
 
         /// <summary>
         /// Lays out, generates texts and uploads all panels now, so that <see cref="YauiElement.LayoutRect"/> and
@@ -292,7 +365,7 @@ namespace Yaui
                 return;
             }
 
-            var screen = ScreenSize();
+            var screen = renderMode == PanelRenderMode.Camera ? CameraSize() : ScreenSize();
             if (scaleMode == PanelScaleMode.ConstantScale)
             {
                 s.ScaleFactor = math.max(constantScale, 1e-4f);
@@ -304,6 +377,30 @@ namespace Yaui
             var logHeight = math.log2(math.max(screen.y, 1f) / math.max(referenceResolution.y, 1f));
             s.ScaleFactor = math.exp2(math.lerp(logWidth, logHeight, match));
             s.CanvasSize = math.max(screen, 1f) / s.ScaleFactor;
+        }
+
+        // The size of the camera of camera panels, once a frame (reading a camera's target is a native call).
+        private static readonly Dictionary<Camera, (int Frame, float2 Size)> CameraSizes = new();
+
+        /// <summary>Camera mode: the pixel size of the camera (its target texture when it renders to one).</summary>
+        private float2 CameraSize()
+        {
+            if (worldCamera == null) return new float2(referenceResolution.x, referenceResolution.y);
+
+            var frame = Time.frameCount;
+            if (CameraSizes.TryGetValue(worldCamera, out var cached) && cached.Frame == frame) return cached.Size;
+
+            var size = MeasureCamera();
+            CameraSizes[worldCamera] = (frame, size);
+            return size;
+        }
+
+        private float2 MeasureCamera()
+        {
+            var target = worldCamera.targetTexture;
+            if (target != null) return new float2(target.width, target.height);
+
+            return new float2(worldCamera.pixelWidth, worldCamera.pixelHeight);
         }
 
         private static float2 ScreenSize()

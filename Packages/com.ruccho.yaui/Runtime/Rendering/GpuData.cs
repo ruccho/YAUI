@@ -33,7 +33,13 @@ namespace Yaui.Rendering
         /// Draws only a sector of the shape (radial fill of images). The border color holds, as halves, the center
         /// (0..1 of the rect, Y down), the start angle and the signed sweep in radians (positive: clockwise).
         /// </summary>
-        RadialFill = 1 << 6
+        RadialFill = 1 << 6,
+
+        /// <summary>
+        /// The shader module that shades the primitive (bits 11..15: 1..31, 0 for none; <see cref="YauiShaderModules"/>).
+        /// Must match <c>YAUI_MODULE_SHIFT</c> in Yaui.hlsl.
+        /// </summary>
+        ModuleMask = 31u << 11
     }
 
     /// <summary>
@@ -51,12 +57,15 @@ namespace Yaui.Rendering
         Border = 1 << 2,
 
         Shadow = 1 << 3,
-        All = Text | Image | Border | Shadow
+
+        /// <summary>Shader modules (YAUI_MODULE): some primitive is shaded by a module of the generated uber shader.</summary>
+        Module = 1 << 4,
+        All = Text | Image | Border | Shadow | Module
     }
 
     internal static class ShaderFeaturesExtensions
     {
-        public const int Count = 16;
+        public const int Count = 32;
 
         public static ShaderFeatures Of(PrimitiveFlags flags)
         {
@@ -65,6 +74,7 @@ namespace Yaui.Rendering
             if ((flags & PrimitiveFlags.Image) != 0) features |= ShaderFeatures.Image;
             if ((flags & (PrimitiveFlags.Border | PrimitiveFlags.RadialFill)) != 0) features |= ShaderFeatures.Border;
             if ((flags & PrimitiveFlags.Shadow) != 0) features |= ShaderFeatures.Shadow;
+            if ((flags & PrimitiveFlags.ModuleMask) != 0) features |= ShaderFeatures.Module;
             return features;
         }
     }
