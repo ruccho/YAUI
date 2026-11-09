@@ -28,7 +28,15 @@ In the Scene view, overlay panels appear like uGUI's overlay canvases: one world
 
 ### Camera
 
-`PanelRenderMode.Camera` draws the panel over the target of a camera (`WorldCamera`), at a point among the render passes of that camera (`RenderPassEvent`, `AfterRenderingTransparents` by default). Like an overlay panel, the root element fills the target and the scale mode sizes the canvas, but from the pixel size of the camera (its target texture when it renders to one) instead of the screen. YAUI adds the render pass to the camera's renderer itself, so no renderer feature is needed.
+`PanelRenderMode.Camera` draws the panel over the target of a camera (`WorldCamera`), at a point among the render passes of that camera (`InjectionPoint`). Like an overlay panel, the root element fills the target and the scale mode sizes the canvas, but from the pixel size of the camera (its target texture when it renders to one) instead of the screen.
+
+The panel names the point, and the renderer of the camera decides its event:
+
+1. Create a `YauiInjectionPoint` asset (**Create > YAUI > Injection Point**) for each place where panels are drawn, such as "HUD" or "Front".
+2. Add **Yaui Renderer Feature** (`YauiRendererFeature`) to the renderer of the camera, and list the injection points with their events.
+3. Set `WorldCamera` and `InjectionPoint` of the panel. Its Inspector shows the event that the camera's renderer draws it at, or why it is not drawn.
+
+A panel whose injection point is not listed in the camera's renderer is not drawn. Since events are set per renderer, the same point can have different events in a 2D Renderer and in a Universal Renderer, and a panel keeps its point when a script moves it to another camera. The event field takes any value, and shows the nearest named event and, in a 2D Renderer, where the renderer runs the pass.
 
 The event decides what the panel is drawn over and what applies to it:
 
@@ -43,7 +51,7 @@ The event decides what the panel is drawn over and what applies to it:
 | 551 to 600 (`AfterRenderingPostProcessing`) | After post-processing |
 | Above 600 | After the final blit, on the camera's target |
 
-Panels of the same camera and event are drawn in `SortOrder`. Other things to know:
+Panels of the same camera and injection point are drawn in `SortOrder`. Other things to know:
 
 - The panel is drawn between passes, so it is not sorted with the transparent objects (uGUI canvases included) of the pass before it.
 - Masks use a stencil buffer of their own, so the camera's depth buffer is not needed, and its stencil values are left as they are.

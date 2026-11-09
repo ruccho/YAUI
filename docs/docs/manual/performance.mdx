@@ -39,7 +39,7 @@ Colors, render transforms and opacity are nearly free to change, and a frame wit
 
 ### Cameras
 
-In [camera mode](./panels.mdx#camera), each URP camera has a fixed CPU cost that is much larger than drawing a panel. Instead of a camera for each layer of UI, draw the panels in a camera that already renders, at different events. If a camera exists only to show some panels over the image of another camera, enable it only while `YauiPanel.IsDrawn` is true for one of them.
+In [camera mode](./panels.mdx#camera), each URP camera has a fixed CPU cost that is much larger than drawing a panel. Instead of a camera for each layer of UI, draw the panels in a camera that already renders, at different injection points. If a camera exists only to show some panels over the image of another camera, enable it only while `YauiPanel.IsDrawn` is true for one of them.
 
 ## GPU
 
