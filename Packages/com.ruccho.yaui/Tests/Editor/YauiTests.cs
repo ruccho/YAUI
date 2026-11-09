@@ -984,6 +984,71 @@ namespace Yaui.Tests
         }
 
         [Test]
+        public void RadialFillOfAFullTurnDrawsTheWholeShape()
+        {
+            const PrimitiveFlags fillOrBorder = PrimitiveFlags.RadialFill | PrimitiveFlags.Border;
+            var center = new Vector2(0.5f, 0.5f);
+            var bordered = YauiPrimitive.Rectangle(new Rect(0f, 0f, 100f, 100f), Color.white).WithBorder(4f, Color.red)
+                .WithSkew(0.25f);
+
+            foreach (var sweep in new[] { math.PI * 2f, -math.PI * 2f, math.PI * 3f })
+            {
+                var full = bordered.WithRadialFill(center, 0f, sweep).Data;
+                Assert.AreEqual((PrimitiveFlags)0, full.Flags & fillOrBorder, $"A sweep of {sweep} is not a sector.");
+                Assert.AreEqual(0f, math.f16tof32(full.BorderWidthAndSkew & 0xffffu), "The border is replaced.");
+                Assert.AreEqual(0.25f, math.f16tof32(full.BorderWidthAndSkew >> 16), 1e-3f, "The skew is kept.");
+            }
+
+            var sector = bordered.WithRadialFill(center, 0f, math.PI * 1.99f).Data;
+            Assert.AreEqual(PrimitiveFlags.RadialFill, sector.Flags & fillOrBorder);
+            Assert.AreEqual(0f, math.f16tof32(sector.BorderWidthAndSkew & 0xffffu), "The border is replaced.");
+            Assert.AreEqual(math.PI * 1.99f, math.f16tof32(sector.BorderColor.y >> 16), 4e-3f);
+
+            var borderAfter = bordered.WithRadialFill(center, 0f, math.PI * 2f).WithBorder(2f, Color.red).Data;
+            Assert.AreEqual(PrimitiveFlags.Border, borderAfter.Flags & fillOrBorder, "A border replaces the fill.");
+        }
+
+        [Test]
+        public void FullRadialImageFillIsNotASector()
+        {
+            var panel = CreatePanel();
+            var texture = TestTexture();
+            try
+            {
+                var image = Create<YauiImage>(panel.GetComponent<YauiElement>());
+                var layout = image.Layout;
+                layout.width = 100f;
+                layout.height = 100f;
+                image.Layout = layout;
+                image.Sprite = Sprite.Create(texture, new Rect(0f, 0f, 8f, 8f), Vector2.zero);
+                image.Type = ImageType.Filled;
+                image.FillMethod = FillMethod.Radial360;
+                image.FillOrigin = (int)FillOrigin360.Top;
+                image.FillAmount = 1f;
+
+                foreach (var clockwise in new[] { true, false })
+                {
+                    image.FillClockwise = clockwise;
+                    YauiPanel.ForceUpdate();
+                    var p = Core.YauiSystem.Primitives[image.ContentRange.Start];
+                    Assert.AreEqual((PrimitiveFlags)0, p.Flags & PrimitiveFlags.RadialFill,
+                        $"A full fill (clockwise: {clockwise}) is drawn as the whole image.");
+                    Assert.IsTrue((p.Flags & PrimitiveFlags.Image) != 0);
+                    Assert.AreEqual(new float4(0f, 0f, 100f, 100f), p.Rect);
+                }
+
+                image.FillAmount = 0.999f;
+                YauiPanel.ForceUpdate();
+                Assert.IsTrue((Core.YauiSystem.Primitives[image.ContentRange.Start].Flags & PrimitiveFlags.RadialFill) != 0,
+                    "Less than a full turn is a sector.");
+            }
+            finally
+            {
+                Object.DestroyImmediate(texture);
+            }
+        }
+
+        [Test]
         public void RawImageDrawsItsTexture()
         {
             var panel = CreatePanel();

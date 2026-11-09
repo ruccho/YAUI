@@ -94,16 +94,28 @@ namespace Yaui
         /// <summary>
         /// Draws only a sector of a rectangle or an image, like the radial fills of <see cref="YauiImage"/>.
         /// <paramref name="center"/> is in 0..1 of the rect (Y down); angles are in radians, clockwise on screen from
-        /// the right, and a negative sweep goes counter-clockwise. Replaces a border.
+        /// the right, and a negative sweep goes counter-clockwise. A sweep of a full turn or more draws the whole
+        /// shape. Replaces a border.
         /// </summary>
         public readonly YauiPrimitive WithRadialFill(Vector2 center, float startAngle, float sweep)
         {
             var p = this;
             if ((p.Data.Flags & PrimitiveFlags.Text) != 0) return p;
 
-            p.Data.Flags = (p.Data.Flags & ~PrimitiveFlags.Border) | PrimitiveFlags.RadialFill;
-            p.Data.BorderColor = GpuPacking.Half4(new float4(center.x, center.y, startAngle, sweep));
+            // The border and the fill share their data: either one replaces the other.
+            p.Data.Flags &= ~(PrimitiveFlags.Border | PrimitiveFlags.RadialFill);
             p.Data.BorderWidthAndSkew = GpuPacking.Half2(0f, Skew);
+
+            // A full turn is decided here, before the angles are packed to halves: 2π rounds down to 6.28125, which
+            // the shader would draw as a sector with a seam along its start.
+            if (math.abs(sweep) >= math.PI * 2f)
+            {
+                p.Data.BorderColor = default;
+                return p;
+            }
+
+            p.Data.Flags |= PrimitiveFlags.RadialFill;
+            p.Data.BorderColor = GpuPacking.Half4(new float4(center.x, center.y, startAngle, sweep));
             return p;
         }
 
