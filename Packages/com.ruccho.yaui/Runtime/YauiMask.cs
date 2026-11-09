@@ -11,6 +11,8 @@ namespace Yaui
     /// For a single level of rectangle or rounded rectangle clipping, <see cref="YauiElement.ClipChildren"/> is
     /// cheaper: it does not split the draw call. Hit tests clip to the mask's bounding rectangle.
     /// Custom materials inside a mask must declare the stencil properties and Stencil block of Uber.shader.
+    /// While the element is fully transparent (its <see cref="YauiElement.Tint"/> alpha, or its inherited opacity, is
+    /// zero), the mask masks nothing and hides the descendants, like a uGUI mask whose graphic faded out.
     /// </remarks>
     [ExecuteAlways]
     [DisallowMultipleComponent]

@@ -17,9 +17,12 @@ namespace Yaui.Rendering
     /// screen. One draw call per panel, in sort order.</item>
     /// <item>World space panels: <see cref="Graphics.RenderPrimitivesIndexed"/>, so that URP sorts and depth tests
     /// them with the rest of the transparent objects (planning/poc-p1.md, PoC 7).</item>
+    /// <item>Camera panels: a render graph pass of the panel's camera at the panel's event, drawn like overlays into
+    /// the camera's target. One pass per event, panels in sort order.</item>
     /// </list>
     /// The meshes of custom draws (<see cref="YauiCustomDraw"/>) are drawn between the segments of primitives, one
-    /// draw call each.
+    /// draw call each. Before a segment whose material has the "YauiBackdrop" tag, a screen pass ends, the target is
+    /// copied and blurred, and the next pass binds the result (<c>_YauiBackdropTexture</c>).
     /// </summary>
     internal sealed class PanelRenderer : IDisposable
     {
@@ -38,6 +41,11 @@ namespace Yaui.Rendering
         private static readonly int AtlasParamsId = Shader.PropertyToID("_YauiAtlasParams");
         private static readonly int NodeId = Shader.PropertyToID("_YauiNode");
         private static readonly int MeshMatrixId = Shader.PropertyToID("_YauiMeshMatrix");
+        private static readonly int BackdropTextureId = Shader.PropertyToID("_YauiBackdropTexture");
+        private static readonly int BackdropParamsId = Shader.PropertyToID("_YauiBackdropParams");
+        private static readonly int BlurParamsId = Shader.PropertyToID("_YauiBlurParams");
+        private static readonly int BlurId = Shader.PropertyToID("_YauiBlur");
+        private const string BackdropTag = "YauiBackdrop";
         private static readonly ShaderTagId LightModeTag = new("LightMode");
         private static readonly ShaderTagId YauiOverlayTag = new("YauiOverlay");
 
@@ -55,6 +63,7 @@ namespace Yaui.Rendering
 
         private static readonly ProfilerMarker PrepareOverlayMarker = new("Yaui.Render.Prepare");
         private static readonly ProfilerMarker RecordOverlayMarker = new("Yaui.Render.Record");
+        private static readonly ProfilingSampler BlurSampler = new("Yaui Backdrop Blur");
         private static readonly int StencilRefId = Shader.PropertyToID("_YauiStencilRef");
         private static readonly int StencilCompId = Shader.PropertyToID("_YauiStencilComp");
         private static readonly int StencilPassId = Shader.PropertyToID("_YauiStencilPass");
@@ -69,14 +78,21 @@ namespace Yaui.Rendering
         private readonly Material _maskMaterial;
         private readonly Material _pixelClipMaskMaterial;
 
+        // The CRC of the custom material each derived material was last copied from.
+        private readonly Dictionary<Material, int> _stencilSources = new();
+
         // Materials with the stencil state of a segment, by base material, kind and depth.
         private readonly Dictionary<(Material, SegmentKind, int), Material> _stencilMaterials = new();
         private readonly OverlayRenderPass _pass;
         private readonly SceneViewRenderPass _sceneViewPass;
+        private readonly Dictionary<RenderPassEvent, CameraRenderPass> _cameraPasses = new();
+        private readonly HashSet<RenderPassEvent> _enqueuedEvents = new();
         private readonly List<PanelState> _sorted = new();
         private readonly List<DrawItem> _draws = new();
         private readonly List<DrawItem> _worldCustomDraws = new();
         private readonly Dictionary<Shader, (bool Yaui, int ForwardPass)> _customShaders = new();
+        private readonly Dictionary<Shader, bool> _backdropShaders = new();
+        private readonly Material _blurMaterial;
         private readonly BlockPool _overlayBlocks = new();
         private readonly BlockPool _worldBlocks = new();
         private GraphicsBuffer _indices;
@@ -94,6 +110,18 @@ namespace Yaui.Rendering
 
             /// <summary>Custom draws: the mesh (null for primitives), its submesh and its model matrix.</summary>
             public Mesh Mesh;
+
+            /// <summary>
+            /// Not a draw: the target is copied and blurred here for the draws that follow, with the blur of this
+            /// backdrop material.
+            /// </summary>
+            public Material Backdrop;
+
+            /// <summary>
+            /// In the prepared draws of a panel only: a segment (index + 1) prepared again every frame, in place of
+            /// its draws (custom draws, and custom materials copied with a stencil state).
+            /// </summary>
+            public int Segment;
 
             public int Submesh;
             public Matrix4x4 Model;
@@ -122,13 +150,20 @@ namespace Yaui.Rendering
 
         public PanelRenderer()
         {
-            _uberShader = Resources.Load<Shader>("Yaui/Uber");
+            // The uber shader generated with the project's shader modules, if any (YauiShaderSettings).
+            _uberShader = YauiShaderModules.UberShader != null
+                ? YauiShaderModules.UberShader
+                : Resources.Load<Shader>("Yaui/Uber");
             _maskMaterial = new Material(Resources.Load<Shader>("Yaui/Mask"))
             {
                 hideFlags = HideFlags.HideAndDontSave, renderQueue = 3000
             };
             _pixelClipMaskMaterial = new Material(_maskMaterial) { hideFlags = HideFlags.HideAndDontSave };
             _pixelClipMaskMaterial.EnableKeyword("YAUI_PIXEL_CLIP");
+            _blurMaterial = new Material(Resources.Load<Shader>("Yaui/BackdropBlur"))
+            {
+                hideFlags = HideFlags.HideAndDontSave
+            };
             _pass = new OverlayRenderPass(this);
             _sceneViewPass = new SceneViewRenderPass(this);
             RenderPipelineManager.beginCameraRendering += OnBeginCameraRendering;
@@ -155,12 +190,25 @@ namespace Yaui.Rendering
         {
             // Overlay draws need the index buffer too.
             EnsureIndices(MaxDrawCount());
-            // Globals, so that custom materials see them too.
-            Shader.SetGlobalBuffer(PrimitivesId, YauiSystem.Primitives.Buffer);
-            Shader.SetGlobalBuffer(ExtsId, YauiSystem.Exts.Buffer);
-            Shader.SetGlobalBuffer(NodesId, YauiSystem.Nodes.Gpu.Buffer);
-            Shader.SetGlobalBuffer(ClipsId, YauiSystem.Clips.Buffer);
+            // Globals, so that custom materials see them too. Set again only when a buffer was recreated.
+            BindGlobal(PrimitivesId, YauiSystem.Primitives.Buffer, ref _boundPrimitives);
+            BindGlobal(ExtsId, YauiSystem.Exts.Buffer, ref _boundExts);
+            BindGlobal(NodesId, YauiSystem.Nodes.Gpu.Buffer, ref _boundNodes);
+            BindGlobal(ClipsId, YauiSystem.Clips.Buffer, ref _boundClips);
             YauiSystem.Textures.Atlas.RestoreIfLost();
+        }
+
+        private GraphicsBuffer _boundPrimitives;
+        private GraphicsBuffer _boundExts;
+        private GraphicsBuffer _boundNodes;
+        private GraphicsBuffer _boundClips;
+
+        private static void BindGlobal(int id, GraphicsBuffer buffer, ref GraphicsBuffer bound)
+        {
+            if (buffer == bound) return;
+
+            Shader.SetGlobalBuffer(id, buffer);
+            bound = buffer;
         }
 
         /// <summary>
@@ -179,7 +227,7 @@ namespace Yaui.Rendering
                 if (panel.Panel.RenderMode != PanelRenderMode.World) continue;
 
                 panel.FlushOrder();
-                if (panel.HasDraws && panel.OrderBuffer != null) RenderWorld(panel);
+                if (panel.Visible && panel.OrderBuffer != null) RenderWorld(panel);
             }
         }
 
@@ -344,7 +392,8 @@ namespace Yaui.Rendering
             Matrix4x4 panelMatrix, Matrix4x4 projection, float pixelSize, BlockPool blocks)
         {
             var custom = segment.CustomDraw;
-            if (custom == null) return;
+            // Nothing to draw this frame (for example, a particle system without particles).
+            if (custom == null || custom.Draws.Items.Count == 0) return;
 
             var element = custom.OwnerElement;
             if (element == null || element.NodeSlot <= 0 || !panel.TryGetWorld(element, out var node)) return;
@@ -373,7 +422,7 @@ namespace Yaui.Rendering
                 if (shader.Yaui)
                 {
                     draw.Material = WithStencil(item.Material, SegmentKind.Draw, segment.StencilDepth, true);
-                    draw.Pass = draw.Material.FindPass(world ? "World" : "Overlay");
+                    draw.Pass = PassOf(draw.Material, world ? "World" : "Overlay");
                     var properties = blocks.Next();
                     properties.SetInt(NodeId, element.NodeSlot);
                     properties.SetMatrix(MeshMatrixId, item.LocalMatrix);
@@ -405,9 +454,12 @@ namespace Yaui.Rendering
             info.ForwardPass = -1;
             for (var i = 0; i < shader.passCount && info.ForwardPass < 0; i++)
             {
+                // Unity may return the tag in another case (SRPDEFAULTUNLIT).
                 var lightMode = shader.FindPassTagValue(i, LightModeTag).name;
-                if (string.IsNullOrEmpty(lightMode) || lightMode is "UniversalForward" or "UniversalForwardOnly" or
-                        "SRPDefaultUnlit")
+                if (string.IsNullOrEmpty(lightMode) ||
+                    string.Equals(lightMode, "UniversalForward", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(lightMode, "UniversalForwardOnly", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(lightMode, "SRPDefaultUnlit", StringComparison.OrdinalIgnoreCase))
                     info.ForwardPass = i;
             }
 
@@ -441,10 +493,29 @@ namespace Yaui.Rendering
                 return;
             }
 
+            // Camera panels: one pass per event among the panels of this camera.
+            _enqueuedEvents.Clear();
+            foreach (var panel in YauiSystem.AllPanels)
+            {
+                if (!panel.Visible || panel.Panel.RenderMode != PanelRenderMode.Camera ||
+                    panel.Panel.WorldCamera != camera) continue;
+
+                var renderPassEvent = panel.Panel.RenderPassEvent;
+                if (!_enqueuedEvents.Add(renderPassEvent)) continue;
+
+                if (!_cameraPasses.TryGetValue(renderPassEvent, out var cameraPass))
+                {
+                    cameraPass = new CameraRenderPass(this, renderPassEvent);
+                    _cameraPasses[renderPassEvent] = cameraPass;
+                }
+
+                camera.GetUniversalAdditionalCameraData().scriptableRenderer.EnqueuePass(cameraPass);
+            }
+
             if (camera != _target) return;
 
             foreach (var panel in YauiSystem.AllPanels)
-                if (panel.HasDraws && panel.Panel.RenderMode == PanelRenderMode.Overlay)
+                if (panel.Visible && panel.Panel.RenderMode == PanelRenderMode.Overlay)
                 {
                     camera.GetUniversalAdditionalCameraData().scriptableRenderer.EnqueuePass(_pass);
                     return;
@@ -460,40 +531,210 @@ namespace Yaui.Rendering
                 if (panel.Panel.RenderMode != PanelRenderMode.Overlay) continue;
 
                 panel.FlushOrder();
-                if (panel.HasDraws && panel.OrderBuffer != null) _sorted.Add(panel);
+                if (panel.Visible && panel.OrderBuffer != null) _sorted.Add(panel);
             }
 
             _sorted.Sort(SortOrderComparer.Instance);
-            _draws.Clear();
-            _overlayBlocks.Reset();
-            _overlayNeedsStencil = false;
-            foreach (var panel in _sorted)
+            _overlayNeedsStencil = PrepareScreenDraws(_sorted, camera, _draws, _overlayBlocks);
+        }
+
+        /// <summary>
+        /// What the draws of a screen pass were prepared from, so that a frame where nothing changed reuses them: the
+        /// panels, their canvas sizes, order buffers and segments (ranges, kinds, materials, stencil depths, features
+        /// and textures), and the camera's width. The contents of the buffers are read by the GPU and need no
+        /// preparation. Panels with custom draws are prepared every frame (their meshes follow the nodes).
+        /// </summary>
+        internal sealed class ScreenDrawCache
+        {
+            public bool Valid;
+            public int Signature;
+            public bool NeedsStencil;
+        }
+
+        /// <summary>The signatures of the panels of the last <see cref="ScreenSignature"/>, in order.</summary>
+        private readonly List<int> _panelSignatures = new();
+
+        private int ScreenSignature(List<PanelState> panels, Camera camera, out bool cacheable)
+        {
+            cacheable = true;
+            var hash = new HashCode();
+            hash.Add(panels.Count);
+            _panelSignatures.Clear();
+            foreach (var panel in panels)
             {
-                _overlayNeedsStencil |= panel.HasMasks;
+                var signature = PanelSignature(panel, camera, out var panelCacheable);
+                _panelSignatures.Add(signature);
+                hash.Add(signature);
+                cacheable &= panelCacheable;
+            }
+
+            return hash.ToHashCode();
+        }
+
+        /// <summary>
+        /// What the draws of one panel were prepared from (see <see cref="ScreenDrawCache"/>). Not cacheable as a whole
+        /// if some segments are prepared every frame (<see cref="IsDynamic"/>).
+        /// </summary>
+        private static int PanelSignature(PanelState panel, Camera camera, out bool cacheable)
+        {
+            cacheable = true;
+            var hash = new HashCode();
+            hash.Add(camera.pixelWidth);
+            var textures = YauiSystem.Textures;
+            {
+                hash.Add(panel.GetHashCode());
+                hash.Add(panel.CanvasSize);
+                hash.Add(panel.OrderBuffer != null ? panel.OrderBuffer.GetHashCode() : 0);
+                hash.Add(panel.NeedsPixelClip);
+                hash.Add(panel.Segments.Count);
+                foreach (var segment in panel.Segments)
+                {
+                    if (IsDynamic(segment)) cacheable = false;
+
+                    hash.Add(segment.Start);
+                    hash.Add(segment.Count);
+                    hash.Add(segment.Kind);
+                    hash.Add(segment.StencilDepth);
+                    hash.Add(segment.Features);
+                    hash.Add(segment.Material != null ? segment.Material.GetHashCode() : 0);
+                    hash.Add(segment.MaskMaterial != null ? segment.MaskMaterial.GetHashCode() : 0);
+                    for (var slot = 0; slot < segment.TextureCount; slot++)
+                    {
+                        var id = panel.SegmentTextures[segment.TextureStart + slot];
+                        var texture = textures.Get(id);
+                        hash.Add(id);
+                        hash.Add(texture != null ? texture.GetHashCode() : 0);
+                        hash.Add(textures.Parameters(id));
+                    }
+                }
+            }
+
+            return hash.ToHashCode();
+        }
+
+        /// <summary>
+        /// The draws of panels drawn over a camera's target in canvas space (overlay and camera panels), in the
+        /// order of <paramref name="panels"/>, with a backdrop item before each segment of a backdrop material.
+        /// Returns whether a panel has masks (a stencil buffer is needed).
+        /// </summary>
+        private bool PrepareScreenDraws(List<PanelState> panels, Camera camera, List<DrawItem> draws, BlockPool blocks,
+            ScreenDrawCache cache = null)
+        {
+            if (cache != null)
+            {
+                var signature = ScreenSignature(panels, camera, out var cacheable);
+                if (cacheable && cache.Valid && cache.Signature == signature)
+                {
+                    _panelSignatures.Clear();
+                    return cache.NeedsStencil;
+                }
+
+                cache.Valid = cacheable;
+                cache.Signature = signature;
+                cache.NeedsStencil = PrepareScreenDraws(panels, camera, draws, blocks);
+                return cache.NeedsStencil;
+            }
+
+            draws.Clear();
+            blocks.Reset();
+            var needsStencil = false;
+            var signed = _panelSignatures.Count == panels.Count;
+            for (var p = 0; p < panels.Count; p++)
+            {
+                var panel = panels[p];
+                needsStencil |= panel.HasMasks;
 
                 // Canvas space: origin at the top-left, Y down.
                 var projection = Matrix4x4.Ortho(0f, panel.CanvasSize.x, panel.CanvasSize.y, 0f, -1f, 1f);
                 var pixelSize = panel.CanvasSize.x / camera.pixelWidth;
-                for (var i = 0; i < panel.Segments.Count; i++)
+
+                // The draws of the panel are kept while its signature stays; dynamic segments are prepared again.
+                var signature = signed ? _panelSignatures[p] : PanelSignature(panel, camera, out _);
+                if (!_panelDraws.TryGetValue(panel, out var prepared))
+                {
+                    prepared = new PanelDraws();
+                    _panelDraws[panel] = prepared;
+                }
+
+                if (!prepared.Valid || prepared.Signature != signature)
+                {
+                    prepared.Items.Clear();
+                    for (var i = 0; i < panel.Segments.Count; i++)
+                        if (IsDynamic(panel.Segments[i]))
+                            prepared.Items.Add(new DrawItem { Segment = i + 1 });
+                        else
+                            AppendSegment(prepared.Items, panel, i, projection, pixelSize, blocks);
+
+                    prepared.Valid = true;
+                    prepared.Signature = signature;
+                }
+
+                foreach (var item in prepared.Items)
+                    if (item.Segment > 0)
+                        AppendSegment(draws, panel, item.Segment - 1, projection, pixelSize, blocks);
+                    else
+                        draws.Add(item);
+            }
+
+            _panelSignatures.Clear();
+            return needsStencil;
+        }
+
+        private sealed class PanelDraws
+        {
+            public bool Valid;
+            public int Signature;
+            public readonly List<DrawItem> Items = new();
+        }
+
+        private readonly Dictionary<PanelState, PanelDraws> _panelDraws = new();
+
+        /// <summary>
+        /// Segments prepared every frame: custom draws (their meshes and matrices follow the nodes) and custom materials
+        /// copied with a stencil state (the copy takes the material's properties when prepared).
+        /// </summary>
+        private static bool IsDynamic(DrawSegment segment)
+        {
+            return segment.Kind == SegmentKind.Custom || segment.MaskMaterial != null ||
+                   segment.Material != null && segment.StencilDepth > 0;
+        }
+
+        /// <summary>Appends the draws of one segment of a screen panel.</summary>
+        private void AppendSegment(List<DrawItem> draws, PanelState panel, int i, Matrix4x4 projection, float pixelSize,
+            BlockPool blocks)
+        {
+            {
                 {
                     var segment = panel.Segments[i];
                     if (segment.Kind == SegmentKind.Custom)
                     {
-                        AddCustomDraws(_draws, panel, segment, false, Matrix4x4.identity, projection, pixelSize,
-                            _overlayBlocks);
-                        continue;
+                        AddCustomDraws(draws, panel, segment, false, Matrix4x4.identity, projection, pixelSize, blocks);
+                        return;
                     }
 
                     var properties = panel.SegmentProperties[i];
-                    properties.SetBuffer(OrderId, panel.OrderBuffer);
-                    properties.SetInt(OrderOffsetId, segment.Start);
-                    properties.SetFloat(PixelSizeId, pixelSize);
-                    BindTextures(panel, segment, properties);
-                    var segmentMaterial = MaterialOf(panel, segment);
-                    var pass = segmentMaterial.FindPass("Overlay");
-                    if (pass < 0) continue;
+                    // The block keeps its values between frames: set them again only when they changed.
+                    var binding = SegmentBinding(panel, segment, pixelSize);
+                    if (!_screenBindings.TryGetValue(properties, out var bound) || bound != binding)
+                    {
+                        properties.SetBuffer(OrderId, panel.OrderBuffer);
+                        properties.SetInt(OrderOffsetId, segment.Start);
+                        properties.SetFloat(PixelSizeId, pixelSize);
+                        BindTextures(panel, segment, properties);
+                        _screenBindings[properties] = binding;
+                    }
 
-                    _draws.Add(new DrawItem
+                    var customMask = segment.Kind != SegmentKind.Draw && segment.MaskMaterial != null;
+                    var segmentMaterial = customMask
+                        ? WithStencil(segment.MaskMaterial, segment.Kind, segment.StencilDepth, true)
+                        : MaterialOf(panel, segment);
+                    var pass = PassOf(segmentMaterial, customMask ? PanelState.MaskOverlayPass : "Overlay");
+                    if (pass < 0) return;
+
+                    if (segment.Kind == SegmentKind.Draw && IsBackdrop(segment.Material))
+                        draws.Add(new DrawItem { Backdrop = segment.Material });
+
+                    draws.Add(new DrawItem
                     {
                         Count = segment.Count,
                         Projection = projection,
@@ -503,6 +744,237 @@ namespace Yaui.Rendering
                     });
                 }
             }
+        }
+
+        // Pass indices by shader and pass name: Material.FindPass is a native call by name.
+        private readonly Dictionary<(Shader, string), int> _passes = new();
+
+        private int PassOf(Material material, string name)
+        {
+            var key = (material.shader, name);
+            if (_passes.TryGetValue(key, out var pass)) return pass;
+
+            pass = material.FindPass(name);
+            _passes[key] = pass;
+            return pass;
+        }
+
+        // What each segment's block of a screen panel was last bound with (SegmentBinding).
+        private readonly Dictionary<MaterialPropertyBlock, int> _screenBindings = new();
+
+        /// <summary>The values a screen draw binds to the block of a segment: order buffer, range, pixel size, textures.</summary>
+        private static int SegmentBinding(PanelState panel, DrawSegment segment, float pixelSize)
+        {
+            var hash = new HashCode();
+            hash.Add(panel.OrderBuffer != null ? panel.OrderBuffer.GetHashCode() : 0);
+            hash.Add(segment.Start);
+            hash.Add(pixelSize);
+            var textures = YauiSystem.Textures;
+            for (var slot = 0; slot < segment.TextureCount; slot++)
+            {
+                var id = panel.SegmentTextures[segment.TextureStart + slot];
+                var texture = textures.Get(id);
+                hash.Add(id);
+                hash.Add(texture != null ? texture.GetHashCode() : 0);
+                hash.Add(textures.Parameters(id));
+            }
+
+            hash.Add(segment.TextureCount);
+            return hash.ToHashCode();
+        }
+
+        /// <summary>Whether a material reads the backdrop (its shader has the "YauiBackdrop" tag).</summary>
+        private bool IsBackdrop(Material material)
+        {
+            if (material == null || material.shader == null) return false;
+
+            var shader = material.shader;
+            if (_backdropShaders.TryGetValue(shader, out var backdrop)) return backdrop;
+
+            // Unity returns tag values in lower case.
+            backdrop = string.Equals(material.GetTag(BackdropTag, false), "true", StringComparison.OrdinalIgnoreCase);
+            _backdropShaders[shader] = backdrop;
+            return backdrop;
+        }
+
+        private sealed class ScreenPassData
+        {
+            public List<DrawItem> Draws;
+            public int Start;
+            public int End;
+            public GraphicsBuffer Indices;
+            public bool Restore;
+            public Matrix4x4 View;
+            public Matrix4x4 Projection;
+            public TextureHandle Backdrop;
+            public Vector4 BackdropParams;
+        }
+
+        private sealed class BlitPassData
+        {
+            public TextureHandle Source;
+            public Material Material;
+            public int Pass;
+            public Vector4 Params;
+        }
+
+        /// <summary>
+        /// Records the draws of a screen pass into <paramref name="color"/>: one raster pass, or several when the draws
+        /// have backdrops. Before each backdrop the target is copied and blurred, and the passes that follow bind the
+        /// result. <paramref name="depthCleared"/>: <paramref name="depth"/> is a transient buffer cleared at its first
+        /// use. <paramref name="readable"/>: whether the target can be sampled (not the back buffer); otherwise the
+        /// backdrops show their color only. <paramref name="restore"/>: the view and projection to set back at the end of
+        /// each pass (camera panels), or null.
+        /// </summary>
+        private void RecordScreen(RenderGraph renderGraph, ProfilingSampler sampler, List<DrawItem> draws,
+            TextureHandle color, TextureHandle depth, bool depthCleared, bool readable, Vector2Int targetSize,
+            (Matrix4x4 View, Matrix4x4 Projection)? restore)
+        {
+            var start = 0;
+            var backdrop = TextureHandle.nullHandle;
+            var firstDepth = true;
+            for (var i = 0; i <= draws.Count; i++)
+            {
+                if (i < draws.Count && draws[i].Backdrop == null) continue;
+
+                if (i > start)
+                {
+                    using var builder = renderGraph.AddRasterRenderPass<ScreenPassData>(sampler.name, out var data,
+                        sampler);
+                    builder.SetRenderAttachment(color, 0);
+                    if (depth.IsValid())
+                    {
+                        builder.SetRenderAttachmentDepth(depth,
+                            depthCleared && firstDepth ? AccessFlags.Write : AccessFlags.ReadWrite);
+                        firstDepth = false;
+                    }
+
+                    // Without a copy (the back buffer, or no backdrop yet), backdrops show their color only.
+                    var bound = backdrop.IsValid() ? backdrop : renderGraph.defaultResources.whiteTexture;
+                    builder.UseTexture(bound);
+
+                    builder.AllowPassCulling(false);
+                    builder.AllowGlobalStateModification(true);
+                    data.Draws = draws;
+                    data.Start = start;
+                    data.End = i;
+                    data.Indices = _indices;
+                    data.Restore = restore.HasValue;
+                    data.View = restore?.View ?? default;
+                    data.Projection = restore?.Projection ?? default;
+                    data.Backdrop = bound;
+                    data.BackdropParams =
+                        new Vector4(1f / Mathf.Max(targetSize.x, 1), 1f / Mathf.Max(targetSize.y, 1), 0f, 0f);
+                    builder.SetRenderFunc(static (ScreenPassData d, RasterGraphContext context) =>
+                    {
+                        using var _ = RecordOverlayMarker.Auto();
+                        context.cmd.SetGlobalTexture(BackdropTextureId, d.Backdrop);
+                        context.cmd.SetGlobalVector(BackdropParamsId, d.BackdropParams);
+
+                        var projection = default(Matrix4x4);
+                        var first = true;
+                        for (var index = d.Start; index < d.End; index++)
+                        {
+                            var draw = d.Draws[index];
+                            // Once per panel.
+                            if (first || draw.Projection != projection)
+                            {
+                                context.cmd.SetViewProjectionMatrices(Matrix4x4.identity, draw.Projection);
+                                projection = draw.Projection;
+                                first = false;
+                            }
+
+                            if (draw.Mesh != null)
+                                context.cmd.DrawMesh(draw.Mesh, draw.Model, draw.Material, draw.Submesh, draw.Pass,
+                                    draw.Properties);
+                            else
+                                context.cmd.DrawProcedural(d.Indices, Matrix4x4.identity, draw.Material, draw.Pass,
+                                    MeshTopology.Triangles, draw.Count * 6, 1, draw.Properties);
+                        }
+
+                        if (d.Restore) context.cmd.SetViewProjectionMatrices(d.View, d.Projection);
+                    });
+                }
+
+                if (i == draws.Count) break;
+
+                var material = draws[i].Backdrop;
+                backdrop = readable
+                    ? RecordBlur(renderGraph, color, material.HasFloat(BlurId) ? material.GetFloat(BlurId) : 0f)
+                    : TextureHandle.nullHandle;
+                start = i + 1;
+            }
+        }
+
+        /// <summary>
+        /// A blurred copy of <paramref name="source"/>: halved while the blur is wide (each halving averages 2x2
+        /// pixels), then a separable Gaussian of the remaining width. <paramref name="sigma"/> is the standard
+        /// deviation in pixels of the source.
+        /// </summary>
+        private TextureHandle RecordBlur(RenderGraph renderGraph, TextureHandle source, float sigma)
+        {
+            var sourceDesc = renderGraph.GetTextureDesc(source);
+            var width = sourceDesc.width;
+            var height = sourceDesc.height;
+            // About 2 to 4 texels of blur remain after the halvings.
+            var levels = sigma > 4f ? Mathf.Clamp(Mathf.FloorToInt(Mathf.Log(sigma / 2f, 2f)), 0, 4) : 0;
+            var current = source;
+            for (var level = 0; level < levels; level++)
+            {
+                width = Mathf.Max(1, width / 2);
+                height = Mathf.Max(1, height / 2);
+                var next = renderGraph.CreateTexture(BlurDesc(sourceDesc, width, height, "Yaui Backdrop Down"));
+                AddBlit(renderGraph, current, next, null, 0, default);
+                current = next;
+            }
+
+            var scaled = sigma / (1 << levels);
+            var radius = Mathf.Clamp(Mathf.CeilToInt(scaled * 3f), 0, 24);
+            var parameters = new Vector4(1f / width, 1f / height, scaled, radius);
+            var horizontal = renderGraph.CreateTexture(BlurDesc(sourceDesc, width, height, "Yaui Backdrop Blur H"));
+            AddBlit(renderGraph, current, horizontal, _blurMaterial, 0, parameters);
+            var vertical = renderGraph.CreateTexture(BlurDesc(sourceDesc, width, height, "Yaui Backdrop Blur"));
+            AddBlit(renderGraph, horizontal, vertical, _blurMaterial, 1, parameters);
+            return vertical;
+        }
+
+        private static TextureDesc BlurDesc(TextureDesc source, int width, int height, string name)
+        {
+            return new TextureDesc(width, height)
+            {
+                name = name,
+                format = source.format,
+                filterMode = FilterMode.Bilinear,
+                wrapMode = TextureWrapMode.Clamp,
+                msaaSamples = MSAASamples.None,
+                clearBuffer = false
+            };
+        }
+
+        /// <summary>A bilinear copy (<paramref name="material"/> null) or a pass of the blur material.</summary>
+        private static void AddBlit(RenderGraph renderGraph, TextureHandle source, TextureHandle destination,
+            Material material, int pass, Vector4 parameters)
+        {
+            using var builder = renderGraph.AddRasterRenderPass<BlitPassData>(BlurSampler.name, out var data,
+                BlurSampler);
+            builder.UseTexture(source);
+            builder.SetRenderAttachment(destination, 0, AccessFlags.WriteAll);
+            builder.AllowGlobalStateModification(true);
+            data.Source = source;
+            data.Material = material;
+            data.Pass = pass;
+            data.Params = parameters;
+            builder.SetRenderFunc(static (BlitPassData d, RasterGraphContext context) =>
+            {
+                if (d.Material == null)
+                {
+                    Blitter.BlitTexture(context.cmd, d.Source, new Vector4(1f, 1f, 0f, 0f), 0f, true);
+                    return;
+                }
+
+                context.cmd.SetGlobalVector(BlurParamsId, d.Params);
+                Blitter.BlitTexture(context.cmd, d.Source, new Vector4(1f, 1f, 0f, 0f), d.Material, d.Pass);
+            });
         }
 
         /// <summary>
@@ -535,6 +1007,7 @@ namespace Yaui.Rendering
             if ((features & ShaderFeatures.Image) != 0) material.EnableKeyword("YAUI_IMAGE");
             if ((features & ShaderFeatures.Border) != 0) material.EnableKeyword("YAUI_BORDER");
             if ((features & ShaderFeatures.Shadow) != 0) material.EnableKeyword("YAUI_SHADOW");
+            if ((features & ShaderFeatures.Module) != 0) material.EnableKeyword("YAUI_MODULE");
             _uberMaterials[index] = material;
             return material;
         }
@@ -552,11 +1025,21 @@ namespace Yaui.Rendering
             {
                 derived = new Material(baseMaterial) { hideFlags = HideFlags.HideAndDontSave };
                 _stencilMaterials[key] = derived;
+                if (custom) _stencilSources[derived] = baseMaterial.ComputeCRC();
             }
             else if (custom)
             {
-                // A custom material may have changed since.
+                // A custom material may have changed since: copy it again when its properties changed.
+                var crc = baseMaterial.ComputeCRC();
+                if (_stencilSources.TryGetValue(derived, out var copied) && copied == crc) return derived;
+
                 derived.CopyPropertiesFromMaterial(baseMaterial);
+                _stencilSources[derived] = crc;
+            }
+            else
+            {
+                // The stencil state of a derived uber material is set when it is created.
+                return derived;
             }
 
             switch (kind)
@@ -599,9 +1082,11 @@ namespace Yaui.Rendering
             foreach (var material in _uberMaterials) DestroyMaterial(material);
             DestroyMaterial(_maskMaterial);
             DestroyMaterial(_pixelClipMaskMaterial);
+            DestroyMaterial(_blurMaterial);
             foreach (var derived in _stencilMaterials.Values) DestroyMaterial(derived);
 
             _stencilMaterials.Clear();
+            _stencilSources.Clear();
         }
 
         private sealed class SortOrderComparer : IComparer<PanelState>
@@ -694,20 +1179,94 @@ namespace Yaui.Rendering
             }
         }
 
+        /// <summary>
+        /// Draws the camera panels of the rendering camera whose event is this pass's, into the camera's target. The
+        /// view and projection of the camera are restored afterwards for the passes that follow.
+        /// </summary>
+        private sealed class CameraRenderPass : ScriptableRenderPass
+        {
+            private readonly PanelRenderer _renderer;
+            private readonly List<PanelState> _panels = new();
+            private readonly List<DrawItem> _draws = new();
+            private readonly BlockPool _blocks = new();
+            private readonly ScreenDrawCache _cache = new();
+
+            // ScriptableRenderPass.profilingSampler returns null in players without instrumentation, so the pass keeps
+            // its own sampler for the name of its render graph passes.
+            private readonly ProfilingSampler _sampler;
+
+            public CameraRenderPass(PanelRenderer renderer, RenderPassEvent renderPassEvent)
+            {
+                _renderer = renderer;
+                this.renderPassEvent = renderPassEvent;
+                _sampler = new ProfilingSampler("Yaui Camera " + renderPassEvent);
+                profilingSampler = _sampler;
+            }
+
+            public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData)
+            {
+                var resourceData = frameData.Get<UniversalResourceData>();
+                var cameraData = frameData.Get<UniversalCameraData>();
+                var camera = cameraData.camera;
+
+                _panels.Clear();
+                foreach (var panel in YauiSystem.AllPanels)
+                {
+                    if (panel.Panel.RenderMode != PanelRenderMode.Camera || panel.Panel.WorldCamera != camera ||
+                        panel.Panel.RenderPassEvent != renderPassEvent) continue;
+
+                    panel.FlushOrder();
+                    if (panel.Visible && panel.OrderBuffer != null) _panels.Add(panel);
+                }
+
+                if (_panels.Count == 0) return;
+
+                _panels.Sort(SortOrderComparer.Instance);
+                bool needsStencil;
+                using (PrepareOverlayMarker.Auto())
+                    needsStencil = _renderer.PrepareScreenDraws(_panels, camera, _draws, _blocks, _cache);
+
+                var readable = !resourceData.isActiveTargetBackBuffer;
+                var size = new Vector2Int(camera.pixelWidth, camera.pixelHeight);
+                var samples = MSAASamples.None;
+                if (readable)
+                {
+                    var colorDesc = renderGraph.GetTextureDesc(resourceData.activeColorTexture);
+                    size = new Vector2Int(colorDesc.width, colorDesc.height);
+                    samples = colorDesc.msaaSamples;
+                }
+
+                // Masks use a transient, cleared stencil: the camera's depth buffer may hold stencil values of its own
+                // (the 2D renderer's light and sprite masks), and after post-processing it may not match the color
+                // target.
+                var depth = TextureHandle.nullHandle;
+                if (needsStencil)
+                {
+                    var desc = new TextureDesc(size.x, size.y)
+                    {
+                        name = "Yaui Stencil",
+                        format = SystemInfo.GetGraphicsFormat(DefaultFormat.DepthStencil),
+                        msaaSamples = samples,
+                        clearBuffer = true
+                    };
+                    depth = renderGraph.CreateTexture(desc);
+                }
+
+                _renderer.RecordScreen(renderGraph, _sampler, _draws, resourceData.activeColorTexture, depth,
+                    false, readable, size, (cameraData.GetViewMatrix(), cameraData.GetProjectionMatrix()));
+            }
+        }
+
         private sealed class OverlayRenderPass : ScriptableRenderPass
         {
             private readonly PanelRenderer _renderer;
+
+            private static readonly ProfilingSampler Sampler = new("Yaui Overlay");
 
             public OverlayRenderPass(PanelRenderer renderer)
             {
                 this._renderer = renderer;
                 renderPassEvent = RenderPassEvent.AfterRendering + 10;
-            }
-
-            private sealed class PassData
-            {
-                public List<DrawItem> Draws;
-                public GraphicsBuffer Indices;
             }
 
             public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData)
@@ -716,24 +1275,24 @@ namespace Yaui.Rendering
                 var cameraData = frameData.Get<UniversalCameraData>();
                 _renderer.PrepareOverlayDraws(cameraData.camera);
 
-                using var builder = renderGraph.AddRasterRenderPass<PassData>("Yaui Overlay", out var data);
-                builder.SetRenderAttachment(resourceData.activeColorTexture, 0);
+                // The back buffer has no descriptor: it has the camera's pixel size.
+                var width = cameraData.camera.pixelWidth;
+                var height = cameraData.camera.pixelHeight;
+                var samples = MSAASamples.None;
+                var readable = !resourceData.isActiveTargetBackBuffer;
+                if (readable)
+                {
+                    var colorDesc = renderGraph.GetTextureDesc(resourceData.activeColorTexture);
+                    width = colorDesc.width;
+                    height = colorDesc.height;
+                    samples = colorDesc.msaaSamples;
+                }
+
+                var depth = TextureHandle.nullHandle;
                 if (_renderer._overlayNeedsStencil)
                 {
                     // The overlay draws after post-processing, where there is no depth-stencil buffer: a transient,
                     // cleared one for the masks.
-                    // The back buffer has no descriptor: it has the camera's pixel size.
-                    var width = cameraData.camera.pixelWidth;
-                    var height = cameraData.camera.pixelHeight;
-                    var samples = MSAASamples.None;
-                    if (!resourceData.isActiveTargetBackBuffer)
-                    {
-                        var colorDesc = renderGraph.GetTextureDesc(resourceData.activeColorTexture);
-                        width = colorDesc.width;
-                        height = colorDesc.height;
-                        samples = colorDesc.msaaSamples;
-                    }
-
                     var desc = new TextureDesc(width, height)
                     {
                         name = "Yaui Stencil",
@@ -741,36 +1300,11 @@ namespace Yaui.Rendering
                         msaaSamples = samples,
                         clearBuffer = true
                     };
-                    builder.SetRenderAttachmentDepth(renderGraph.CreateTexture(desc), AccessFlags.Write);
+                    depth = renderGraph.CreateTexture(desc);
                 }
 
-                builder.AllowPassCulling(false);
-                builder.AllowGlobalStateModification(true);
-                data.Draws = _renderer._draws;
-                data.Indices = _renderer._indices;
-                builder.SetRenderFunc(static (PassData d, RasterGraphContext context) =>
-                {
-                    using var _ = RecordOverlayMarker.Auto();
-                    var projection = default(Matrix4x4);
-                    var first = true;
-                    foreach (var draw in d.Draws)
-                    {
-                        // Once per panel.
-                        if (first || draw.Projection != projection)
-                        {
-                            context.cmd.SetViewProjectionMatrices(Matrix4x4.identity, draw.Projection);
-                            projection = draw.Projection;
-                            first = false;
-                        }
-
-                        if (draw.Mesh != null)
-                            context.cmd.DrawMesh(draw.Mesh, draw.Model, draw.Material, draw.Submesh, draw.Pass,
-                                draw.Properties);
-                        else
-                            context.cmd.DrawProcedural(d.Indices, Matrix4x4.identity, draw.Material, draw.Pass,
-                                MeshTopology.Triangles, draw.Count * 6, 1, draw.Properties);
-                    }
-                });
+                _renderer.RecordScreen(renderGraph, Sampler, _renderer._draws, resourceData.activeColorTexture, depth,
+                    true, readable, new Vector2Int(width, height), null);
             }
         }
     }

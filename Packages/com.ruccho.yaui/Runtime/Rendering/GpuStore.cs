@@ -38,6 +38,13 @@ namespace Yaui.Rendering
 
         public int Length => _items.Length;
 
+        /// <summary>
+        /// Counts the writes from the main thread (<see cref="MarkDirty(int)"/>, which every write through this store
+        /// calls), so that readers can tell whether anything changed since they last looked. Writes from jobs with
+        /// <see cref="DirtyChunks"/> are not counted.
+        /// </summary>
+        public int Version { get; private set; }
+
         public GraphicsBuffer Buffer => _buffer;
 
         /// <summary>Records by slot, for jobs. Valid until the next <see cref="Allocate"/>.</summary>
@@ -127,6 +134,7 @@ namespace Yaui.Rendering
 
         public void MarkDirty(int slot)
         {
+            Version++;
             MarkDirty(_dirtyChunks.AsArray(), slot);
         }
 

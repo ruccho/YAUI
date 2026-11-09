@@ -57,7 +57,7 @@ namespace Yaui.Core
             public float DrawCpu;
 
             /// <summary>Per pixel, by shader features (<see cref="ShaderFeatures"/>).</summary>
-            public FixedList128Bytes<float> Pixel;
+            public FixedList512Bytes<float> Pixel;
 
             public float GpuWeight;
             public float CpuWeight;

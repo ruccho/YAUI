@@ -1,6 +1,7 @@
 Shader "Hidden/Yaui/Mask"
 {
     // The shapes of masks (YauiMask) into the stencil: the coverage of a box or the alpha of an image, without color.
+    // A fully transparent mask element (tint and opacity) masks nothing (VertMaskImpl).
     // A separate shader so that its world pass is the one URP draws for a mask draw.
     Properties
     {
@@ -46,7 +47,7 @@ Shader "Hidden/Yaui/Mask"
             ZTest Always
 
             HLSLPROGRAM
-            #pragma vertex VertOverlay
+            #pragma vertex VertMaskOverlay
             #pragma fragment FragMaskOverlay
             ENDHLSL
         }
@@ -57,7 +58,7 @@ Shader "Hidden/Yaui/Mask"
             ZTest LEqual
 
             HLSLPROGRAM
-            #pragma vertex VertWorld
+            #pragma vertex VertMaskWorld
             #pragma fragment FragMaskWorld
             ENDHLSL
         }

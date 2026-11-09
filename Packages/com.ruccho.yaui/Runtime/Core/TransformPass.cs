@@ -34,6 +34,40 @@ namespace Yaui.Core
         }
     }
 
+    /// <summary>
+    /// Whether a panel draws anything visible: a primitive of its draw segments whose fill or border has alpha, on a
+    /// node whose inherited opacity and tint alpha are above zero. Stops at the first one. Called directly (not as a
+    /// job): it runs for every panel at each collection, and scheduling a job cost more than the scan.
+    /// </summary>
+    [BurstCompile]
+    internal static unsafe class VisibilityScan
+    {
+        /// <param name="ranges">Draw positions of the draw segments (x: start, y: count).</param>
+        /// <returns>1 if a visible primitive was found, else 0.</returns>
+        [BurstCompile]
+        public static int AnyVisible(uint* order, PrimitiveData* primitives, NodeGpuData* nodes, int2* ranges,
+            int rangeCount)
+        {
+            for (var r = 0; r < rangeCount; r++)
+            {
+                var range = ranges[r];
+                for (var i = range.x; i < range.x + range.y; i++)
+                {
+                    var primitive = primitives[order[i]];
+                    var node = nodes[primitive.Node];
+                    if (math.f16tof32(node.OpacityAndClip & 0xffffu) <= 0f || node.Tint >> 24 == 0u) continue;
+
+                    var fill = math.f16tof32(primitive.Color.y >> 16);
+                    var border = math.f16tof32(primitive.BorderColor.y >> 16) *
+                                 math.f16tof32(primitive.BorderWidthAndSkew & 0xffffu);
+                    if (fill > 0f || border > 0f) return 1;
+                }
+            }
+
+            return 0;
+        }
+    }
+
     /// <summary>The shader features each draw segment uses: the union over the flags of its primitives.</summary>
     [BurstCompile]
     internal struct FeatureScan : IJob
