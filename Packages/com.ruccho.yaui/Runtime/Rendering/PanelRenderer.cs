@@ -85,8 +85,6 @@ namespace Yaui.Rendering
         private readonly Dictionary<(Material, SegmentKind, int), Material> _stencilMaterials = new();
         private readonly OverlayRenderPass _pass;
         private readonly SceneViewRenderPass _sceneViewPass;
-        private readonly Dictionary<RenderPassEvent, CameraRenderPass> _cameraPasses = new();
-        private readonly HashSet<RenderPassEvent> _enqueuedEvents = new();
         private readonly List<PanelState> _sorted = new();
         private readonly List<DrawItem> _draws = new();
         private readonly List<DrawItem> _worldCustomDraws = new();
@@ -493,25 +491,7 @@ namespace Yaui.Rendering
                 return;
             }
 
-            // Camera panels: one pass per event among the panels of this camera.
-            _enqueuedEvents.Clear();
-            foreach (var panel in YauiSystem.AllPanels)
-            {
-                if (!panel.Visible || panel.Panel.RenderMode != PanelRenderMode.Camera ||
-                    panel.Panel.WorldCamera != camera) continue;
-
-                var renderPassEvent = panel.Panel.RenderPassEvent;
-                if (!_enqueuedEvents.Add(renderPassEvent)) continue;
-
-                if (!_cameraPasses.TryGetValue(renderPassEvent, out var cameraPass))
-                {
-                    cameraPass = new CameraRenderPass(this, renderPassEvent);
-                    _cameraPasses[renderPassEvent] = cameraPass;
-                }
-
-                camera.GetUniversalAdditionalCameraData().scriptableRenderer.EnqueuePass(cameraPass);
-            }
-
+            // Camera panels are enqueued by YauiRendererFeature, at the events of their injection points.
             if (camera != _target) return;
 
             foreach (var panel in YauiSystem.AllPanels)
@@ -1179,13 +1159,24 @@ namespace Yaui.Rendering
             }
         }
 
-        /// <summary>
-        /// Draws the camera panels of the rendering camera whose event is this pass's, into the camera's target. The
-        /// view and projection of the camera are restored afterwards for the passes that follow.
-        /// </summary>
-        private sealed class CameraRenderPass : ScriptableRenderPass
+        /// <summary>Whether a visible camera panel of <paramref name="camera"/> is drawn at <paramref name="point"/>.</summary>
+        internal static bool HasCameraPanels(Camera camera, YauiInjectionPoint point)
         {
-            private readonly PanelRenderer _renderer;
+            foreach (var panel in YauiSystem.AllPanels)
+                if (panel.Visible && panel.Panel.RenderMode == PanelRenderMode.Camera &&
+                    panel.Panel.WorldCamera == camera && panel.Panel.InjectionPoint == point)
+                    return true;
+
+            return false;
+        }
+
+        /// <summary>
+        /// Draws the camera panels of the rendering camera whose injection point is this pass's, into the camera's
+        /// target. The view and projection of the camera are restored afterwards for the passes that follow.
+        /// <see cref="YauiRendererFeature"/> enqueues it at the event of the injection point in the renderer.
+        /// </summary>
+        internal sealed class CameraRenderPass : ScriptableRenderPass
+        {
             private readonly List<PanelState> _panels = new();
             private readonly List<DrawItem> _draws = new();
             private readonly BlockPool _blocks = new();
@@ -1195,16 +1186,22 @@ namespace Yaui.Rendering
             // its own sampler for the name of its render graph passes.
             private readonly ProfilingSampler _sampler;
 
-            public CameraRenderPass(PanelRenderer renderer, RenderPassEvent renderPassEvent)
+            public CameraRenderPass(YauiInjectionPoint point, RenderPassEvent renderPassEvent)
             {
-                _renderer = renderer;
+                InjectionPoint = point;
                 this.renderPassEvent = renderPassEvent;
-                _sampler = new ProfilingSampler("Yaui Camera " + renderPassEvent);
+                _sampler = new ProfilingSampler("Yaui Camera " + (point != null ? point.name : "(none)"));
                 profilingSampler = _sampler;
             }
 
+            /// <summary>The injection point whose panels this pass draws.</summary>
+            public YauiInjectionPoint InjectionPoint { get; }
+
             public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData)
             {
+                var renderer = YauiSystem.Renderer;
+                if (renderer == null) return;
+
                 var resourceData = frameData.Get<UniversalResourceData>();
                 var cameraData = frameData.Get<UniversalCameraData>();
                 var camera = cameraData.camera;
@@ -1213,7 +1210,7 @@ namespace Yaui.Rendering
                 foreach (var panel in YauiSystem.AllPanels)
                 {
                     if (panel.Panel.RenderMode != PanelRenderMode.Camera || panel.Panel.WorldCamera != camera ||
-                        panel.Panel.RenderPassEvent != renderPassEvent) continue;
+                        panel.Panel.InjectionPoint != InjectionPoint) continue;
 
                     panel.FlushOrder();
                     if (panel.Visible && panel.OrderBuffer != null) _panels.Add(panel);
@@ -1224,7 +1221,7 @@ namespace Yaui.Rendering
                 _panels.Sort(SortOrderComparer.Instance);
                 bool needsStencil;
                 using (PrepareOverlayMarker.Auto())
-                    needsStencil = _renderer.PrepareScreenDraws(_panels, camera, _draws, _blocks, _cache);
+                    needsStencil = renderer.PrepareScreenDraws(_panels, camera, _draws, _blocks, _cache);
 
                 var readable = !resourceData.isActiveTargetBackBuffer;
                 var size = new Vector2Int(camera.pixelWidth, camera.pixelHeight);
@@ -1252,7 +1249,7 @@ namespace Yaui.Rendering
                     depth = renderGraph.CreateTexture(desc);
                 }
 
-                _renderer.RecordScreen(renderGraph, _sampler, _draws, resourceData.activeColorTexture, depth,
+                renderer.RecordScreen(renderGraph, _sampler, _draws, resourceData.activeColorTexture, depth,
                     false, readable, size, (cameraData.GetViewMatrix(), cameraData.GetProjectionMatrix()));
             }
         }

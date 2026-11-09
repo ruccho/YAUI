@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
 using Yaui.Core;
 
 namespace Yaui
@@ -20,9 +19,10 @@ namespace Yaui
 
         /// <summary>
         /// Drawn over the target of <see cref="YauiPanel.WorldCamera"/> by a render pass of that camera at
-        /// <see cref="YauiPanel.RenderPassEvent"/>, filling its view. The canvas is sized from the pixel size of the
-        /// camera (its target texture when it renders to one) with the scale mode. Panels of the same camera and event
-        /// are drawn in <see cref="YauiPanel.SortOrder"/>. The panel is drawn between the passes of the camera, so
+        /// <see cref="YauiPanel.InjectionPoint"/>, filling its view. A <see cref="YauiRendererFeature"/> of the
+        /// camera's renderer gives the injection point an event. The canvas is sized from the pixel size of the
+        /// camera (its target texture when it renders to one) with the scale mode. Panels of the same camera and
+        /// injection point are drawn in <see cref="YauiPanel.SortOrder"/>. The panel is drawn between the passes of the camera, so
         /// it is not sorted with the transparent objects (uGUI canvases included) of the pass it follows.
         /// </summary>
         Camera
@@ -71,8 +71,11 @@ namespace Yaui
         /// <summary>Camera mode: the camera that draws the panel.</summary>
         [SerializeField] private Camera worldCamera;
 
-        /// <summary>Camera mode: when the panel is drawn among the passes of the camera.</summary>
-        [SerializeField] private RenderPassEvent renderPassEvent = RenderPassEvent.AfterRenderingTransparents;
+        /// <summary>
+        /// Camera mode: where the panel is drawn among the passes of the camera. A <see cref="YauiRendererFeature"/>
+        /// of the camera's renderer gives it an event.
+        /// </summary>
+        [SerializeField] private YauiInjectionPoint injectionPoint;
 
         [NonSerialized] private PanelState _state;
         [NonSerialized] private YauiElement _element;
@@ -115,11 +118,14 @@ namespace Yaui
             }
         }
 
-        /// <summary>Camera mode: when the panel is drawn among the passes of the camera.</summary>
-        public RenderPassEvent RenderPassEvent
+        /// <summary>
+        /// Camera mode: where the panel is drawn among the passes of the camera. A <see cref="YauiRendererFeature"/>
+        /// of the camera's renderer gives it an event; without one, the panel is not drawn.
+        /// </summary>
+        public YauiInjectionPoint InjectionPoint
         {
-            get => renderPassEvent;
-            set => renderPassEvent = value;
+            get => injectionPoint;
+            set => injectionPoint = value;
         }
 
         /// <summary>
