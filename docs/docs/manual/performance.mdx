@@ -14,13 +14,14 @@ A panel is drawn in **one draw call**, except where:
 - **the material changes** between elements in the draw order ([custom materials](./custom-shaders.mdx)),
 - **a mask** starts or ends ([`YauiMask`](./clipping-and-masks.mdx#yauimask)),
 - **more than 8 textures** are used by consecutive elements. Font atlases, sprite textures, dynamic atlas pages and raw image textures all count,
+- **a backdrop blur** is drawn ([see below](#backdrop-blur)),
 - YAUI draws elements **without heavy features** apart, so that they use a lighter shader ([see below](#shader-variants)).
 
 Elements with the same material are drawn together even when other elements come between them in the draw order, as long as those do not overlap them: YAUI reorders the draws where the result stays the same, like uGUI's batching.
 
 To keep draw calls low:
 
-- Use the uber shader (box style, text effects, image types) instead of custom materials.
+- Use the uber shader (box style, text effects, image types) instead of custom materials. Packages that shade primitives in their own way can do it inside the uber shader with [shader modules](./custom-shaders.mdx#shader-modules).
 - Use `ClipChildren` instead of `YauiMask` when a rectangle or a single rounded rectangle is enough.
 - Keep small sprites in the [dynamic atlas](./images.mdx#textures-and-draw-calls), and put larger sprites that are shown together in the same sprite atlas.
 - Use few fonts in one panel.
@@ -34,7 +35,11 @@ To keep draw calls low:
 | **Hierarchy changes** rebuild the draw order of the panel. | Reuse elements instead of creating and destroying them each frame. Enabling and disabling a GameObject is also a hierarchy change. |
 | **`YauiPanel.ForceUpdate()`** completes all the work at once on the main thread. | Call it only when you need the result in the same frame. |
 
-Colors, render transforms and opacity are nearly free to change, and a frame without changes costs almost nothing.
+Colors, render transforms and opacity are nearly free to change, and a frame without changes costs almost nothing. [Hidden panels](./panels.mdx#hidden-panels) (opacity 0, or nothing visible) are not drawn.
+
+### Cameras
+
+In [camera mode](./panels.mdx#camera), each URP camera has a fixed CPU cost that is much larger than drawing a panel. Instead of a camera for each layer of UI, draw the panels in a camera that already renders, at different events. If a camera exists only to show some panels over the image of another camera, enable it only while `YauiPanel.IsDrawn` is true for one of them.
 
 ## GPU
 
@@ -59,6 +64,10 @@ One element with a shadow would make its whole draw call pay for shadows. When i
 The estimates of these costs come from a mid-range Android device. While a panel moves, YAUI chooses its draws again every frame on a worker thread; when that costs more than a split saves, it keeps one draw until the panel stops.
 
 The first draw with a variant can stall while the GPU creates its pipeline state. YAUI does not warm them up, since the states a project needs depend on the project: warm them up in your project if needed (for instance with `GraphicsStateCollection`). The variants are the keywords `YAUI_TEXT`, `YAUI_IMAGE`, `YAUI_BORDER`, `YAUI_SHADOW` and `YAUI_PIXEL_CLIP` of `Hidden/Yaui/Uber`.
+
+### Backdrop blur {#backdrop-blur}
+
+A [backdrop blur](./custom-shaders.mdx#backdrop-blur) ends the panel's pass, copies the target, and blurs it at a reduced size before the element is drawn. Its cost grows with the size of the target and of the blur. Elements next to each other with the same material share one copy, so put them next to each other in the hierarchy.
 
 ## Scroll views
 

@@ -26,6 +26,32 @@ When several overlay panels exist, the ones with a higher `SortOrder` are drawn 
 
 In the Scene view, overlay panels appear like uGUI's overlay canvases: one world unit per screen pixel, with the bottom-left corner at the origin.
 
+### Camera
+
+`PanelRenderMode.Camera` draws the panel over the target of a camera (`WorldCamera`), at a point among the render passes of that camera (`RenderPassEvent`, `AfterRenderingTransparents` by default). Like an overlay panel, the root element fills the target and the scale mode sizes the canvas, but from the pixel size of the camera (its target texture when it renders to one) instead of the screen. YAUI adds the render pass to the camera's renderer itself, so no renderer feature is needed.
+
+The event decides what the panel is drawn over and what applies to it:
+
+- Before the camera's post-processing, the post-processing applies to the panel. After it, it does not.
+- Any value between URP's events works, such as `RenderPassEvent.AfterRenderingPostProcessing - 20`. Passes run in the order of their events, so you can place panels between the passes of your own renderer features, or draw several layers of UI and post-processing in one camera instead of stacking cameras.
+- The 2D Renderer runs passes only at some points of its frame, and groups the events into them:
+
+| Event | The 2D Renderer runs the pass |
+|---|---|
+| Up to 450 (`BeforeRenderingTransparents`) | Before rendering |
+| 451 to 550 (`AfterRenderingTransparents` included) | Before post-processing |
+| 551 to 600 (`AfterRenderingPostProcessing`) | After post-processing |
+| Above 600 | After the final blit, on the camera's target |
+
+Panels of the same camera and event are drawn in `SortOrder`. Other things to know:
+
+- The panel is drawn between passes, so it is not sorted with the transparent objects (uGUI canvases included) of the pass before it.
+- Masks use a stencil buffer of their own, so the camera's depth buffer is not needed, and its stencil values are left as they are.
+- The camera's view and projection are set back after the panels, for the passes that follow.
+- Pointer events and coordinate conversions use `WorldCamera`.
+- Custom materials draw with their `Overlay` pass, as in overlay panels.
+- Camera panels are not shown in the Scene view.
+
 ### World space
 
 `PanelRenderMode.World` draws the panel as a flat quad in the scene, at the panel GameObject's Transform. It is drawn in the transparent pass of URP, so it is sorted and depth tested with the other transparent objects.
@@ -39,6 +65,12 @@ In the Scene view, overlay panels appear like uGUI's overlay canvases: one world
 The Transform of the panel GameObject is used only in world space. The Transforms of all elements below the panel are always ignored.
 :::
 
+## Hidden panels
+
+A panel is not drawn, and costs almost nothing to render, while its root element has an opacity of 0, or while everything it draws is transparent (every element and its content has an alpha of 0, and its custom draws draw nothing). To hide a panel for a short time, fading it out is enough: unlike disabling its GameObject, it does not rebuild the draw order when it comes back.
+
+`YauiPanel.IsDrawn` tells whether the panel was drawn in the last rendered frame. For example, a script can enable a camera only while the panels of that camera are drawn. The value describes the frame that was rendered last, so a panel that starts to show is drawn one frame before the script sees it.
+
 ## Coordinates
 
 Positions in a panel are in **canvas space**: canvas units, with the origin at the top-left and Y pointing down. Screen positions (like `PointerEventData.position`) are in pixels with the origin at the bottom-left.
@@ -47,7 +79,7 @@ Positions in a panel are in **canvas space**: canvas units, with the origin at t
 |---|---|
 | `YauiPanel.TryScreenToCanvas` / `TryCanvasToScreen` | Screen ↔ canvas space of the panel |
 | `YauiElement.ScreenToLocal` / `LocalToScreen` | Screen ↔ the local space of an element's box (after its render transforms) |
-| `YauiPanel.ScaleFactor` | Screen pixels per canvas unit (overlay) |
+| `YauiPanel.ScaleFactor` | Screen pixels per canvas unit (overlay), or pixels of the camera per canvas unit (camera) |
 | `YauiPanel.CanvasSize` | The size of the panel in canvas units |
 | `YauiPanel.CanvasToWorld` | Canvas space → world space (world space panels) |
 

@@ -104,3 +104,72 @@ Shader "Yaui/Samples/Gradient Tint"
 ## マスク {#masks}
 
 [`YauiMask`](./clipping-and-masks.mdx#yauimask) でマスクされるには、上の例のように、シェーダーで `_YauiStencilRef`、`_YauiStencilComp`、`_YauiStencilPass` のプロパティと `Stencil` ブロックを宣言してください。値はレンダラーが設定します。
+
+## マスクの形 {#mask-shapes}
+
+`YauiMask` は通常、要素のボックスか画像のアルファで切り抜きます。要素のカスタムマテリアルが `MaskOverlay` という名前のパスを持つ場合、マスクの形はそのパスで描かれます (オーバーレイとカメラのパネル)。ディゾルブなど、マテリアルが作る形でも子を隠せます。
+
+このパスは色を書かず、シェーダーの `Stencil` ブロックを保ち、形の外のピクセルを破棄します。頂点関数は `VertMaskOverlay` です。完全に透明なマスクの要素が何も切り抜かない処理も、この関数が行います。
+
+```hlsl
+// HLSLINCLUDE 内: Shape は要素の形をアルファで返す関数
+half4 FragShapeMask(Varyings i) : SV_Target
+{
+    clip(Shape(i) - 0.5);
+    return 0;
+}
+
+// SubShader 内、Overlay と World のパスと並べて:
+Pass
+{
+    Name "MaskOverlay"
+    ZTest Always
+    ColorMask 0
+
+    HLSLPROGRAM
+    #pragma vertex VertMaskOverlay
+    #pragma fragment FragShapeMask
+    ENDHLSL
+}
+```
+
+## 背景ブラー {#backdrop-blur}
+
+`Yaui/Backdrop Blur` シェーダーは、要素の後ろに描かれたものをぼかし、要素の形の中に要素の色を掛けて表示します。CSS の `backdrop-filter: blur()` と同じです。このシェーダーでマテリアルを作り、**Blur** (`_YauiBlur`、描画先のピクセル単位の標準偏差) を設定して、要素のマテリアルにしてください。
+
+シェーダーにタグ `"YauiBackdrop" = "True"` を持つ描画の前で、パネルのパスが終わり、描画先がコピーされてぼかされ、次のパスにその結果が `_YauiBackdropTexture` として渡されます。同じマテリアルで隣り合う要素は 1 つのコピーを共有します。独自のシェーダーでは、タグを付けて、ピクセルの位置でテクスチャを読んでください。
+
+```hlsl
+TEXTURE2D(_YauiBackdropTexture);
+SAMPLER(sampler_YauiBackdropTexture);
+float4 _YauiBackdropParams; // xy: 描画先の 1 ピクセルの UV
+
+half4 FragFrostedOverlay(Varyings i) : SV_Target
+{
+    half4 shape = FragImpl(i, false);
+    float2 uv = i.positionCS.xy * _YauiBackdropParams.xy;
+    half3 backdrop = SAMPLE_TEXTURE2D(_YauiBackdropTexture, sampler_YauiBackdropTexture, uv).rgb;
+    return half4(backdrop * shape.rgb, shape.a);
+}
+```
+
+描画先は読み取れる必要があります。最終ブリットより前に描くカメラのパネルや、RenderTexture に描くカメラのパネルが該当します。バックバッファ (画面に描くカメラのオーバーレイのパネルなど) とワールド空間のパネルでは、背景は表示されず色だけが描かれます。
+
+背景ブラーごとに、描画先のコピー、ぼかし、ドローコールの分割のコストがかかります。[パフォーマンス](./performance.mdx#backdrop-blur)を参照してください。
+
+## シェーダーモジュール {#shader-modules}
+
+カスタムマテリアルはパネルのドローコールを分割します。グリフの効果など、一部のプリミティブを独自の方法で描くパッケージは、代わりに**シェーダーモジュール**を提供できます。シェーダーモジュールは、それを選んだプリミティブに対して Uber シェーダーが呼ぶフラグメント関数です。これにより、それらのプリミティブも周りのボックス、画像、テキストと一緒に描画されます。
+
+パッケージがモジュールを提供する手順:
+
+1. `half4 Name(Varyings i, bool world)` を定義する HLSL ファイル。ピクセルの乗算済みの色を返します。クリップはその後に適用されます。このファイルは `Yaui.hlsl` の後にインクルードされるため、その型や関数を使えます。プリミティブが使う機能の varying (画像の UV、色) を読みます。
+2. `YauiShaderModule` アセット (**Create > YAUI > Shader Module**)。`Key`、ファイルのインクルードパス、関数名を設定します。
+3. `YauiShaderModules.IdOf(key)` でモジュールの番号を得て、プリミティブを `WithModule(id)` で作るコード ([カスタム要素](./custom-elements.mdx#primitives)を参照)。プロジェクトがモジュールを使っていない場合、番号は 0 になります。その場合は、独自のマテリアルなど、モジュールを使わずに描画してください。
+
+プロジェクトがモジュールを使う手順:
+
+1. `Resources` フォルダーに `YauiShaderSettings` という名前で `YauiShaderSettings` アセット (**Create > YAUI > Shader Settings**) を作り、モジュールを並べます。
+2. インスペクターの **Generate Uber Shader** を押します。モジュールを組み込んだ Uber シェーダーがアセットの隣に書き出され、YAUI は自身の Uber シェーダーの代わりにそれを使います。
+
+モジュールの番号はリスト内の位置で決まるため、リストを変えたらシェーダーを生成し直してください。プロジェクトで使えるモジュールは 31 個までです。キーワード `YAUI_MODULE` は、モジュールを使うプリミティブを含む描画でだけ有効になります。モジュールを使うプリミティブをマスクの形に使うと、その形は画像として描かれます。
