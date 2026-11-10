@@ -262,11 +262,67 @@ namespace Yaui
         private readonly Sprite _sprite;
         private readonly int _generation;
 
+        private readonly Vector4 _padding;
+        private readonly Vector2 _size;
+
         private YauiSpriteTexture(Sprite sprite, SpriteTexture value)
         {
             this._sprite = sprite;
             Value = value;
             _generation = YauiSystem.Generation;
+            _size = sprite.rect.size;
+            _padding = default;
+
+            // Tightly packed sprites have no rectangle in their atlas.
+            if (sprite.packed && sprite.packingMode == SpritePackingMode.Tight) return;
+
+            // The texture rect is smaller than the sprite's rect where transparent margins were trimmed (sprites
+            // with a tight mesh, or packed into an atlas).
+            var rect = sprite.rect;
+            var used = sprite.textureRect;
+            var offset = sprite.textureRectOffset;
+            _padding = Vector4.Max(Vector4.zero, new Vector4(offset.x, offset.y,
+                rect.width - offset.x - used.width, rect.height - offset.y - used.height));
+        }
+
+        /// <summary>The size of the sprite in pixels, with its trimmed margins (<see cref="Padding"/>).</summary>
+        public Vector2 Size => _size;
+
+        /// <summary>
+        /// The transparent margins of the sprite that <see cref="Uv"/> does not cover, in pixels of the sprite:
+        /// left, bottom, right, top (like <c>DataUtility.GetPadding</c>).
+        /// </summary>
+        public Vector4 Padding => _padding;
+
+        /// <summary>
+        /// Where <see cref="Uv"/> goes when the whole sprite (<see cref="Size"/>) is stretched over
+        /// <paramref name="rect"/> (Y down): the rect without the trimmed margins, scaled with the rect.
+        /// </summary>
+        public Rect GetDrawingRect(Rect rect)
+        {
+            if (_padding == Vector4.zero || _size.x <= 0f || _size.y <= 0f) return rect;
+
+            return Inset(rect, new Vector2(rect.width / _size.x, rect.height / _size.y));
+        }
+
+        /// <summary>
+        /// Like <see cref="GetDrawingRect(Rect)"/>, with margins of a fixed size: <paramref name="unitsPerPixel"/>
+        /// canvas units per pixel of the sprite (9-sliced images, whose borders do not scale with the rect).
+        /// </summary>
+        public Rect GetDrawingRect(Rect rect, float unitsPerPixel)
+        {
+            if (_padding == Vector4.zero) return rect;
+
+            return Inset(rect, new Vector2(unitsPerPixel, unitsPerPixel));
+        }
+
+        private Rect Inset(Rect rect, Vector2 scale)
+        {
+            var left = Mathf.Min(_padding.x * scale.x, rect.width);
+            var top = Mathf.Min(_padding.w * scale.y, rect.height);
+            return new Rect(rect.x + left, rect.y + top,
+                Mathf.Max(rect.width - left - _padding.z * scale.x, 0f),
+                Mathf.Max(rect.height - top - _padding.y * scale.y, 0f));
         }
 
         public bool IsValid => Value.IsValid && YauiSystem.IsInitialized && _generation == YauiSystem.Generation;

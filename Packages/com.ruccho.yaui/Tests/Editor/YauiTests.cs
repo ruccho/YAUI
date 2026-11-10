@@ -984,6 +984,61 @@ namespace Yaui.Tests
         }
 
         [Test]
+        public void ImageKeepsTheTrimmedMarginsOfItsSprite()
+        {
+            var panel = CreatePanel();
+
+            // Opaque only in x 8..24 and y 0..16: a tight mesh trims the rest.
+            var texture = new Texture2D(32, 32, TextureFormat.RGBA32, false) { hideFlags = HideFlags.DontSave };
+            var pixels = new Color32[32 * 32];
+            for (var y = 0; y < 16; y++)
+            for (var x = 8; x < 24; x++)
+                pixels[y * 32 + x] = new Color32(255, 255, 255, 255);
+
+            texture.SetPixels32(pixels);
+            texture.Apply();
+            var trimmed = Sprite.Create(texture, new Rect(0f, 0f, 32f, 32f), Vector2.zero, 100f, 0,
+                SpriteMeshType.Tight);
+            var full = Sprite.Create(texture, new Rect(0f, 0f, 32f, 32f), Vector2.zero, 100f, 0,
+                SpriteMeshType.FullRect);
+            try
+            {
+                var image = Create<YauiImage>(panel.GetComponent<YauiElement>());
+                var layout = image.Layout;
+                layout.width = 64f;
+                layout.height = 96f;
+                image.Layout = layout;
+                image.Sprite = trimmed;
+                YauiPanel.ForceUpdate();
+
+                // Left, bottom, right, top in pixels of the sprite.
+                var padding = UnityEngine.Sprites.DataUtility.GetPadding(trimmed);
+                Assert.Greater(padding.x, 1f, "The sprite of the test has no trimmed margins.");
+                Assert.Greater(padding.w, 1f, "The sprite of the test has no trimmed margins.");
+
+                var p = Core.YauiSystem.Primitives[image.ContentRange.Start];
+                Assert.AreEqual(padding.x * 2f, p.Rect.x, 1e-2f);
+                Assert.AreEqual(padding.w * 3f, p.Rect.y, 1e-2f);
+                Assert.AreEqual(64f - (padding.x + padding.z) * 2f, p.Rect.z, 1e-2f);
+                Assert.AreEqual(96f - (padding.y + padding.w) * 3f, p.Rect.w, 1e-2f);
+
+                image.Sprite = full;
+                YauiPanel.ForceUpdate();
+                p = Core.YauiSystem.Primitives[image.ContentRange.Start];
+                Assert.AreEqual(0f, p.Rect.x, 1e-3f);
+                Assert.AreEqual(0f, p.Rect.y, 1e-3f);
+                Assert.AreEqual(64f, p.Rect.z, 1e-3f);
+                Assert.AreEqual(96f, p.Rect.w, 1e-3f);
+            }
+            finally
+            {
+                Object.DestroyImmediate(trimmed);
+                Object.DestroyImmediate(full);
+                Object.DestroyImmediate(texture);
+            }
+        }
+
+        [Test]
         public void RawImageDrawsItsTexture()
         {
             var panel = CreatePanel();

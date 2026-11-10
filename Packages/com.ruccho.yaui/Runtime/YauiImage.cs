@@ -274,19 +274,30 @@ namespace Yaui
                 Rect.MinMaxRect(uvAtMinMax.x, uvAtMinMax.w, uvAtMinMax.z, uvAtMinMax.y), color);
         }
 
+        /// <summary>
+        /// The part of the content box that the sprite's UVs cover: the box without the sprite's trimmed margins,
+        /// so that a trimmed sprite keeps its place and proportions in the box.
+        /// </summary>
+        private float4 ImageRect()
+        {
+            var c = ContentRect();
+            var r = _spriteTexture.GetDrawingRect(new Rect(c.x, c.y, c.z, c.w));
+            return new float4(r.x, r.y, r.width, r.height);
+        }
+
         private int WriteSimple()
         {
             var uv = SpriteUv();
 
             // The rect's min corner is the top-left: the top of the sprite (v1).
-            Buffer[0] = Primitive(ContentRect(), new float4(uv.x, uv.w, uv.z, uv.y))
+            Buffer[0] = Primitive(ImageRect(), new float4(uv.x, uv.w, uv.z, uv.y))
                 .WithCornerRadius(Box.cornerRadius);
             return 1;
         }
 
         private int WriteFilled()
         {
-            var rect = ContentRect();
+            var rect = ImageRect();
             var uv = SpriteUv();
             // UVs at the top-left and at the bottom-right (the top of the sprite is v1).
             var uvRect = new float4(uv.x, uv.w, uv.z, uv.y);
@@ -386,12 +397,16 @@ namespace Yaui
 
         private int WriteSliced()
         {
-            var rect = ContentRect();
+            // Trimmed margins keep their size, like the borders.
+            var content = ContentRect();
+            var drawn = _spriteTexture.GetDrawingRect(new Rect(content.x, content.y, content.z, content.w),
+                borderScale);
+            var rect = new float4(drawn.x, drawn.y, drawn.width, drawn.height);
             var uv = SpriteUv();
             var textureSize = _spriteTexture.TextureSize;
 
-            // Sprite borders: left, bottom, right, top in pixels.
-            var border = (float4)_boundSprite.border;
+            // Sprite borders: left, bottom, right, top in pixels, measured from the trimmed edges.
+            var border = math.max((float4)_boundSprite.border - (float4)_spriteTexture.Padding, 0f);
             var local = border * borderScale;
 
             // Borders larger than the rect shrink proportionally.
