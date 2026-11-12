@@ -167,6 +167,30 @@ namespace Yaui.Tests
         }
 
         [Test]
+        public void LayoutChangedOnLayoutAppliedIsLaidOutInTheSameUpdate()
+        {
+            var label = CreateLabel(CreateRoot(), "Hello");
+            var calls = 0;
+
+            // Centers the label on x = 100 from its own size, as a pivot would.
+            label.LayoutApplied += () =>
+            {
+                calls++;
+                var layout = label.Layout;
+                layout.margin.left = 100f - label.LayoutRect.width * 0.5f;
+                label.Layout = layout;
+            };
+
+            YauiPanel.ForceUpdate();
+            Assert.AreEqual(new Rect(75f, 0f, 50f, 20f), label.LayoutRect);
+            Assert.Greater(calls, 0);
+
+            label.Text = "Hello world";
+            YauiPanel.ForceUpdate();
+            Assert.AreEqual(new Rect(45f, 0f, 110f, 20f), label.LayoutRect, "Placed from the new size, not the old.");
+        }
+
+        [Test]
         public void MeasureExceptionsGiveAnEmptySize()
         {
             var root = CreateRoot();

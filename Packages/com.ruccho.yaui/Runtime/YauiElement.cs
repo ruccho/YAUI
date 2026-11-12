@@ -698,9 +698,28 @@ namespace Yaui
         {
         }
 
+        /// <summary>
+        /// Main thread, right before rendering, after <see cref="OnLayoutApplied"/>: the layout of this element changed
+        /// (<see cref="LayoutRect"/>, <see cref="ContentBox"/>). For components next to the element that place it
+        /// from its own size. A change of the layout style made here is laid out again before the same frame is
+        /// rendered (a limited number of times per frame), so the frame does not show the size of the previous one.
+        /// </summary>
+        public event Action LayoutApplied;
+
         internal void NotifyLayoutApplied()
         {
             OnLayoutApplied();
+            if (LayoutApplied == null) return;
+
+            try
+            {
+                LayoutApplied();
+            }
+            catch (Exception e)
+            {
+                // The other elements of the panel still get their layout.
+                Debug.LogException(e, this);
+            }
         }
 
         /// <summary>Registers again to the panel above, for example after the panel was re-enabled.</summary>
